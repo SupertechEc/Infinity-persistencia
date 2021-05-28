@@ -21,6 +21,9 @@ public class Error {
     private String retorno;
 
     
+    
+    
+    
 
     public Error(int statusCode, String statusDescription, String errorMessage) {
         this.statusCode = statusCode;
