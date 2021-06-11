@@ -121,7 +121,7 @@ public class ComercializadoraFacadeREST extends AbstractFacade<Comercializadora>
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Comercializadora entity) {
-        try {
+        try { 
             this.edit(entity);
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);

@@ -70,20 +70,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Comercializadora.findByPrefijonpe", query = "SELECT c FROM Comercializadora c WHERE c.prefijonpe = :prefijonpe"),
     @NamedQuery(name = "Comercializadora.findByClavewsepp", query = "SELECT c FROM Comercializadora c WHERE c.clavewsepp = :clavewsepp")})
 public class Comercializadora implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 4)
-    @Column(name = "codigo")
-    private String codigo;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "nombre")
     private String nombre;
     @Basic(optional = false)
-    @NotNull
+    @NotNull()
     @Column(name = "activo")
     private boolean activo;
     @Basic(optional = false)
@@ -116,8 +109,6 @@ public class Comercializadora implements Serializable {
     @Size(max = 100)
     @Column(name = "nombrerepresentantelegal")
     private String nombrerepresentantelegal;
-    @Column(name = "escontribuyenteespacial")
-    private Boolean escontribuyenteespacial;
     @Size(max = 12)
     @Column(name = "telefono1")
     private String telefono1;
@@ -133,32 +124,18 @@ public class Comercializadora implements Serializable {
     @Size(max = 3)
     @Column(name = "tipoplazocredito")
     private String tipoplazocredito;
-    @Column(name = "diasplazocredito")
-    private Short diasplazocredito;
     @Size(max = 10)
     @Column(name = "cuentadebito")
     private String cuentadebito;
     @Size(max = 3)
     @Column(name = "tipocuentadebito")
     private String tipocuentadebito;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "tasainteres")
-    private BigDecimal tasainteres;
-    @Column(name = "fechavencimientocontr")
-    @Temporal(TemporalType.DATE)
-    private Date fechavencimientocontr;
-    @Column(name = "fehainiciocontrato")
-    @Temporal(TemporalType.DATE)
-    private Date fehainiciocontrato;
     @Size(max = 3)
     @Column(name = "establecimientofac")
     private String establecimientofac;
     @Size(max = 3)
     @Column(name = "puntoventafac")
     private String puntoventafac;
-    @Lob
-    @Column(name = "logo")
-    private Object logo;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
@@ -186,6 +163,41 @@ public class Comercializadora implements Serializable {
     @Size(min = 1, max = 8)
     @Column(name = "clavewsepp")
     private String clavewsepp;
+    @Column(name = "esagenteretencion")
+    private Boolean esagenteretencion;
+    @Size(max = 2)
+    @Column(name = "obligadocontabilidad")
+    private String obligadocontabilidad;
+    @Size(max = 400)
+    @Column(name = "leyendaagenteretencion")
+    private String leyendaagenteretencion;
+    @Column(name = "ambientesri")
+    private Character ambientesri;
+    @Column(name = "tipoemision")
+    private Character tipoemision;
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 4)
+    @Column(name = "codigo")
+    private String codigo;
+    @Column(name = "escontribuyenteespacial")
+    private Boolean escontribuyenteespacial;
+    @Column(name = "diasplazocredito")
+    private Short diasplazocredito;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "tasainteres")
+    private BigDecimal tasainteres;
+    @Column(name = "fechavencimientocontr")
+    @Temporal(TemporalType.DATE)
+    private Date fechavencimientocontr;
+    @Column(name = "fehainiciocontrato")
+    @Temporal(TemporalType.DATE)
+    private Date fehainiciocontrato;
+    @Lob
+    @Column(name = "logo")
+    private Object logo;
     @JoinColumn(name = "codigoabastecedora", referencedColumnName = "codigo")
     @ManyToOne(optional = false)
     private Abastecedora codigoabastecedora;
@@ -222,6 +234,118 @@ public class Comercializadora implements Serializable {
 
     public void setCodigo(String codigo) {
         this.codigo = codigo;
+    }
+
+
+    public Boolean getEscontribuyenteespacial() {
+        return escontribuyenteespacial;
+    }
+
+    public void setEscontribuyenteespacial(Boolean escontribuyenteespacial) {
+        this.escontribuyenteespacial = escontribuyenteespacial;
+    }
+
+
+    public Short getDiasplazocredito() {
+        return diasplazocredito;
+    }
+
+    public void setDiasplazocredito(Short diasplazocredito) {
+        this.diasplazocredito = diasplazocredito;
+    }
+
+
+    public BigDecimal getTasainteres() {
+        return tasainteres;
+    }
+
+    public void setTasainteres(BigDecimal tasainteres) {
+        this.tasainteres = tasainteres;
+    }
+
+    public Date getFechavencimientocontr() {
+        return fechavencimientocontr;
+    }
+
+    public void setFechavencimientocontr(Date fechavencimientocontr) {
+        this.fechavencimientocontr = fechavencimientocontr;
+    }
+
+    public Date getFehainiciocontrato() {
+        return fehainiciocontrato;
+    }
+
+    public void setFehainiciocontrato(Date fehainiciocontrato) {
+        this.fehainiciocontrato = fehainiciocontrato;
+    }
+
+
+    public Object getLogo() {
+        return logo;
+    }
+
+    public void setLogo(Object logo) {
+        this.logo = logo;
+    }
+
+
+    public Abastecedora getCodigoabastecedora() {
+        return codigoabastecedora;
+    }
+
+    public void setCodigoabastecedora(Abastecedora codigoabastecedora) {
+        this.codigoabastecedora = codigoabastecedora;
+    }
+
+    public Banco getCodigobancodebito() {
+        return codigobancodebito;
+    }
+
+    public void setCodigobancodebito(Banco codigobancodebito) {
+        this.codigobancodebito = codigobancodebito;
+    }
+
+    @XmlTransient
+    public List<Numeracion> getNumeracionList() {
+        return numeracionList;
+    }
+
+    public void setNumeracionList(List<Numeracion> numeracionList) {
+        this.numeracionList = numeracionList;
+    }
+
+    @XmlTransient
+    public List<Notapedido> getNotapedidoList() {
+        return notapedidoList;
+    }
+
+    public void setNotapedidoList(List<Notapedido> notapedidoList) {
+        this.notapedidoList = notapedidoList;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (codigo != null ? codigo.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Comercializadora)) {
+            return false;
+        }
+        Comercializadora other = (Comercializadora) object;
+        if ((this.codigo == null && other.codigo != null) || (this.codigo != null && !this.codigo.equals(other.codigo))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "ec.com.infinity.modelo.Comercializadora[ codigo=" + codigo + " ]";
     }
 
     public String getNombre() {
@@ -304,14 +428,6 @@ public class Comercializadora implements Serializable {
         this.nombrerepresentantelegal = nombrerepresentantelegal;
     }
 
-    public Boolean getEscontribuyenteespacial() {
-        return escontribuyenteespacial;
-    }
-
-    public void setEscontribuyenteespacial(Boolean escontribuyenteespacial) {
-        this.escontribuyenteespacial = escontribuyenteespacial;
-    }
-
     public String getTelefono1() {
         return telefono1;
     }
@@ -352,14 +468,6 @@ public class Comercializadora implements Serializable {
         this.tipoplazocredito = tipoplazocredito;
     }
 
-    public Short getDiasplazocredito() {
-        return diasplazocredito;
-    }
-
-    public void setDiasplazocredito(Short diasplazocredito) {
-        this.diasplazocredito = diasplazocredito;
-    }
-
     public String getCuentadebito() {
         return cuentadebito;
     }
@@ -376,30 +484,6 @@ public class Comercializadora implements Serializable {
         this.tipocuentadebito = tipocuentadebito;
     }
 
-    public BigDecimal getTasainteres() {
-        return tasainteres;
-    }
-
-    public void setTasainteres(BigDecimal tasainteres) {
-        this.tasainteres = tasainteres;
-    }
-
-    public Date getFechavencimientocontr() {
-        return fechavencimientocontr;
-    }
-
-    public void setFechavencimientocontr(Date fechavencimientocontr) {
-        this.fechavencimientocontr = fechavencimientocontr;
-    }
-
-    public Date getFehainiciocontrato() {
-        return fehainiciocontrato;
-    }
-
-    public void setFehainiciocontrato(Date fehainiciocontrato) {
-        this.fehainiciocontrato = fehainiciocontrato;
-    }
-
     public String getEstablecimientofac() {
         return establecimientofac;
     }
@@ -414,14 +498,6 @@ public class Comercializadora implements Serializable {
 
     public void setPuntoventafac(String puntoventafac) {
         this.puntoventafac = puntoventafac;
-    }
-
-    public Object getLogo() {
-        return logo;
-    }
-
-    public void setLogo(Object logo) {
-        this.logo = logo;
     }
 
     public String getUsuarioactual() {
@@ -480,63 +556,44 @@ public class Comercializadora implements Serializable {
         this.clavewsepp = clavewsepp;
     }
 
-    public Abastecedora getCodigoabastecedora() {
-        return codigoabastecedora;
+    public Boolean getEsagenteretencion() {
+        return esagenteretencion;
     }
 
-    public void setCodigoabastecedora(Abastecedora codigoabastecedora) {
-        this.codigoabastecedora = codigoabastecedora;
+    public void setEsagenteretencion(Boolean esagenteretencion) {
+        this.esagenteretencion = esagenteretencion;
     }
 
-    public Banco getCodigobancodebito() {
-        return codigobancodebito;
+    public String getObligadocontabilidad() {
+        return obligadocontabilidad;
     }
 
-    public void setCodigobancodebito(Banco codigobancodebito) {
-        this.codigobancodebito = codigobancodebito;
+    public void setObligadocontabilidad(String obligadocontabilidad) {
+        this.obligadocontabilidad = obligadocontabilidad;
     }
 
-    @XmlTransient
-    public List<Numeracion> getNumeracionList() {
-        return numeracionList;
+    public String getLeyendaagenteretencion() {
+        return leyendaagenteretencion;
     }
 
-    public void setNumeracionList(List<Numeracion> numeracionList) {
-        this.numeracionList = numeracionList;
+    public void setLeyendaagenteretencion(String leyendaagenteretencion) {
+        this.leyendaagenteretencion = leyendaagenteretencion;
     }
 
-    @XmlTransient
-    public List<Notapedido> getNotapedidoList() {
-        return notapedidoList;
+    public Character getAmbientesri() {
+        return ambientesri;
     }
 
-    public void setNotapedidoList(List<Notapedido> notapedidoList) {
-        this.notapedidoList = notapedidoList;
+    public void setAmbientesri(Character ambientesri) {
+        this.ambientesri = ambientesri;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (codigo != null ? codigo.hashCode() : 0);
-        return hash;
+    public Character getTipoemision() {
+        return tipoemision;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Comercializadora)) {
-            return false;
-        }
-        Comercializadora other = (Comercializadora) object;
-        if ((this.codigo == null && other.codigo != null) || (this.codigo != null && !this.codigo.equals(other.codigo))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "ec.com.infinity.modelo.Comercializadora[ codigo=" + codigo + " ]";
+    public void setTipoemision(Character tipoemision) {
+        this.tipoemision = tipoemision;
     }
     
 }
