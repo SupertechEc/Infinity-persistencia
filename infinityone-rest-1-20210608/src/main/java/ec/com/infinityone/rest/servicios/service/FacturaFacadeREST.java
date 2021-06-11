@@ -144,9 +144,11 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
             facturaDetalle = entity.getDetalle();
             facturaDetalle.getDetallefacturaPK().setCodigoabastecedora(entity.getFactura().getFacturaPK().getCodigoabastecedora());
             facturaDetalle.getDetallefacturaPK().setCodigocomercializadora(entity.getFactura().getFacturaPK().getCodigocomercializadora());
-            facturaDetalle.getDetallefacturaPK().setNumero("" + numeracion);
-            servicioDetalleFact.createS(facturaDetalle);
-
+            facturaDetalle.getDetallefacturaPK().setNumero(entity.getFactura().getFacturaPK().getNumero());
+            facturaDetalle.getDetallefacturaPK().setNumeronotapedido(entity.getFactura().getFacturaPK().getNumeronotapedido());
+            servicioDetalleFact.createS(facturaDetalle); 
+            
+            
             respuestaNumeracion.setUltimonumero(numeracion);
             getServicioNumeracion().edit(respuestaNumeracion);
             //bloqueo.getTransaction().commit();
