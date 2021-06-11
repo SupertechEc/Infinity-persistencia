@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://190.152.15.66:9080/SCI_WS_GOEA_SrvPrv/services/GeneracionOEAbasPrv?wsdl" uri="xml-resources/web-service-references/GeneracionOEAbasPrv/wsdl/190.152.15.66_9080/SCI_WS_GOEA_SrvPrv/services/GeneracionOEAbasPrv/wsdl/GeneracionOEAbasPrv.wsdl"/>
+</catalog>

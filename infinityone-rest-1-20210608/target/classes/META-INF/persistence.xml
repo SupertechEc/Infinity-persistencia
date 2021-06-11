@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.2" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+  <!-- Define Persistence Unit -->
+  <persistence-unit name="my_persistence_unit">
+    <class>ec.com.infinity.modelo.Listaprecioterminalproducto</class>
+    <class>ec.com.infinity.modelo.Precio</class>
+    <class>ec.com.infinity.modelo.Consultagarantia</class>
+    <class>ec.com.infinity.modelo.Permiso</class>
+    <class>ec.com.infinity.modelo.Notapedido</class>
+    <class>ec.com.infinity.modelo.Codigospetro</class>
+    <class>ec.com.infinity.modelo.Detalleconsultafacturaunica</class>
+    <class>ec.com.infinity.modelo.Consultaguiaremision</class>
+    <class>ec.com.infinity.modelo.Factura</class>
+    <class>ec.com.infinity.modelo.Medida</class>
+    <class>ec.com.infinity.modelo.Consultapagofacturaunica</class>
+    <class>ec.com.infinity.modelo.Logtotalgarantizado</class>
+    <class>ec.com.infinity.modelo.Detallepago</class>
+    <class>ec.com.infinity.modelo.Totalgarantizado</class>
+    <class>ec.com.infinity.modelo.Gravamen</class>
+    <class>ec.com.infinity.modelo.Detallenotapedido</class>
+    <class>ec.com.infinity.modelo.Logenviooeepp</class>
+    <class>ec.com.infinity.modelo.Clienteproducto</class>
+    <class>ec.com.infinity.modelo.Detalleprecio</class>
+    <class>ec.com.infinity.modelo.Listaprecio</class>
+    <class>ec.com.infinity.modelo.Comercializadoraproducto</class>
+    <class>ec.com.infinity.modelo.Clientelistaprecio</class>
+    <class>ec.com.infinity.modelo.Facturadordespachador</class>
+    <class>ec.com.infinity.modelo.Producto</class>
+    <class>ec.com.infinity.modelo.Pagofactura</class>
+    <class>ec.com.infinity.modelo.Consultafacturaunica</class>
+    <class>ec.com.infinity.modelo.Clientegarantia</class>
+    <class>ec.com.infinity.modelo.Menu</class>
+    <class>ec.com.infinity.modelo.Areamercadeo</class>
+    <class>ec.com.infinity.modelo.Usuario</class>
+    <class>ec.com.infinity.modelo.Detallefactura</class>
+    <class>ec.com.infinity.modelo.Comercializadora_1</class>
+    <class>ec.com.infinity.modelo.Cliente_1</class>
+    <class>ec.com.infinity.modelo.Tipocliente_1</class>
+    <class>ec.com.infinity.modelo.Abastecedora_1</class>
+    <class>ec.com.infinity.modelo.Banco_1</class>
+    <class>ec.com.infinity.modelo.Direccioninen_1</class>
+    <class>ec.com.infinity.modelo.Formapago_1</class>
+    <class>ec.com.infinity.modelo.Terminal_1</class>
+    <class>ec.com.infinity.modelo.Numeracion</class>
+    <class>ec.com.infinity.modelo.Cliente</class>
+    <class>ec.com.infinity.modelo.Tipocliente</class>
+    <class>ec.com.infinity.modelo.Formapago</class>
+    <class>ec.com.infinity.modelo.Direccioninen</class>
+    <class>ec.com.infinity.modelo.Banco</class>
+    <class>ec.com.infinity.modelo.Terminal</class>
+    <class>ec.com.infinity.modelo.Abastecedora</class>
+    <class>ec.com.infinity.modelo.Comercializadora</class>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <jta-data-source>java:jboss/datasources/Infinityone</jta-data-source>
+    <properties>
+      <!--<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/infinity_one_1"/>
+<property name="javax.persistence.jdbc.user" value="postgres"/>
+<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+<property name="javax.persistence.jdbc.password" value="postgres"/>
+            -->
+      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>
+      <property name="hibernate.show_sql" value="true"/>
+      <property name="hibernate.format_sql" value="true"/>
+    </properties>
+  </persistence-unit>
+</persistence>

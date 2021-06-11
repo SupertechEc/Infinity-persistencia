@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions name="ConsultaFactura" targetNamespace="Sistema_Abastcedora" xmlns:wsdlns="Sistema_Abastcedora" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="Sistema_Abastcedora">
+	<types>
+		<schema targetNamespace="Sistema_Abastcedora" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" elementFormDefault="qualified">
+			<complexType name="ArrayOfSDTFacturaProducto">
+				<sequence>
+					<element minOccurs="0" maxOccurs="unbounded" name="SDTFacturaProducto" type="tns:SDTFacturaProducto">
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="SDTFacturaProducto">
+				<sequence>
+					<element name="numFactura" type="xsd:int">
+					</element>
+					<element name="numSRI" type="xsd:long">
+					</element>
+					<element name="banco" type="xsd:byte">
+					</element>
+					<element name="fechaEmi" type="xsd:int">
+					</element>
+					<element name="fechaVmto" type="xsd:int">
+					</element>
+					<element name="fechaGuia" type="xsd:int">
+					</element>
+					<element name="estadoFac" type="xsd:string">
+					</element>
+					<element name="estadoPago" type="xsd:string">
+					</element>
+					<element name="Detalle">
+						<complexType>
+							<sequence>
+								<element minOccurs="0" maxOccurs="unbounded" name="ProductoFactura" type="tns:SDTFacturaProducto.ProductoFactura">
+								</element>
+							</sequence>
+						</complexType>
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="ArrayOfSDTFacturaProducto.ProductoFactura">
+				<sequence>
+					<element minOccurs="0" maxOccurs="unbounded" name="ProductoFactura" type="tns:SDTFacturaProducto.ProductoFactura">
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="SDTFacturaProducto.ProductoFactura">
+				<sequence>
+					<element name="Area" type="xsd:byte">
+					</element>
+					<element name="CodProducto" type="xsd:byte">
+					</element>
+					<element name="CodMedida" type="xsd:byte">
+					</element>
+					<element name="Medida" type="xsd:string">
+					</element>
+					<element name="Producto" type="xsd:string">
+					</element>
+					<element name="Volumen" type="xsd:double">
+					</element>
+					<element name="Precio" type="xsd:double">
+					</element>
+					<element name="Valor" type="xsd:double">
+					</element>
+				</sequence>
+			</complexType>
+			<element name="ConsultaFactura.Execute">
+				<complexType>
+					<sequence>
+						<element minOccurs="1" maxOccurs="1" name="Faucodcom" type="xsd:short"/>
+						<element minOccurs="1" maxOccurs="1" name="Clave" type="xsd:string"/>
+						<element minOccurs="1" maxOccurs="1" name="Faufecven" type="xsd:int"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="ConsultaFactura.ExecuteResponse">
+				<complexType>
+					<sequence>
+						<element minOccurs="1" maxOccurs="1" name="Facturas" type="tns:ArrayOfSDTFacturaProducto"/>
+					</sequence>
+				</complexType>
+			</element>
+		</schema>
+	</types>
+	<message name="ConsultaFactura.ExecuteSoapIn">
+		<part name="parameters" element="tns:ConsultaFactura.Execute"/>
+	</message>
+	<message name="ConsultaFactura.ExecuteSoapOut">
+		<part name="parameters" element="tns:ConsultaFactura.ExecuteResponse"/>
+	</message>
+	<portType name="ConsultaFacturaSoapPort">
+		<operation name="Execute">
+			<input message="wsdlns:ConsultaFactura.ExecuteSoapIn"/>
+			<output message="wsdlns:ConsultaFactura.ExecuteSoapOut"/>
+		</operation>
+	</portType>
+	<binding name="ConsultaFacturaSoapBinding" type="wsdlns:ConsultaFacturaSoapPort">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="Execute">
+			<soap:operation soapAction="Sistema_Abastcedoraaction/ACONSULTAFACTURA.Execute"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+		</operation>
+	</binding>
+	<service name="ConsultaFactura">
+		<port name="ConsultaFacturaSoapPort" binding="wsdlns:ConsultaFacturaSoapBinding">
+			<soap:address location="http://190.152.15.66:8080/Sistema_AbastcedoraLocal/servlet/aconsultafactura"/>
+		</port>
+	</service>
+</definitions>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions name="ConsultaGuias" targetNamespace="Sistema_Abastcedora" xmlns:wsdlns="Sistema_Abastcedora" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="Sistema_Abastcedora">
+	<types>
+		<schema targetNamespace="Sistema_Abastcedora" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" elementFormDefault="qualified">
+			<complexType name="ArrayOfSDTGuiasComercializadora">
+				<sequence>
+					<element minOccurs="0" maxOccurs="unbounded" name="SDTGuiasComercializadora" type="tns:SDTGuiasComercializadora">
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="SDTGuiasComercializadora">
+				<sequence>
+					<element name="CBTCODCOM" type="xsd:short">
+					</element>
+					<element name="CBTNUMCBT" type="xsd:int">
+					</element>
+					<element name="CBTNUMORE" type="xsd:int">
+					</element>
+					<element name="CBTFECEMI" type="xsd:int">
+					</element>
+					<element name="CBTARMERC" type="xsd:byte">
+					</element>
+					<element name="CBTCODPRO" type="xsd:byte">
+					</element>
+					<element name="CBTUNIMED" type="xsd:byte">
+					</element>
+					<element name="UMENOMABR" type="xsd:string">
+					</element>
+					<element name="CPRNOMPRO" type="xsd:string">
+					</element>
+					<element name="CBTVOLENT" type="xsd:double">
+					</element>
+					<element name="AUTPLAAUT" type="xsd:string">
+					</element>
+				</sequence>
+			</complexType>
+			<element name="ConsultaGuias.Execute">
+				<complexType>
+					<sequence>
+						<element minOccurs="1" maxOccurs="1" name="Cbtcodcom" type="xsd:short"/>
+						<element minOccurs="1" maxOccurs="1" name="Clave" type="xsd:string"/>
+						<element minOccurs="1" maxOccurs="1" name="Cbtfecemi" type="xsd:int"/>
+						<element minOccurs="1" maxOccurs="1" name="Cbtcoddep" type="xsd:byte"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="ConsultaGuias.ExecuteResponse">
+				<complexType>
+					<sequence>
+						<element minOccurs="1" maxOccurs="1" name="Guias" type="tns:ArrayOfSDTGuiasComercializadora"/>
+					</sequence>
+				</complexType>
+			</element>
+		</schema>
+	</types>
+	<message name="ConsultaGuias.ExecuteSoapIn">
+		<part name="parameters" element="tns:ConsultaGuias.Execute"/>
+	</message>
+	<message name="ConsultaGuias.ExecuteSoapOut">
+		<part name="parameters" element="tns:ConsultaGuias.ExecuteResponse"/>
+	</message>
+	<portType name="ConsultaGuiasSoapPort">
+		<operation name="Execute">
+			<input message="wsdlns:ConsultaGuias.ExecuteSoapIn"/>
+			<output message="wsdlns:ConsultaGuias.ExecuteSoapOut"/>
+		</operation>
+	</portType>
+	<binding name="ConsultaGuiasSoapBinding" type="wsdlns:ConsultaGuiasSoapPort">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="Execute">
+			<soap:operation soapAction="Sistema_Abastcedoraaction/ACONSULTAGUIAS.Execute"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+		</operation>
+	</binding>
+	<service name="ConsultaGuias">
+		<port name="ConsultaGuiasSoapPort" binding="wsdlns:ConsultaGuiasSoapBinding">
+			<soap:address location="http://190.152.15.66:8080/Sistema_AbastcedoraLocal/servlet/aconsultaguias"/>
+		</port>
+	</service>
+</definitions>

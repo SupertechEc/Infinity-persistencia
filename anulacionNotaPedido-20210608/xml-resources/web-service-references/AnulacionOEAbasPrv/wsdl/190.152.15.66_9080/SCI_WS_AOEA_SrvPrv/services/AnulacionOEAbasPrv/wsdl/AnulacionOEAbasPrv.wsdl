@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://aoea.sci.pco.com" xmlns:impl="http://aoea.sci.pco.com" xmlns:intf="http://aoea.sci.pco.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsi="http://ws-i.org/profiles/basic/1.1/xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+    <schema targetNamespace="http://aoea.sci.pco.com" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:impl="http://aoea.sci.pco.com" xmlns:intf="http://aoea.sci.pco.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <element name="anularOrdenEntregaResponse">
+    <complexType>
+     <sequence>
+      <element name="anularOrdenEntregaReturn" nillable="true" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="anularOrdenEntrega">
+    <complexType>
+     <sequence>
+      <element name="tramaEnviadaXBanco" nillable="true" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+  </schema>
+  </wsdl:types>
+  <wsdl:message name="anularOrdenEntregaRequest">
+    <wsdl:part element="impl:anularOrdenEntrega" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="anularOrdenEntregaResponse">
+    <wsdl:part element="impl:anularOrdenEntregaResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="AnulacionOEAbasPrv">
+    <wsdl:operation name="anularOrdenEntrega">
+      <wsdl:input message="impl:anularOrdenEntregaRequest" name="anularOrdenEntregaRequest">
+    </wsdl:input>
+      <wsdl:output message="impl:anularOrdenEntregaResponse" name="anularOrdenEntregaResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="AnulacionOEAbasPrvSoapBinding" type="impl:AnulacionOEAbasPrv">
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="anularOrdenEntrega">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="anularOrdenEntregaRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="anularOrdenEntregaResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="AnulacionOEAbasPrvService">
+    <wsdl:port binding="impl:AnulacionOEAbasPrvSoapBinding" name="AnulacionOEAbasPrv">
+      <wsdlsoap:address location="http://190.152.15.66:9080/SCI_WS_AOEA_SrvPrv/services/AnulacionOEAbasPrv"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
