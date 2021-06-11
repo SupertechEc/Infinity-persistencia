@@ -134,6 +134,7 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
                     "01", 
                     "02")); 
                     
+            
                     //entity.getFactura().getRucComercializadora
                     //entity.getFactura().getAmbienteSri()
                     //entity.getFactura().getCodigoDocumento()
