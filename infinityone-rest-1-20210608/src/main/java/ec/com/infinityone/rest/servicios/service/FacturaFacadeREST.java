@@ -134,6 +134,7 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
                     String.valueOf(entity.getFactura().getAmbientesri()),
                     String.valueOf(entity.getFactura().getTipoemision()))); 
                     
+            
                     //entity.getFactura().getRucComercializadora
                     //entity.getFactura().getAmbienteSri()
                     //entity.getFactura().getCodigoDocumento()
