@@ -167,11 +167,24 @@ public class Listaprecio implements Serializable {
             return false;
         }
         return true;
-    }
+    } 
 
     @Override
     public String toString() {
         return "ec.com.infinity.modelo.Listaprecio[ listaprecioPK=" + listaprecioPK + " ]";
     }
-    
+     public String getCodigo() {
+        return getListaprecioPK().getCodigo();
+    }
+     public String getCodigocomercializadora() {
+        return getListaprecioPK().getCodigocomercializadora();
+    }
+     
+    public void setCodigo(String codigo) {
+         new ListaprecioPK().setCodigo(codigo);
+    }
+     public void setCodigocomercializadora(String codigoComercializadora) {
+         new ListaprecioPK().setCodigocomercializadora(codigoComercializadora);
+    } 
+     
 }
