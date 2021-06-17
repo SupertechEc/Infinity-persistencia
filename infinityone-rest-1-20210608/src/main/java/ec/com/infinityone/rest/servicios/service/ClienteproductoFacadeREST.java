@@ -221,23 +221,16 @@ public class ClienteproductoFacadeREST extends AbstractFacade<Clienteproducto> {
         try {
             
             ClienteproductoPK entity = new ClienteproductoPK();
-            //Clienteproducto clip = new Clienteproducto();
             entity.setCodigocliente(codigocliente);
-            //entity.setCodigo(codigo);
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory("Consultas");
-            EntityManager em = emf.createEntityManager();
+
             TypedQuery<Clienteproducto> consultaProductoCliente = em.createNamedQuery("Clienteproducto.findByCodigocliente", Clienteproducto.class);
             consultaProductoCliente.setParameter("codigocliente", codigocliente);
-            //EntityTransaction entr = em.getTransaction();
-            //ntr.begin();
-            //Query query = em.createNamedQuery("Clienteproducto.findByCodigocliente");
-            
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
             succesMessage.setDeveloperMessage("ejecución correcta");
             List<Clienteproducto> lst = new ArrayList<>();
             lst = consultaProductoCliente.getResultList();
-            //lst.add(super.find(entity));
+            lst.add(super.find(entity));
             //lst.add(clip.)
             succesMessage.setRetorno(lst);
             return Response.status(200)
