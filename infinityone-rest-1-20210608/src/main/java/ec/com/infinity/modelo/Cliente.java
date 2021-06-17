@@ -84,9 +84,9 @@ public class Cliente implements Serializable {
     private String nombre;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 3)
+    //@Size(min = 1, max = 3)
     @Column(name = "estado")
-    private String estado;
+    private boolean estado;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 10)
@@ -222,7 +222,7 @@ public class Cliente implements Serializable {
         this.codigo = codigo;
     }
 
-    public Cliente(String codigo, String nombre, String estado, String codigoarch, String codigostc, String codigocomercializadora, String ruc, String direccion, String codigolistaprecio, String usuarioactual) {
+    public Cliente(String codigo, String nombre, boolean estado, String codigoarch, String codigostc, String codigocomercializadora, String ruc, String direccion, String codigolistaprecio, String usuarioactual) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.estado = estado;
@@ -251,11 +251,11 @@ public class Cliente implements Serializable {
         this.nombre = nombre;
     }
 
-    public String getEstado() {
+    public boolean getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(boolean estado) {
         this.estado = estado;
     }
 

@@ -123,16 +123,16 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
              
             DecimalFormat df = new DecimalFormat("000000000");
             String numeroFactura = (df.format(new BigDecimal(numeracion)));
-            entity.getFactura().getFacturaPK().setNumero("001001" + numeroFactura);
+            entity.getFactura().getFacturaPK().setNumero( entity.getFactura().getSeriesri()+ numeroFactura);
             
-            entity.getFactura().setObservacion(GeneradorClaveAccesoSRI.crearClaveAcceso(
+            entity.getFactura().setClaveacceso(GeneradorClaveAccesoSRI.crearClaveAcceso(
                     entity.getFactura().getFechaventa(), 
                     entity.getFactura().getFacturaPK().getNumero().substring(0, 3),
                     entity.getFactura().getFacturaPK().getNumero().substring(3, 3),
                     entity.getFactura().getFacturaPK().getNumero().substring(6, 9),
-                    "1710816396001",
-                    "01", 
-                    "02")); 
+                    entity.getFactura().getRuccomercializadora(),
+                    String.valueOf(entity.getFactura().getAmbientesri()),
+                    String.valueOf(entity.getFactura().getTipoemision()))); 
                     
                     //entity.getFactura().getRucComercializadora
                     //entity.getFactura().getAmbienteSri()
@@ -155,7 +155,8 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
 
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
-            succesMessage.setDeveloperMessage("ejecución correcta");
+            succesMessage.setDeveloperMessage("Fac: "+entity.getFactura().getFacturaPK().getNumero());
+            
 
             return Response.status(200)
                     .entity(succesMessage)

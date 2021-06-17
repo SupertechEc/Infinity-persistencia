@@ -38,7 +38,7 @@ public class Formapago implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 3)
+    @Size(min = 1, max = 2)
     @Column(name = "codigo")
     private String codigo;
     @Basic(optional = false)

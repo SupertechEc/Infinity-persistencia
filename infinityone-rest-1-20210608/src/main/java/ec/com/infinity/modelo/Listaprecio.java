@@ -173,6 +173,8 @@ public class Listaprecio implements Serializable {
     public String toString() {
         return "ec.com.infinity.modelo.Listaprecio[ listaprecioPK=" + listaprecioPK + " ]";
     }
+    
+    /*
      public String getCodigo() {
         return getListaprecioPK().getCodigo();
     }
@@ -186,5 +188,5 @@ public class Listaprecio implements Serializable {
      public void setCodigocomercializadora(String codigoComercializadora) {
          new ListaprecioPK().setCodigocomercializadora(codigoComercializadora);
     } 
-     
+     */ 
 }
