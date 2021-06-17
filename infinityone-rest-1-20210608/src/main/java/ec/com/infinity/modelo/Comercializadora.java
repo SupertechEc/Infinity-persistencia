@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ec.com.infinity.modelo;
+package ec.com.infinity.modelo; 
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -195,9 +195,10 @@ public class Comercializadora implements Serializable {
     @Column(name = "fehainiciocontrato")
     @Temporal(TemporalType.DATE)
     private Date fehainiciocontrato;
-    @Lob
+   /* @Lob
     @Column(name = "logo")
     private Object logo;
+    */
     @JoinColumn(name = "codigoabastecedora", referencedColumnName = "codigo")
     @ManyToOne(optional = false)
     private Abastecedora codigoabastecedora;
@@ -279,7 +280,7 @@ public class Comercializadora implements Serializable {
         this.fehainiciocontrato = fehainiciocontrato;
     }
 
-
+/*
     public Object getLogo() {
         return logo;
     }
@@ -288,7 +289,7 @@ public class Comercializadora implements Serializable {
         this.logo = logo;
     }
 
-
+*/
     public Abastecedora getCodigoabastecedora() {
         return codigoabastecedora;
     }

@@ -41,10 +41,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Detallefactura.findBySubtotal", query = "SELECT d FROM Detallefactura d WHERE d.subtotal = :subtotal"),
     @NamedQuery(name = "Detallefactura.findByUsuarioactual", query = "SELECT d FROM Detallefactura d WHERE d.usuarioactual = :usuarioactual")})
 public class Detallefactura implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected DetallefacturaPK detallefacturaPK;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
@@ -67,6 +63,26 @@ public class Detallefactura implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "usuarioactual")
     private String usuarioactual;
+    @Size(max = 13)
+    @Column(name = "ruccomercializadora")
+    private String ruccomercializadora;
+    @Size(max = 100)
+    @Column(name = "nombreproducto")
+    private String nombreproducto;
+    @Size(max = 4)
+    @Column(name = "codigoimpuesto")
+    private String codigoimpuesto;
+    @Size(max = 50)
+    @Column(name = "nombreimpuesto")
+    private String nombreimpuesto;
+    @Column(name = "seimprime")
+    private Boolean seimprime;
+    @Column(name = "valordefecto")
+    private BigDecimal valordefecto;
+
+    private static final long serialVersionUID = 1L;
+    @EmbeddedId
+    protected DetallefacturaPK detallefacturaPK;
     @JoinColumns({
         @JoinColumn(name = "codigoabastecedora", referencedColumnName = "codigoabastecedora", insertable = false, updatable = false),
         @JoinColumn(name = "codigocomercializadora", referencedColumnName = "codigocomercializadora", insertable = false, updatable = false),
@@ -111,45 +127,6 @@ public class Detallefactura implements Serializable {
         this.detallefacturaPK = detallefacturaPK;
     }
 
-    public BigDecimal getVolumennaturalrequerido() {
-        return volumennaturalrequerido;
-    }
-
-    public void setVolumennaturalrequerido(BigDecimal volumennaturalrequerido) {
-        this.volumennaturalrequerido = volumennaturalrequerido;
-    }
-
-    public BigDecimal getVolumennaturalautorizado() {
-        return volumennaturalautorizado;
-    }
-
-    public void setVolumennaturalautorizado(BigDecimal volumennaturalautorizado) {
-        this.volumennaturalautorizado = volumennaturalautorizado;
-    }
-
-    public BigDecimal getPrecioproducto() {
-        return precioproducto;
-    }
-
-    public void setPrecioproducto(BigDecimal precioproducto) {
-        this.precioproducto = precioproducto;
-    }
-
-    public BigDecimal getSubtotal() {
-        return subtotal;
-    }
-
-    public void setSubtotal(BigDecimal subtotal) {
-        this.subtotal = subtotal;
-    }
-
-    public String getUsuarioactual() {
-        return usuarioactual;
-    }
-
-    public void setUsuarioactual(String usuarioactual) {
-        this.usuarioactual = usuarioactual;
-    }
 
     public Factura getFactura() {
         return factura;
@@ -198,6 +175,94 @@ public class Detallefactura implements Serializable {
     @Override
     public String toString() {
         return "ec.com.infinity.modelo.Detallefactura[ detallefacturaPK=" + detallefacturaPK + " ]";
+    }
+
+    public BigDecimal getVolumennaturalrequerido() {
+        return volumennaturalrequerido;
+    }
+
+    public void setVolumennaturalrequerido(BigDecimal volumennaturalrequerido) {
+        this.volumennaturalrequerido = volumennaturalrequerido;
+    }
+
+    public BigDecimal getVolumennaturalautorizado() {
+        return volumennaturalautorizado;
+    }
+
+    public void setVolumennaturalautorizado(BigDecimal volumennaturalautorizado) {
+        this.volumennaturalautorizado = volumennaturalautorizado;
+    }
+
+    public BigDecimal getPrecioproducto() {
+        return precioproducto;
+    }
+
+    public void setPrecioproducto(BigDecimal precioproducto) {
+        this.precioproducto = precioproducto;
+    }
+
+    public BigDecimal getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(BigDecimal subtotal) {
+        this.subtotal = subtotal;
+    }
+
+    public String getUsuarioactual() {
+        return usuarioactual;
+    }
+
+    public void setUsuarioactual(String usuarioactual) {
+        this.usuarioactual = usuarioactual;
+    }
+
+    public String getRuccomercializadora() {
+        return ruccomercializadora;
+    }
+
+    public void setRuccomercializadora(String ruccomercializadora) {
+        this.ruccomercializadora = ruccomercializadora;
+    }
+
+    public String getNombreproducto() {
+        return nombreproducto;
+    }
+
+    public void setNombreproducto(String nombreproducto) {
+        this.nombreproducto = nombreproducto;
+    }
+
+    public String getCodigoimpuesto() {
+        return codigoimpuesto;
+    }
+
+    public void setCodigoimpuesto(String codigoimpuesto) {
+        this.codigoimpuesto = codigoimpuesto;
+    }
+
+    public String getNombreimpuesto() {
+        return nombreimpuesto;
+    }
+
+    public void setNombreimpuesto(String nombreimpuesto) {
+        this.nombreimpuesto = nombreimpuesto;
+    }
+
+    public Boolean getSeimprime() {
+        return seimprime;
+    }
+
+    public void setSeimprime(Boolean seimprime) {
+        this.seimprime = seimprime;
+    }
+
+    public BigDecimal getValordefecto() {
+        return valordefecto;
+    }
+
+    public void setValordefecto(BigDecimal valordefecto) {
+        this.valordefecto = valordefecto;
     }
 
 }

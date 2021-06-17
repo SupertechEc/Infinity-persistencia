@@ -18,6 +18,8 @@ import ec.com.infinityone.anulacion.AnulacionOEAbasPrv;
 import ec.com.infinityone.anulacion.AnulacionOEAbasPrvService;
 import ec.com.infinityone.envio.GeneracionOEAbasPrv;
 import ec.com.infinityone.envio.GeneracionOEAbasPrvService;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -110,14 +112,19 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
     @Produces({"application/json"})
 //    public Response create1(Notapedido entity) {
     public Response create1(EnvioPedidoREST entity) {
-        String tipodocumento = "npd";
+        String tipodocumento = "NPE";
         try {
 
             Numeracion respuestaNumeracion = servicioNumeracion.consulta(tipodocumento, entity.getNotapedido().getComercializadora().getCodigo());
 
             bloqueo.lock(respuestaNumeracion, LockModeType.PESSIMISTIC_WRITE);
+            
+            DecimalFormat df = new DecimalFormat("000000");
+            
             int numeracion = respuestaNumeracion.getUltimonumero() + 1;
-            entity.getNotapedido().getNotapedidoPK().setNumero("" + numeracion);
+            String numeroNPE = (df.format(new BigDecimal(numeracion)));
+           
+            entity.getNotapedido().getNotapedidoPK().setNumero(entity.getNotapedido().getPrefijo()+ numeroNPE);
 
             super.createS(entity.getNotapedido());
 
@@ -125,9 +132,9 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
             notapedidoDetalle = entity.getDetalle();
             notapedidoDetalle.getDetallenotapedidoPK().setCodigoabastecedora(entity.getNotapedido().getNotapedidoPK().getCodigoabastecedora());
             notapedidoDetalle.getDetallenotapedidoPK().setCodigocomercializadora(entity.getNotapedido().getComercializadora().getCodigo());
-            notapedidoDetalle.getDetallenotapedidoPK().setNumero("" + numeracion);
+            notapedidoDetalle.getDetallenotapedidoPK().setNumero(entity.getNotapedido().getNotapedidoPK().getNumero());
             servicioDetalleNP.createS(notapedidoDetalle);
-
+  
             respuestaNumeracion.setUltimonumero(numeracion);
             getServicioNumeracion().edit(respuestaNumeracion);
             //bloqueo.getTransaction().commit();
@@ -318,7 +325,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
         try {
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
-            succesMessage.setDeveloperMessage("ejecuciÃ³n correcta");
+            succesMessage.setDeveloperMessage("ejecución correcta");
 
             NotapedidoPK key = new NotapedidoPK();
             key.setCodigoabastecedora(entity.getCodigoabastecedora());
@@ -344,7 +351,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
                 GeneracionOEAbasPrvService service = new GeneracionOEAbasPrvService();
                 GeneracionOEAbasPrv port = service.getGeneracionOEAbasPrv();
                 String arespuesta = port.generarOrdenEntrega(entity.getCadena());
-                modificar.setRespuestageneracionoeepp(arespuesta.substring(0, 1));//2 primeros caracteres
+                modificar.setRespuestageneracionoeepp(arespuesta.substring(0, 2));//2 primeros caracteres
                 modificar.setTramarecibidagoe(arespuesta);
                 List<String> respuesta = new ArrayList<>();
                 respuesta.add(arespuesta);
@@ -376,7 +383,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
         try {
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
-            succesMessage.setDeveloperMessage("ejecuciÃ³n correcta");
+            succesMessage.setDeveloperMessage("ejecución correcta");
 
             NotapedidoPK key = new NotapedidoPK();
             key.setCodigoabastecedora(entity.getCodigoabastecedora());
@@ -401,7 +408,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
                 AnulacionOEAbasPrvService service = new AnulacionOEAbasPrvService();
                 AnulacionOEAbasPrv port = service.getAnulacionOEAbasPrv();
                 String arespuesta = port.anularOrdenEntrega(entity.getCadena());
-                modificar.setRespuestaanulacionoeepp(arespuesta.substring(0, 1));//2 primeros caracteres
+                modificar.setRespuestaanulacionoeepp(arespuesta.substring(0, 2));//2 primeros caracteres
                 modificar.setTramarecibidaaoe(arespuesta);
                 List<String> respuesta = new ArrayList<>();
                 respuesta.add(arespuesta);

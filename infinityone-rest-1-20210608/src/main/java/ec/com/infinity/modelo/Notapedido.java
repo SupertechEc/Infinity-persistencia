@@ -121,6 +121,10 @@ public class Notapedido implements Serializable {
     @JoinColumn(name = "codigoterminal", referencedColumnName = "codigo")
     @ManyToOne(optional = false)
     private Terminal codigoterminal;
+    
+    @Size(max = 2)
+    @Column(name = "prefijo")
+    private String prefijo;
 
     public Notapedido() {
     }
@@ -209,7 +213,7 @@ public class Notapedido implements Serializable {
     public String getObservacion() {
         return observacion;
     }
-
+ 
     public void setObservacion(String observacion) {
         this.observacion = observacion;
     }
@@ -308,6 +312,14 @@ public class Notapedido implements Serializable {
 
     public void setCodigoterminal(Terminal codigoterminal) {
         this.codigoterminal = codigoterminal;
+    }
+    
+     public String getPrefijo() {
+        return prefijo;
+    }
+
+    public void setPrefijo(String prefijo) {
+        this.prefijo = prefijo;
     }
 
     @Override
