@@ -140,6 +140,8 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
                     //entity.getFactura().getCodigoDocumento()
             super.createS(entity.getFactura());
 
+            // iterar la lista y grabar lista de DETALLES DE FACTURA
+            
             Detallefactura facturaDetalle = new Detallefactura();
             facturaDetalle = entity.getDetalle();
             facturaDetalle.getDetallefacturaPK().setCodigoabastecedora(entity.getFactura().getFacturaPK().getCodigoabastecedora());
@@ -147,6 +149,8 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
             facturaDetalle.getDetallefacturaPK().setNumero(entity.getFactura().getFacturaPK().getNumero());
             facturaDetalle.getDetallefacturaPK().setNumeronotapedido(entity.getFactura().getFacturaPK().getNumeronotapedido());
             servicioDetalleFact.createS(facturaDetalle); 
+            
+            // iterar la lista y grabar lista de DETALLES DE FACTURA
             
             
             respuestaNumeracion.setUltimonumero(numeracion);
