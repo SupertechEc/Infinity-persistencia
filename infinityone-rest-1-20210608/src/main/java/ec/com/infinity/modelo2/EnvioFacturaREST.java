@@ -7,7 +7,7 @@ package ec.com.infinity.modelo2;
 
 import ec.com.infinity.modelo.Detallefactura;
 import ec.com.infinity.modelo.Factura;
-
+import java.util.List;
 /**
  *
  * @author Paul
@@ -15,7 +15,7 @@ import ec.com.infinity.modelo.Factura;
 public class EnvioFacturaREST {
 
     private Factura factura;
-    private Detallefactura detalle;
+    private List<Detallefactura> detalle;
 
     public EnvioFacturaREST() {
     }
@@ -37,14 +37,14 @@ public class EnvioFacturaREST {
     /**
      * @return the detalle
      */
-    public Detallefactura getDetalle() {
+    public List<Detallefactura> getDetalle() {
         return detalle;
     }
 
     /**
      * @param detalle the detalle to set
      */
-    public void setDetalle(Detallefactura detalle) {
+    public void setDetalle(List<Detallefactura>  detalle) {
         this.detalle = detalle;
     }
 

@@ -142,7 +142,8 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
 
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
-            succesMessage.setDeveloperMessage("ejecuciÃ³n correcta");
+            //succesMessage.setDeveloperMessage("ejecuciÃ³n correcta");
+            succesMessage.setDeveloperMessage(entity.getNotapedido().getNotapedidoPK().getNumero());
 
             return Response.status(200)
                     .entity(succesMessage)
