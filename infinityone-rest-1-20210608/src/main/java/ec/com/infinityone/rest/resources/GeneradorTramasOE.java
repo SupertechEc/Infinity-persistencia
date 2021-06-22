@@ -52,7 +52,14 @@ public class GeneradorTramasOE {
     //WPE UNIMON	Numeric (1.0)	MONEDA
     trama = trama+ "2";   
             
-    //WPE VOLFAC	Numeric (9.2)	VOLUMEN DE NOTA DEPEDIDO  (000600000)
+    //  ejemplo de DAVID, en pantalla 3000 --- > 9 caracteres, de los cuales los dos últimos deben
+    // representar la cifra decimal
+    // 3000   (NUMERICO) -- >  000300000
+    // 401,88 (NUMERICO) -- >  000040188
+    // 3311,05 (NUMERICO) -- > 000331105
+    
+    
+    //WPE VOLFAC	Numeric (9.2) -(7 ENTEROS Y 2 DECIMALES)	VOLUMEN DE NOTA DEPEDIDO  (000600000)
     trama = trama+ entidad.getDetalle().getVolumennaturalautorizado().toString();
             
     //WPE VOLNAT	Numeric (9.2)	VOLUMEN NATURAL
