@@ -142,14 +142,28 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
 
             // iterar la lista y grabar lista de DETALLES DE FACTURA
             
+            List<Detallefactura> listafacturaDetalle = new ArrayList<>();
             Detallefactura facturaDetalle = new Detallefactura();
-            facturaDetalle = entity.getDetalle();
+            listafacturaDetalle = entity.getDetalle();
+            for(int i = 0; i < listafacturaDetalle.size(); i++){
+                listafacturaDetalle.get(i).getDetallefacturaPK().setCodigoabastecedora(entity.getFactura().getFacturaPK().getCodigoabastecedora());
+                listafacturaDetalle.get(i).getDetallefacturaPK().setCodigocomercializadora(entity.getFactura().getFacturaPK().getCodigocomercializadora());
+                listafacturaDetalle.get(i).getDetallefacturaPK().setNumero(entity.getFactura().getFacturaPK().getNumero());
+                listafacturaDetalle.get(i).getDetallefacturaPK().setNumeronotapedido(entity.getFactura().getFacturaPK().getNumeronotapedido());
+            }
+            for(Detallefactura det: listafacturaDetalle){
+                 servicioDetalleFact.createS(det);
+            }
+            /*facturaDetalle = entity.getDetalle();
             facturaDetalle.getDetallefacturaPK().setCodigoabastecedora(entity.getFactura().getFacturaPK().getCodigoabastecedora());
             facturaDetalle.getDetallefacturaPK().setCodigocomercializadora(entity.getFactura().getFacturaPK().getCodigocomercializadora());
             facturaDetalle.getDetallefacturaPK().setNumero(entity.getFactura().getFacturaPK().getNumero());
             facturaDetalle.getDetallefacturaPK().setNumeronotapedido(entity.getFactura().getFacturaPK().getNumeronotapedido());
-            servicioDetalleFact.createS(facturaDetalle); 
-            
+            servicioDetalleFact.createS(facturaDetalle);*/            
+            //listafacturaDetalle.add(facturaDetalle);
+            /*for(Detallefactura det: listafacturaDetalle){
+                 servicioDetalleFact.createS(det);
+            }*/
             // iterar la lista y grabar lista de DETALLES DE FACTURA
             
             

@@ -6,6 +6,7 @@
 package ec.com.infinityone.rest.servicios.service;
 
 import java.text.SimpleDateFormat;
+import static java.time.Clock.system;
 import java.util.Date;
 
 /**
@@ -33,12 +34,19 @@ public static String crearClaveAcceso(Date fecha, String establecimiento, String
         SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
         StringBuilder sb = new StringBuilder();
         sb.append(sdf.format(fecha));
+        System.out.println("Fecha:"+ sdf.format(fecha));
         sb.append(tipoDocumento);
+        System.out.println("Documento:" + tipoDocumento);
         sb.append(ruc);
+        System.out.println("Ruc:" + ruc);
         sb.append(ambiente);
+        System.out.println("Ambiente:" + ambiente);
         sb.append(establecimiento);
+        System.out.println("Establecimiento:" + establecimiento);
         sb.append(puntoEmision);
+        System.out.println("PuntoEmision:" + puntoEmision);
         sb.append(generarSecuencial(secuencial));
+        System.out.println("Secuecnial:" + generarSecuencial(secuencial));
         sb.append("000009991");
         claveAcceso = sb.toString();
         return claveAcceso + obtenerDigitoVerificadorModuloOnce(claveAcceso);
@@ -65,6 +73,7 @@ public static String crearClaveAcceso(Date fecha, String establecimiento, String
      * @return No. con el digito verificador SRI
      */
     private static String obtenerDigitoVerificadorModuloOnce(String array) {
+        System.out.println("Entrado:" + array);
         int a = 2;
         int rutSumado = 0;
         int mulDig = 1;
@@ -88,7 +97,7 @@ public static String crearClaveAcceso(Date fecha, String establecimiento, String
         if (Digito.equals("10")) {
             Digito = "1";
         }
-
+        System.out.println("Saliendo:" + Digito);
         return Digito;
     }
     /**
