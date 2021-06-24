@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ec.com.infinityone.rest.servicios.service;
+package ec.com.infinityone.rest.servicios.service; 
 
 import ec.com.infinity.modelo.Detallenotapedido;
 import ec.com.infinity.modelo.Notapedido;
@@ -18,6 +18,7 @@ import ec.com.infinityone.anulacion.AnulacionOEAbasPrv;
 import ec.com.infinityone.anulacion.AnulacionOEAbasPrvService;
 import ec.com.infinityone.envio.GeneracionOEAbasPrv;
 import ec.com.infinityone.envio.GeneracionOEAbasPrvService;
+import ec.com.infinityone.rest.resources.GeneradorTramasOE;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -263,6 +264,43 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
         }
     }
 
+      @GET
+    @Path("/tramaOE") 
+    @Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"}) 
+    public Response find(EnvioPedidoREST entity, @QueryParam("nfactura") String nfactura, 
+            @QueryParam("clave") String clave) {
+        try {
+            
+            String tramaResp = "-";
+            GeneradorTramasOE generadorOE = new GeneradorTramasOE();
+            tramaResp = generadorOE.generarTramaEnvioOE(entity, nfactura, clave);
+            System.out.println("Trama: "+tramaResp);
+            
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("Trama: OK!");
+            List<Notapedido> lst = new ArrayList<>();
+            //lst.add(super.find(entity));
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+    
+    
     @GET
     @Secured
     @Consumes({"application/json"})
