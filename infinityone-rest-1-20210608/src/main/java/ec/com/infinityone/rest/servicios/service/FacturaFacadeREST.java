@@ -128,13 +128,13 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
             entity.getFactura().setClaveacceso(GeneradorClaveAccesoSRI.crearClaveAcceso(
                     entity.getFactura().getFechaventa(), 
                     entity.getFactura().getFacturaPK().getNumero().substring(0, 3),
-                    entity.getFactura().getFacturaPK().getNumero().substring(3, 3),
-                    entity.getFactura().getFacturaPK().getNumero().substring(6, 9),
+                    entity.getFactura().getFacturaPK().getNumero().substring(3, 6),
+                    entity.getFactura().getFacturaPK().getNumero().substring(6, 15),
                     entity.getFactura().getRuccomercializadora(),
                     String.valueOf(entity.getFactura().getAmbientesri()),
-                    String.valueOf(entity.getFactura().getTipoemision()))); 
+                    String.valueOf(entity.getFactura().getCodigodocumento()))); 
                     
-            
+            System.out.println("fecha: "+entity.getFactura().getFechaventa());
                     //entity.getFactura().getRucComercializadora
                     //entity.getFactura().getAmbienteSri()
                     //entity.getFactura().getCodigoDocumento()

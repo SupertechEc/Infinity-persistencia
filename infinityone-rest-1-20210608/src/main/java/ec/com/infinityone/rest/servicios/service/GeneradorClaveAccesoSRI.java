@@ -25,11 +25,19 @@ import java.util.Date;
 
 /**
  *
- * @author Fernando Tapia
+ *
  */
 public class GeneradorClaveAccesoSRI {
 
 public static String crearClaveAcceso(Date fecha, String establecimiento, String puntoEmision, String secuencial, String ruc, String ambiente, String tipoDocumento) {
+                System.out.println("parame fec:"+ fecha.toString());
+                System.out.println("parame esta:"+ establecimiento);
+                System.out.println("parame emisi:"+ puntoEmision);
+                System.out.println("parame secu:"+ secuencial);
+                System.out.println("parame ruc:"+ ruc);
+                System.out.println("parame ambi:"+ ambiente);
+                System.out.println("parame tipoDocumento:"+ tipoDocumento);
+       
         String claveAcceso = "";
         SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
         StringBuilder sb = new StringBuilder();
@@ -47,7 +55,7 @@ public static String crearClaveAcceso(Date fecha, String establecimiento, String
         System.out.println("PuntoEmision:" + puntoEmision);
         sb.append(generarSecuencial(secuencial));
         System.out.println("Secuecnial:" + generarSecuencial(secuencial));
-        sb.append("000009991");
+        sb.append("123456789");
         claveAcceso = sb.toString();
         return claveAcceso + obtenerDigitoVerificadorModuloOnce(claveAcceso);
     }
