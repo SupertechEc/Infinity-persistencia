@@ -281,7 +281,8 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
             succesMessage.setDeveloperMessage("Trama: OK!");
-            List<Notapedido> lst = new ArrayList<>();
+            List<String> lst = new ArrayList<>();
+            lst.add(tramaResp);
             //lst.add(super.find(entity));
             succesMessage.setRetorno(lst);
             return Response.status(200)

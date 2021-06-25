@@ -37,6 +37,15 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Precio.findAll", query = "SELECT p FROM Precio p"),
+    @NamedQuery(name = "Precio.findForFactura", query = "SELECT p FROM Precio p WHERE p.precioPK.codigocomercializadora = :codigocomercializadora"
+            + " and p.precioPK.codigoterminal = :codigoterminal"
+            + " and p.precioPK.codigoproducto = :codigoproducto "
+            + " and p.precioPK.codigomedida = :codigomedida"
+            + " and p.precioPK.codigolistaprecio = :codigolistaprecio"
+            + " and p.precioPK.fechainicio <= :fechainicio"
+            //+ " and p.precioPK.secuencial = :secuencial"
+            + " and p.activo = true"
+            + " and p.fechafin = NULL"),
     @NamedQuery(name = "Precio.findByCodigocomercializadora", query = "SELECT p FROM Precio p WHERE p.precioPK.codigocomercializadora = :codigocomercializadora"),
     @NamedQuery(name = "Precio.findByCodigoterminal", query = "SELECT p FROM Precio p WHERE p.precioPK.codigoterminal = :codigoterminal"),
     @NamedQuery(name = "Precio.findByCodigoproducto", query = "SELECT p FROM Precio p WHERE p.precioPK.codigoproducto = :codigoproducto"),

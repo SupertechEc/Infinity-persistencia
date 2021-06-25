@@ -16,6 +16,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -211,6 +212,70 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
         }
     }
 
+    @GET
+    @Path("/paraFactura")
+    @Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findparafactura(@QueryParam("codigocomercializadora") String codigocomercializadora, 
+            @QueryParam("codigoterminal") String codigoterminal,
+            @QueryParam("codigoproducto") String codigoproducto,
+            @QueryParam("codigomedida") String codigomedida,
+            @QueryParam("fechainicio") Date fechainicio,
+            @QueryParam("codigolistaprecio") String codigolistaprecio) {
+        try {
+            
+            PrecioPK  entity = new PrecioPK();
+            entity.setCodigocomercializadora(codigocomercializadora);
+            entity.setCodigoterminal(codigoterminal);
+            entity.setCodigoproducto(codigoproducto);
+            entity.setCodigomedida(codigomedida);
+            entity.setCodigolistaprecio(codigolistaprecio);
+            entity.setFechainicio(fechainicio);
+            //entity.setSecuencial(secuencial);
+            //entity.setCodigoPrecio(codigoPrecio);
+            //-------------
+                    
+            TypedQuery<Precio> consultaPrecioParafacturar = em.createNamedQuery("Precio.findForFactura", Precio.class);
+            consultaPrecioParafacturar.setParameter("codigocomercializadora", codigocomercializadora);
+            consultaPrecioParafacturar.setParameter("codigoterminal", codigoterminal);
+            consultaPrecioParafacturar.setParameter("codigoproducto", codigoproducto);
+            consultaPrecioParafacturar.setParameter("codigomedida", codigomedida);
+            consultaPrecioParafacturar.setParameter("codigolistaprecio", codigolistaprecio);
+            consultaPrecioParafacturar.setParameter("fechainicio", fechainicio);
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            List<Precio> lst = new ArrayList<>();
+            lst = consultaPrecioParafacturar.getResultList();
+            lst.add(super.find(entity));
+            
+            //---------------
+            
+            /*
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            List<Precio> lst = new ArrayList<>();
+            lst.add(super.find(entity));
+            */
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+    
     @GET
     @Secured
     @Consumes({"application/json"})

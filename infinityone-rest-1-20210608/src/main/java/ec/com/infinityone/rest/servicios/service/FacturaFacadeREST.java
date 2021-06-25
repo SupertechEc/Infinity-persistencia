@@ -176,7 +176,8 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
             succesMessage.setStatusCode(200);
             succesMessage.setDeveloperMessage("Fac: "+entity.getFactura().getFacturaPK().getNumero());
             
-
+            
+            
             return Response.status(200)
                     .entity(succesMessage)
                     .type(MediaType.APPLICATION_JSON).
