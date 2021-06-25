@@ -32,6 +32,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Notapedido.findAll", query = "SELECT n FROM Notapedido n"),
     @NamedQuery(name = "Notapedido.findByCodigoabastecedora", query = "SELECT n FROM Notapedido n WHERE n.notapedidoPK.codigoabastecedora = :codigoabastecedora"),
+    //@NamedQuery(name = "Notapedido.findByCodigoabastecedora", query = "SELECT * FROM Notapedido n join Detallenotapeido d on n.numero = d.numero WHERE n.notapedidoPK.codigoabastecedora = :codigoabastecedora"),
+    @NamedQuery(name = "Notapedido.findForVenta", query = "SELECT n FROM Notapedido n WHERE n.notapedidoPK.codigoabastecedora = :codigoabastecedora and n.notapedidoPK.codigocomercializadora = :codigocomercializadora and n.codigoterminal.codigo = :codigoterminal and n.fechaventa = :fecha"),
+    @NamedQuery(name = "Notapedido.findForDespacho", query = "SELECT n FROM Notapedido n WHERE n.notapedidoPK.codigoabastecedora = :codigoabastecedora and n.notapedidoPK.codigocomercializadora = :codigocomercializadora and n.codigoterminal.codigo = :codigoterminal and n.fechadespacho = :fecha"),
     @NamedQuery(name = "Notapedido.findByCodigocomercializadora", query = "SELECT n FROM Notapedido n WHERE n.notapedidoPK.codigocomercializadora = :codigocomercializadora"),
     @NamedQuery(name = "Notapedido.findByNumero", query = "SELECT n FROM Notapedido n WHERE n.notapedidoPK.numero = :numero"),
     @NamedQuery(name = "Notapedido.findByFechaventa", query = "SELECT n FROM Notapedido n WHERE n.fechaventa = :fechaventa"),
@@ -121,6 +124,7 @@ public class Notapedido implements Serializable {
     @JoinColumn(name = "codigoterminal", referencedColumnName = "codigo")
     @ManyToOne(optional = false)
     private Terminal codigoterminal;
+
     
     @Size(max = 2)
     @Column(name = "prefijo")
