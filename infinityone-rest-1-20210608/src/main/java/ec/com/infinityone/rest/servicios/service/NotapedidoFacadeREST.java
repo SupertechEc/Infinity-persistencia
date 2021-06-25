@@ -19,14 +19,20 @@ import ec.com.infinityone.anulacion.AnulacionOEAbasPrvService;
 import ec.com.infinityone.envio.GeneracionOEAbasPrv;
 import ec.com.infinityone.envio.GeneracionOEAbasPrvService;
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -245,6 +251,77 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
             succesMessage.setStatusCode(200);
             succesMessage.setDeveloperMessage("ejecuciÃ³n correcta");
             List<Notapedido> lst = new ArrayList<>();
+            lst.add(super.find(entity));
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+    
+    @GET
+    @Path("/paraFactura")
+    @Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response find(@QueryParam("codigoabastecedora") String codigoabastecedora, 
+            @QueryParam("codigocomercializadora") String codigocomercializadora,  @QueryParam("codigoterminal") String codigoterminal,
+            @QueryParam("tipofecha") String tipofecha,  @QueryParam("fecha") Date fecha) {
+        try {
+
+            NotapedidoPK entity = new NotapedidoPK();
+            entity.setCodigoabastecedora(codigoabastecedora);
+            entity.setCodigocomercializadora(codigocomercializadora);
+            //entity.setNumero(numero);
+            List<Notapedido> lst = new ArrayList<>();
+            //List<EnvioPedidoRest> lst = new ArrayList<>();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd");  
+            String date = "2021/06/18";
+            if(tipofecha.equals("1")){
+                System.out.println("1");
+                StringBuilder sb = new StringBuilder();
+                    sb.append("select *")
+                    .append(" FROM Notapedido n join Detallenotapedido d" )
+                    .append(" on n.numero = d.numero")
+                    .append(" where n.codigoabastecedora = '").append(codigoabastecedora).append("'")
+                    .append(" and n.codigocomercializadora = '").append(codigocomercializadora).append("'")
+                    .append(" and n.codigoterminal = '").append(codigoterminal).append("'")
+                    .append(" and n.fechaventa = '").append(date).append("'");
+                Query qry = em.createNativeQuery(sb.toString(), Notapedido.class);
+                /*TypedQuery<Notapedido> consultaPorAbastecedora = em.createNamedQuery("Notapedido.findForVenta", Notapedido.class);
+                //TypedQuery<Notapedido> consultaPorAbastecedora = em.createQuery("SELECT * FROM Notapedido n join Detallenotapeido d on n.numero = d.numero WHERE n.notapedidoPK.codigoabastecedora = :codigoabastecedora and n.notapedidoPK.codigocomercializadora = :codigocomercializadora and n.codigoterminal.codigo = :codigoterminal and n.fechaventa = :fecha");
+                consultaPorAbastecedora.setParameter("codigoabastecedora", codigoabastecedora);
+                consultaPorAbastecedora.setParameter("codigocomercializadora", codigocomercializadora);
+                consultaPorAbastecedora.setParameter("codigoterminal", codigoterminal);
+                //consultaPorAbastecedora.setParameter("tipofecha", tipofecha);
+                consultaPorAbastecedora.setParameter("fecha", fecha);*/
+                lst = qry.getResultList();
+            }else {
+                System.out.println("2");
+                TypedQuery<Notapedido> consultaPorAbastecedora = em.createNamedQuery("Notapedido.findForDespacho", Notapedido.class);
+                consultaPorAbastecedora.setParameter("codigoabastecedora", codigoabastecedora);
+                consultaPorAbastecedora.setParameter("codigocomercializadora", codigocomercializadora);
+                consultaPorAbastecedora.setParameter("codigoterminal", codigoterminal);
+                //consultaPorAbastecedora.setParameter("tipofecha", tipofecha);
+                consultaPorAbastecedora.setParameter("fecha", fecha);
+                lst = consultaPorAbastecedora.getResultList();
+            }
+            
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecuciòn correcta");
+            //List<Notapedido> lst = new ArrayList<>();
+            //lst = consultaPorAbastecedora.getResultList();
             lst.add(super.find(entity));
             succesMessage.setRetorno(lst);
             return Response.status(200)
