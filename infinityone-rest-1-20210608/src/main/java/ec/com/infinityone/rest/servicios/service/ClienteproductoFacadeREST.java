@@ -230,7 +230,7 @@ public class ClienteproductoFacadeREST extends AbstractFacade<Clienteproducto> {
             succesMessage.setDeveloperMessage("ejecución correcta");
             List<Clienteproducto> lst = new ArrayList<>();
             lst = consultaProductoCliente.getResultList();
-            lst.add(super.find(entity));
+            //lst.add(super.find(entity));
             //lst.add(clip.)
             succesMessage.setRetorno(lst);
             return Response.status(200)

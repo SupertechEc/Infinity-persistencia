@@ -16,6 +16,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -262,6 +263,45 @@ public class DetalleprecioFacadeREST extends AbstractFacade<Detalleprecio> {
                     build();
         }
     }
+    
+        @GET
+    @Path("/paraFactura")
+    @Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findparafactura(@QueryParam("codigo") String codigo) {
+        try {
+            
+            DetalleprecioPK  entity = new DetalleprecioPK();
+               
+            entity.setCodigo(codigo); 
+                    
+            TypedQuery<Detalleprecio> consultaDetallePrecioParafacturar = em.createNamedQuery("Detalleprecio.findByCodigo", Detalleprecio.class);
+            consultaDetallePrecioParafacturar.setParameter("codigo", codigo);
+             
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            List<Detalleprecio> lst = new ArrayList<>();
+            lst = consultaDetallePrecioParafacturar.getResultList();
+            //lst.add(super.find(entity));
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+    
 
     @GET
     @Secured

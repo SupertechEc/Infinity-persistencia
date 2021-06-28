@@ -248,7 +248,7 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
             succesMessage.setDeveloperMessage("ejecución correcta");
             List<Precio> lst = new ArrayList<>();
             lst = consultaPrecioParafacturar.getResultList();
-            lst.add(super.find(entity));
+           // lst.add(super.find(entity));
             
             //---------------
             
