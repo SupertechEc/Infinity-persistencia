@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -29,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Detallenotapedido.findAll", query = "SELECT d FROM Detallenotapedido d"),
+    @NamedQuery(name = "Detallenotapedido.findConCabecera", query = "SELECT d FROM Detallenotapedido d"),
     @NamedQuery(name = "Detallenotapedido.findByCodigoabastecedora", query = "SELECT d FROM Detallenotapedido d WHERE d.detallenotapedidoPK.codigoabastecedora = :codigoabastecedora"),
     @NamedQuery(name = "Detallenotapedido.findByCodigocomercializadora", query = "SELECT d FROM Detallenotapedido d WHERE d.detallenotapedidoPK.codigocomercializadora = :codigocomercializadora"),
     @NamedQuery(name = "Detallenotapedido.findByNumero", query = "SELECT d FROM Detallenotapedido d WHERE d.detallenotapedidoPK.numero = :numero"),
@@ -55,13 +57,25 @@ public class Detallenotapedido implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "usuarioactual")
     private String usuarioactual;
+    
+    
     @JoinColumn(name = "codigomedida", referencedColumnName = "codigo", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Medida medida;
     @JoinColumn(name = "codigoproducto", referencedColumnName = "codigo", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Producto producto;
+    
+    
+    @JoinColumns({
+        @JoinColumn(name = "codigoabastecedora", referencedColumnName = "codigoabastecedora", insertable = false, updatable = false),
+        @JoinColumn(name = "codigocomercializadora", referencedColumnName = "codigocomercializadora", insertable = false, updatable = false),
+        @JoinColumn(name = "numero", referencedColumnName = "numero", insertable = false, updatable = false)
+    })
+    @ManyToOne(optional = false)
+    private Notapedido notapedido;
 
+    
     public Detallenotapedido() {
     }
 
@@ -112,6 +126,7 @@ public class Detallenotapedido implements Serializable {
         this.usuarioactual = usuarioactual;
     }
 
+    
     public Medida getMedida() {
         return medida;
     }
@@ -128,6 +143,8 @@ public class Detallenotapedido implements Serializable {
         this.producto = producto;
     }
 
+    
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -152,5 +169,14 @@ public class Detallenotapedido implements Serializable {
     public String toString() {
         return "ec.com.infinity.modelo.Detallenotapedido[ detallenotapedidoPK=" + detallenotapedidoPK + " ]";
     }
-    
+     
+    /*
+    public Notapedido getNotapedido() {
+        return notapedido;
+    }
+
+    public void setNotapedido(Notapedido notapedido) {
+        this.notapedido = notapedido;
+    }
+    */
 }

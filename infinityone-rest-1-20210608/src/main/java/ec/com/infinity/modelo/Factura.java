@@ -14,6 +14,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -215,10 +216,11 @@ public class Factura implements Serializable {
     private Boolean adelantar;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "factura")
     private List<Detallepago> detallepagoList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "factura")
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "factura", fetch = FetchType.EAGER)
     private List<Detallefactura> detallefacturaList;
 
-    public Factura() {
+       public Factura() {
     }
 
     public Factura(FacturaPK facturaPK) {
@@ -266,7 +268,7 @@ public class Factura implements Serializable {
     public void setDetallepagoList(List<Detallepago> detallepagoList) {
         this.detallepagoList = detallepagoList;
     }
-    @XmlTransient
+    //@XmlTransient
     public List<Detallefactura> getDetallefacturaList() {
         return detallefacturaList;
     }

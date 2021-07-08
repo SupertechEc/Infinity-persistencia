@@ -42,13 +42,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Usuario.findByVigenciahash", query = "SELECT u FROM Usuario u WHERE u.vigenciahash = :vigenciahash"),
     @NamedQuery(name = "Usuario.findByUsuarioactual", query = "SELECT u FROM Usuario u WHERE u.usuarioactual = :usuarioactual")})
 public class Usuario implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 100)
-    @Column(name = "codigo")
-    private String codigo;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 10)
@@ -63,28 +56,36 @@ public class Usuario implements Serializable {
     @Size(max = 4)
     @Column(name = "codigocomercializadora")
     private String codigocomercializadora;
-    @Column(name = "activo")
-    private Boolean activo;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 3)
+    @Size(min = 1, max = 4)
     @Column(name = "niveloperacion")
     private String niveloperacion;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
+    @Size(max = 10)
     @Column(name = "hash")
     private String hash;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "vigenciahash")
     @Temporal(TemporalType.TIMESTAMP)
     private Date vigenciahash;
     @Basic(optional = false)
     @NotNull
+    @Size(min = 1, max = 6)
+    @Column(name = "clave")
+    private String clave;
+    @Basic(optional = false)
+    @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "usuarioactual")
     private String usuarioactual;
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
+    @Column(name = "codigo")
+    private String codigo;
+    @Column(name = "activo")
+    private Boolean activo;
     @JoinColumn(name = "codigocliente", referencedColumnName = "codigo")
     @ManyToOne
     private Cliente codigocliente;
@@ -111,6 +112,49 @@ public class Usuario implements Serializable {
 
     public void setCodigo(String codigo) {
         this.codigo = codigo;
+    }
+
+
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
+    }
+
+
+    public Cliente getCodigocliente() {
+        return codigocliente;
+    }
+
+    public void setCodigocliente(Cliente codigocliente) {
+        this.codigocliente = codigocliente;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (codigo != null ? codigo.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Usuario)) {
+            return false;
+        }
+        Usuario other = (Usuario) object;
+        if ((this.codigo == null && other.codigo != null) || (this.codigo != null && !this.codigo.equals(other.codigo))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "ec.com.infinity.modelo.Usuario[ codigo=" + codigo + " ]";
     }
 
     public String getCedula() {
@@ -145,14 +189,6 @@ public class Usuario implements Serializable {
         this.codigocomercializadora = codigocomercializadora;
     }
 
-    public Boolean getActivo() {
-        return activo;
-    }
-
-    public void setActivo(Boolean activo) {
-        this.activo = activo;
-    }
-
     public String getNiveloperacion() {
         return niveloperacion;
     }
@@ -177,45 +213,20 @@ public class Usuario implements Serializable {
         this.vigenciahash = vigenciahash;
     }
 
+    public String getClave() {
+        return clave;
+    }
+
+    public void setClave(String clave) {
+        this.clave = clave;
+    }
+
     public String getUsuarioactual() {
         return usuarioactual;
     }
 
     public void setUsuarioactual(String usuarioactual) {
         this.usuarioactual = usuarioactual;
-    }
-
-    public Cliente getCodigocliente() {
-        return codigocliente;
-    }
-
-    public void setCodigocliente(Cliente codigocliente) {
-        this.codigocliente = codigocliente;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (codigo != null ? codigo.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Usuario)) {
-            return false;
-        }
-        Usuario other = (Usuario) object;
-        if ((this.codigo == null && other.codigo != null) || (this.codigo != null && !this.codigo.equals(other.codigo))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "ec.com.infinity.modelo.Usuario[ codigo=" + codigo + " ]";
     }
     
 }

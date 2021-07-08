@@ -5,27 +5,18 @@
  */
 package ec.com.infinityone.rest.servicios.service;
 
-import ec.com.infinity.modelo.Detallefactura;
-import ec.com.infinity.modelo.Detallenotapedido;
-import ec.com.infinity.modelo.Factura;
-import ec.com.infinity.modelo.FacturaPK;
-import ec.com.infinity.modelo.Notapedido;
-import ec.com.infinity.modelo.NotapedidoPK;
-import ec.com.infinity.modelo.Numeracion;
-import ec.com.infinity.modelo2.EnvioFacturaREST;
+import ec.com.infinity.modelo.Fechafestiva;
+import ec.com.infinity.modelo.FechafestivaPK;
 import ec.com.infinity.rest.seguridad.EjecucionMensaje;
 import ec.com.infinity.rest.seguridad.ErrorMessage;
 import ec.com.infinity.rest.seguridad.Secured;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
+import ec.com.infinityone.rest.resources.CalendarioPco1;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
-import javax.swing.text.NumberFormatter;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -45,65 +36,49 @@ import javax.ws.rs.QueryParam;
  * @author Paul
  */
 @Stateless
-@Path("ec.com.infinity.modelo.factura")
-public class FacturaFacadeREST extends AbstractFacade<Factura> {
+@Path("ec.com.infinity.modelo.fechafestiva")
+public class FechafestivaFacadeREST extends AbstractFacade<Fechafestiva> {
 
     @PersistenceContext(unitName = "my_persistence_unit")
     private EntityManager em;
 
-    @EJB
-    private NumeracionFacadeREST servicioNumeracion;
-
-    @EJB
-    private DetallefacturaFacadeREST servicioDetalleFact;
-    @PersistenceContext(unitName = "my_persistence_unit")
-    private EntityManager bloqueo;
-
-    private FacturaPK getPrimaryKey(PathSegment pathSegment) {
+    private FechafestivaPK getPrimaryKey(PathSegment pathSegment) {
         /*
          * pathSemgent represents a URI path segment and any associated matrix parameters.
-         * URI path part is supposed to be in form of 'somePath;codigoabastecedora=codigoabastecedoraValue;codigocomercializadora=codigocomercializadoraValue;numeronotapedido=numeronotapedidoValue;numero=numeroValue'.
+         * URI path part is supposed to be in form of 'somePath;codigocomercializadora=codigocomercializadoraValue;codigo=codigoValue'.
          * Here 'somePath' is a result of getPath() method invocation and
          * it is ignored in the following code.
          * Matrix parameters are used as field names to build a primary key instance.
          */
-        ec.com.infinity.modelo.FacturaPK key = new ec.com.infinity.modelo.FacturaPK();
+        ec.com.infinity.modelo.FechafestivaPK key = new ec.com.infinity.modelo.FechafestivaPK();
         javax.ws.rs.core.MultivaluedMap<String, String> map = pathSegment.getMatrixParameters();
-        java.util.List<String> codigoabastecedora = map.get("codigoabastecedora");
-        if (codigoabastecedora != null && !codigoabastecedora.isEmpty()) {
-            key.setCodigoabastecedora(codigoabastecedora.get(0));
-        }
         java.util.List<String> codigocomercializadora = map.get("codigocomercializadora");
         if (codigocomercializadora != null && !codigocomercializadora.isEmpty()) {
             key.setCodigocomercializadora(codigocomercializadora.get(0));
         }
-        java.util.List<String> numeronotapedido = map.get("numeronotapedido");
-        if (numeronotapedido != null && !numeronotapedido.isEmpty()) {
-            key.setNumeronotapedido(numeronotapedido.get(0));
-        }
-        java.util.List<String> numero = map.get("numero");
-        if (numero != null && !numero.isEmpty()) {
-            key.setNumero(numero.get(0));
+        java.util.List<String> codigo = map.get("codigocomercializadora");
+        if (codigo != null && !codigo.isEmpty()) {
+            key.setCodigocomercializadora(codigo.get(0));
         }
         return key;
     }
 
-    public FacturaFacadeREST() {
-        super(Factura.class);
+    public FechafestivaFacadeREST() {
+        super(Fechafestiva.class);
     }
 
     @Override
-    public Factura create(Factura entity) {
+    public Fechafestiva create(Fechafestiva entity) {
         return super.create(entity);
     }
 
     @Override
-    public List<Factura> findAll() {
+    public List<Fechafestiva> findAll() {
         return super.findAll();
     }
 
     @Override
-    public Factura edit(Factura entity) {
+    public Fechafestiva edit(Fechafestiva entity) {
         super.edit(entity);
         return entity;
     }
@@ -112,73 +87,13 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
     @Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response create1(EnvioFacturaREST entity) {
-     
-        String tipodocumento = "fct";
-                
+    public Response create1(Fechafestiva entity) {
         try {
-            
-                        
-            Numeracion respuestaNumeracion = getServicioNumeracion().consulta(tipodocumento, entity.getFactura().getFacturaPK().getCodigocomercializadora());
-            
-            bloqueo.lock(respuestaNumeracion, LockModeType.PESSIMISTIC_WRITE);
-            int numeracion = respuestaNumeracion.getUltimonumero() + 1;
-             
-            DecimalFormat df = new DecimalFormat("000000000");
-            String numeroFactura = (df.format(new BigDecimal(numeracion)));
-            entity.getFactura().getFacturaPK().setNumero( entity.getFactura().getSeriesri()+ numeroFactura);
-            
-            entity.getFactura().setClaveacceso(GeneradorClaveAccesoSRI.crearClaveAcceso(
-                    entity.getFactura().getFechaventa(), 
-                    entity.getFactura().getFacturaPK().getNumero().substring(0, 3),
-                    entity.getFactura().getFacturaPK().getNumero().substring(3, 6),
-                    entity.getFactura().getFacturaPK().getNumero().substring(6, 15),
-                    entity.getFactura().getRuccomercializadora(),
-                    String.valueOf(entity.getFactura().getAmbientesri()),
-                    String.valueOf(entity.getFactura().getCodigodocumento()))); 
-                    
-            System.out.println("fecha: "+entity.getFactura().getFechaventa());
-                    //entity.getFactura().getRucComercializadora
-                    //entity.getFactura().getAmbienteSri()
-                    //entity.getFactura().getCodigoDocumento()
-            super.createS(entity.getFactura());
-
-            // iterar la lista y grabar lista de DETALLES DE FACTURA
-            
-            List<Detallefactura> listafacturaDetalle = new ArrayList<>();
-            Detallefactura facturaDetalle = new Detallefactura();
-            listafacturaDetalle = entity.getDetalle();
-            for(int i = 0; i < listafacturaDetalle.size(); i++){
-                listafacturaDetalle.get(i).getDetallefacturaPK().setCodigoabastecedora(entity.getFactura().getFacturaPK().getCodigoabastecedora());
-                listafacturaDetalle.get(i).getDetallefacturaPK().setCodigocomercializadora(entity.getFactura().getFacturaPK().getCodigocomercializadora());
-                listafacturaDetalle.get(i).getDetallefacturaPK().setNumero(entity.getFactura().getFacturaPK().getNumero());
-                listafacturaDetalle.get(i).getDetallefacturaPK().setNumeronotapedido(entity.getFactura().getFacturaPK().getNumeronotapedido());
-            }
-            for(Detallefactura det: listafacturaDetalle){
-                 servicioDetalleFact.createS(det);
-            }
-            /*facturaDetalle = entity.getDetalle();
-            facturaDetalle.getDetallefacturaPK().setCodigoabastecedora(entity.getFactura().getFacturaPK().getCodigoabastecedora());
-            facturaDetalle.getDetallefacturaPK().setCodigocomercializadora(entity.getFactura().getFacturaPK().getCodigocomercializadora());
-            facturaDetalle.getDetallefacturaPK().setNumero(entity.getFactura().getFacturaPK().getNumero());
-            facturaDetalle.getDetallefacturaPK().setNumeronotapedido(entity.getFactura().getFacturaPK().getNumeronotapedido());
-            servicioDetalleFact.createS(facturaDetalle);*/            
-            //listafacturaDetalle.add(facturaDetalle);
-            /*for(Detallefactura det: listafacturaDetalle){
-                 servicioDetalleFact.createS(det);
-            }*/
-            // iterar la lista y grabar lista de DETALLES DE FACTURA
-            
-            
-            respuestaNumeracion.setUltimonumero(numeracion);
-            getServicioNumeracion().edit(respuestaNumeracion);
-            //bloqueo.getTransaction().commit();
-            //bloqueo.close();
+            this.create(entity);
 
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
-            succesMessage.setDeveloperMessage(entity.getFactura().getFacturaPK().getNumero());
-                        
+            succesMessage.setDeveloperMessage("ejecución correcta");
             return Response.status(200)
                     .entity(succesMessage)
                     .type(MediaType.APPLICATION_JSON).
@@ -194,7 +109,6 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
                     .type(MediaType.APPLICATION_JSON).
                     build();
         }
-
     }
 
     @DELETE
@@ -202,18 +116,13 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
     @Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response remove(@QueryParam("codigoabastecedora") String codigoabastecedora, 
-            @QueryParam("codigocomercializadora") String codigocomercializadora,
-            @QueryParam("numeronotapedido") String numeronotapedido,
-            @QueryParam("numero") String numero) {
+    public Response remove(@QueryParam("codigocomercializadora") String codigocomercializadora, 
+            @QueryParam("festivo") Date festivo) {
         try {
-            
-            FacturaPK  entity = new FacturaPK();
-            entity.setCodigoabastecedora(codigoabastecedora);
+            FechafestivaPK entity = new FechafestivaPK ();
             entity.setCodigocomercializadora(codigocomercializadora);
-            entity.setNumeronotapedido(numeronotapedido);
-            entity.setNumero(numero);
-                        
+            entity.setFestivo(festivo);
+                    
             super.remove(entity);
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
@@ -240,7 +149,7 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
     @Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response edit1(Factura entity) {
+    public Response edit1(Fechafestiva entity) {
         try {
             this.edit(entity);
             EjecucionMensaje succesMessage = new EjecucionMensaje();
@@ -268,22 +177,18 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
     @Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response find(@QueryParam("codigoabastecedora") String codigoabastecedora, 
-            @QueryParam("codigocomercializadora") String codigocomercializadora,
-            @QueryParam("numeronotapedido") String numeronotapedido,
-            @QueryParam("numero") String numero) {
+    public Response find(@QueryParam("codigocomercializadora") String codigocomercializadora, 
+            @QueryParam("festivo") Date festivo) {
         try {
 
-            FacturaPK  entity = new FacturaPK();
-            entity.setCodigoabastecedora(codigoabastecedora);
+            FechafestivaPK entity = new FechafestivaPK ();
             entity.setCodigocomercializadora(codigocomercializadora);
-            entity.setNumeronotapedido(numeronotapedido);
-            entity.setNumero(numero);
+            entity.setFestivo(festivo);
             
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
             succesMessage.setDeveloperMessage("ejecución correcta");
-            List<Factura> lst = new ArrayList<>();
+            List<Fechafestiva> lst = new ArrayList<>();
             lst.add(super.find(entity));
             succesMessage.setRetorno(lst);
             return Response.status(200)
@@ -303,6 +208,58 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
     }
 
     @GET
+    @Path("/fechafinal")
+    @Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findfechafinal(@QueryParam("codigocomercializadora") String codigocomercializadora, 
+            @QueryParam("fechainicial") Date fechainicial,
+            @QueryParam("tipoplazo") String tipoplazo,
+            @QueryParam("plazo") int plazo) {
+        try {
+
+            FechafestivaPK entity = new FechafestivaPK ();
+            entity.setCodigocomercializadora(codigocomercializadora);
+            entity.setFestivo(fechainicial);
+            
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            List<Fechafestiva> lst = new ArrayList<>();
+            // calculo
+              
+            CalendarioPco1 calendario = new CalendarioPco1();
+        //calendario.
+        
+        java.sql.Date fechafinal = new java.sql.Date(System.currentTimeMillis());
+        try{
+        fechafinal = CalendarioPco1.calcularFechaFinal(new java.sql.Date(System.currentTimeMillis()),3,tipoplazo);
+        System.out.println("FECHA: "+fechafinal); 
+        }
+        catch (Throwable t){
+            System.out.println(" error " + t.getMessage());
+        }
+            
+            lst.add(super.find(entity));
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+    
+    
+    @GET
     @Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
@@ -311,7 +268,7 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
             succesMessage.setDeveloperMessage("ejecución correcta");
-            List<Factura> lst = this.findAll();
+            List<Fechafestiva> lst = this.findAll();
             succesMessage.setRetorno(lst);
             return Response.status(200)
                     .entity(succesMessage)
@@ -351,34 +308,6 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
     @Override
     protected EntityManager getEntityManager() {
         return em;
-    }
-
-    /**
-     * @return the servicioNumeracion
-     */
-    public NumeracionFacadeREST getServicioNumeracion() {
-        return servicioNumeracion;
-    }
-
-    /**
-     * @param servicioNumeracion the servicioNumeracion to set
-     */
-    public void setServicioNumeracion(NumeracionFacadeREST servicioNumeracion) {
-        this.servicioNumeracion = servicioNumeracion;
-    }
-
-    /**
-     * @return the servicioDetalleFact
-     */
-    public DetallefacturaFacadeREST getServicioDetalleFact() {
-        return servicioDetalleFact;
-    }
-
-    /**
-     * @param servicioDetalleFact the servicioDetalleFact to set
-     */
-    public void setServicioDetalleFact(DetallefacturaFacadeREST servicioDetalleFact) {
-        this.servicioDetalleFact = servicioDetalleFact;
     }
 
 }

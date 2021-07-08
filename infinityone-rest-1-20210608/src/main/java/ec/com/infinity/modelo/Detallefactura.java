@@ -95,6 +95,8 @@ public class Detallefactura implements Serializable {
     private Medida codigomedida;
     @Column(name = "codigoprecio")
     private String codigoprecio;
+
+
     @JoinColumn(name = "codigoproducto", referencedColumnName = "codigo", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Producto producto;
@@ -127,7 +129,7 @@ public class Detallefactura implements Serializable {
         this.detallefacturaPK = detallefacturaPK;
     }
 
-
+/*
     public Factura getFactura() {
         return factura;
     }
@@ -135,7 +137,7 @@ public class Detallefactura implements Serializable {
     public void setFactura(Factura factura) {
         this.factura = factura;
     }
-
+*/
     public Medida getCodigomedida() {
         return codigomedida;
     }
@@ -263,6 +265,14 @@ public class Detallefactura implements Serializable {
 
     public void setValordefecto(BigDecimal valordefecto) {
         this.valordefecto = valordefecto;
+    }
+    
+        public String getCodigoprecio() {
+        return codigoprecio;
+    }
+
+    public void setCodigoprecio(String codigoprecio) {
+        this.codigoprecio = codigoprecio;
     }
 
 }

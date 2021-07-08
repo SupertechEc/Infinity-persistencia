@@ -20,7 +20,7 @@ import javax.validation.constraints.Size;
 public class PermisoPK implements Serializable {
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 3)
+    @Size(min = 1, max = 4)
     @Column(name = "niveloperacion")
     private String niveloperacion;
     @Basic(optional = false)

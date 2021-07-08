@@ -271,13 +271,15 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
     }
     
     @GET
-    @Path("/paraFactura")
+    @Path("/paraFactura")  
     @Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigoabastecedora") String codigoabastecedora, 
-            @QueryParam("codigocomercializadora") String codigocomercializadora,  @QueryParam("codigoterminal") String codigoterminal,
-            @QueryParam("tipofecha") String tipofecha,  @QueryParam("fecha") Date fecha) {
+            @QueryParam("codigocomercializadora") String codigocomercializadora, 
+            @QueryParam("codigoterminal") String codigoterminal,
+            @QueryParam("tipofecha") String tipofecha,  
+            @QueryParam("fecha") Date fecha) {
         try {
 
             NotapedidoPK entity = new NotapedidoPK();
@@ -341,7 +343,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
         }
     }
 
-      @GET
+      @POST
     @Path("/tramaOE") 
     @Secured
     @Consumes({"application/json"})
@@ -433,7 +435,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
     
      */
 
-    @GET
+    @POST
     @Path("/envio")
     @Secured
     @Consumes({"application/json"})

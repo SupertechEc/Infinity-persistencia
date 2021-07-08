@@ -14,6 +14,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -37,7 +38,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Precio.findAll", query = "SELECT p FROM Precio p"),
-    @NamedQuery(name = "Precio.findForFactura", query = "SELECT p FROM Precio p WHERE p.precioPK.codigocomercializadora = :codigocomercializadora"
+    @NamedQuery(name = "Precio.findForFactura", query = "SELECT p FROM Precio p "
+            + " WHERE p.precioPK.codigocomercializadora = :codigocomercializadora"
             + " and p.precioPK.codigoterminal = :codigoterminal"
             + " and p.precioPK.codigoproducto = :codigoproducto "
             + " and p.precioPK.codigomedida = :codigomedida"
@@ -45,7 +47,8 @@ import javax.xml.bind.annotation.XmlTransient;
             + " and p.precioPK.fechainicio <= :fechainicio"
             //+ " and p.precioPK.secuencial = :secuencial"
             + " and p.activo = true"
-            + " and p.fechafin = NULL"),
+            + " and p.fechafin = NULL"
+            + " ORDER BY p.precioPK.secuencial  DESC" ),
     @NamedQuery(name = "Precio.findByCodigocomercializadora", query = "SELECT p FROM Precio p WHERE p.precioPK.codigocomercializadora = :codigocomercializadora"),
     @NamedQuery(name = "Precio.findByCodigoterminal", query = "SELECT p FROM Precio p WHERE p.precioPK.codigoterminal = :codigoterminal"),
     @NamedQuery(name = "Precio.findByCodigoproducto", query = "SELECT p FROM Precio p WHERE p.precioPK.codigoproducto = :codigoproducto"),
@@ -97,7 +100,7 @@ public class Precio implements Serializable {
     @JoinColumn(name = "codigoterminal", referencedColumnName = "codigo", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Terminal terminal;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "precio")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "precio", fetch = FetchType.EAGER)
     private List<Detalleprecio> detalleprecioList;
 
     public Precio() {

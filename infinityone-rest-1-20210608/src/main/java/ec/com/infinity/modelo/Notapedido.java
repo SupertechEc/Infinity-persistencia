@@ -7,14 +7,18 @@ package ec.com.infinity.modelo;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -109,6 +113,8 @@ public class Notapedido implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "usuarioactual")
     private String usuarioactual;
+    
+    
     @JoinColumn(name = "codigoabastecedora", referencedColumnName = "codigo", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Abastecedora abastecedora;
@@ -124,7 +130,18 @@ public class Notapedido implements Serializable {
     @JoinColumn(name = "codigoterminal", referencedColumnName = "codigo")
     @ManyToOne(optional = false)
     private Terminal codigoterminal;
-
+    
+    
+    //@JoinColumn(name = "codigoterminal", referencedColumnName = "codigo")
+    //@ManyToOne(optional = false)
+    
+    /*
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "precio")
+    private List<Detalleprecio> detalleprecioList;
+    */
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="notapedido", fetch = FetchType.EAGER)
+    private List<Detallenotapedido> detallesNP;
     
     @Size(max = 2)
     @Column(name = "prefijo")
@@ -278,6 +295,8 @@ public class Notapedido implements Serializable {
         this.usuarioactual = usuarioactual;
     }
 
+    
+    
     public Abastecedora getAbastecedora() {
         return abastecedora;
     }
@@ -318,6 +337,8 @@ public class Notapedido implements Serializable {
         this.codigoterminal = codigoterminal;
     }
     
+    
+    
      public String getPrefijo() {
         return prefijo;
     }
@@ -350,5 +371,16 @@ public class Notapedido implements Serializable {
     public String toString() {
         return "ec.com.infinity.modelo.Notapedido[ notapedidoPK=" + notapedidoPK + " ]";
     }
+
+    
+    public List<Detallenotapedido> getDetallesNP() {
+        return detallesNP;
+    }
+
+    public void setDetallesNP(List<Detallenotapedido> detallesNP) {
+        this.detallesNP = detallesNP;
+    }
+    
+   
     
 }

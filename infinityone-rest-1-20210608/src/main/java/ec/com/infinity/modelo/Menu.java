@@ -35,13 +35,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Menu.findByNivel", query = "SELECT m FROM Menu m WHERE m.nivel = :nivel"),
     @NamedQuery(name = "Menu.findByUsuarioactual", query = "SELECT m FROM Menu m WHERE m.usuarioactual = :usuarioactual")})
 public class Menu implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 6)
-    @Column(name = "codigo")
-    private String codigo;
     @Size(max = 50)
     @Column(name = "nombre")
     private String nombre;
@@ -50,11 +43,24 @@ public class Menu implements Serializable {
     @Size(min = 1, max = 3)
     @Column(name = "nivel")
     private String nivel;
+    @Size(max = 6)
+    @Column(name = "menupadre")
+    private String menupadre;
+    @Size(max = 200)
+    @Column(name = "urlaccion")
+    private String urlaccion;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "usuarioactual")
     private String usuarioactual;
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 6)
+    @Column(name = "codigo")
+    private String codigo;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "menu")
     private List<Permiso> permisoList;
 
@@ -79,29 +85,6 @@ public class Menu implements Serializable {
         this.codigo = codigo;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getNivel() {
-        return nivel;
-    }
-
-    public void setNivel(String nivel) {
-        this.nivel = nivel;
-    }
-
-    public String getUsuarioactual() {
-        return usuarioactual;
-    }
-
-    public void setUsuarioactual(String usuarioactual) {
-        this.usuarioactual = usuarioactual;
-    }
 
     @XmlTransient
     public List<Permiso> getPermisoList() {
@@ -135,6 +118,46 @@ public class Menu implements Serializable {
     @Override
     public String toString() {
         return "ec.com.infinity.modelo.Menu[ codigo=" + codigo + " ]";
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getNivel() {
+        return nivel;
+    }
+
+    public void setNivel(String nivel) {
+        this.nivel = nivel;
+    }
+
+    public String getMenupadre() {
+        return menupadre;
+    }
+
+    public void setMenupadre(String menupadre) {
+        this.menupadre = menupadre;
+    }
+
+    public String getUrlaccion() {
+        return urlaccion;
+    }
+
+    public void setUrlaccion(String urlaccion) {
+        this.urlaccion = urlaccion;
+    }
+
+    public String getUsuarioactual() {
+        return usuarioactual;
+    }
+
+    public void setUsuarioactual(String usuarioactual) {
+        this.usuarioactual = usuarioactual;
     }
     
 }

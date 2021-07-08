@@ -51,6 +51,7 @@
     <class>ec.com.infinity.modelo.Abastecedora</class>
     <class>ec.com.infinity.modelo.Comercializadora</class>
     <class>ec.com.infinity.modelo.VNotapedidoydetalle</class>
+    <class>ec.com.infinity.modelo.Fechafestiva</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>java:jboss/datasources/Infinityone</jta-data-source>
