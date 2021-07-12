@@ -61,7 +61,7 @@ public class AreamercadeoFacadeREST extends AbstractFacade<Areamercadeo> {
     }
 
     @POST
-    @Secured
+    ////@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Areamercadeo entity) {
@@ -90,7 +90,7 @@ public class AreamercadeoFacadeREST extends AbstractFacade<Areamercadeo> {
 
     @DELETE
     @Path("/porId")
-    @Secured
+    ////@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigo") String codigo) {
@@ -119,7 +119,7 @@ public class AreamercadeoFacadeREST extends AbstractFacade<Areamercadeo> {
 
     @PUT
     @Path("/porId")
-    @Secured
+    ////@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Areamercadeo entity) {
@@ -147,7 +147,7 @@ public class AreamercadeoFacadeREST extends AbstractFacade<Areamercadeo> {
 
     @GET
     @Path("/porPK")
-    @Secured
+    ////@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findXId(@QueryParam("codigo") String codigo) {
@@ -177,7 +177,7 @@ public class AreamercadeoFacadeREST extends AbstractFacade<Areamercadeo> {
     
     @GET
     @Path("/porId")
-    @Secured
+    ////@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigo") String codigo) {
@@ -206,7 +206,7 @@ public class AreamercadeoFacadeREST extends AbstractFacade<Areamercadeo> {
     }
 
     @GET
-    @Secured
+    ////@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -235,7 +235,7 @@ public class AreamercadeoFacadeREST extends AbstractFacade<Areamercadeo> {
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    ////@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -244,7 +244,7 @@ public class AreamercadeoFacadeREST extends AbstractFacade<Areamercadeo> {
 
     @GET
     @Path("count")
-    @Secured
+    ////@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

@@ -11,8 +11,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -24,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Paul
+ * @author Fernando Tapia
  */
 @Entity
 @Table(name = "usuario")
@@ -32,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u"),
     @NamedQuery(name = "Usuario.findByCodigo", query = "SELECT u FROM Usuario u WHERE u.codigo = :codigo"),
+    @NamedQuery(name = "Usuario.findAcceso", query = "SELECT u FROM Usuario u WHERE u.codigo = :codigo and u.clave = :clave"),
     @NamedQuery(name = "Usuario.findByCedula", query = "SELECT u FROM Usuario u WHERE u.cedula = :cedula"),
     @NamedQuery(name = "Usuario.findByNombre", query = "SELECT u FROM Usuario u WHERE u.nombre = :nombre"),
     @NamedQuery(name = "Usuario.findByNombrever", query = "SELECT u FROM Usuario u WHERE u.nombrever = :nombrever"),
@@ -40,8 +39,16 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Usuario.findByNiveloperacion", query = "SELECT u FROM Usuario u WHERE u.niveloperacion = :niveloperacion"),
     @NamedQuery(name = "Usuario.findByHash", query = "SELECT u FROM Usuario u WHERE u.hash = :hash"),
     @NamedQuery(name = "Usuario.findByVigenciahash", query = "SELECT u FROM Usuario u WHERE u.vigenciahash = :vigenciahash"),
+    @NamedQuery(name = "Usuario.findByClave", query = "SELECT u FROM Usuario u WHERE u.clave = :clave"),
     @NamedQuery(name = "Usuario.findByUsuarioactual", query = "SELECT u FROM Usuario u WHERE u.usuarioactual = :usuarioactual")})
 public class Usuario implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
+    @Column(name = "codigo")
+    private String codigo;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 10)
@@ -56,6 +63,11 @@ public class Usuario implements Serializable {
     @Size(max = 4)
     @Column(name = "codigocomercializadora")
     private String codigocomercializadora;
+    @Size(max = 8)
+    @Column(name = "codigocliente")
+    private String codigocliente;  
+    @Column(name = "activo")
+    private Boolean activo;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 4)
@@ -77,18 +89,6 @@ public class Usuario implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "usuarioactual")
     private String usuarioactual;
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 100)
-    @Column(name = "codigo")
-    private String codigo;
-    @Column(name = "activo")
-    private Boolean activo;
-    @JoinColumn(name = "codigocliente", referencedColumnName = "codigo")
-    @ManyToOne
-    private Cliente codigocliente;
 
     public Usuario() {
     }
@@ -97,12 +97,11 @@ public class Usuario implements Serializable {
         this.codigo = codigo;
     }
 
-    public Usuario(String codigo, String cedula, String niveloperacion, String hash, Date vigenciahash, String usuarioactual) {
+    public Usuario(String codigo, String cedula, String niveloperacion, String clave, String usuarioactual) {
         this.codigo = codigo;
         this.cedula = cedula;
         this.niveloperacion = niveloperacion;
-        this.hash = hash;
-        this.vigenciahash = vigenciahash;
+        this.clave = clave;
         this.usuarioactual = usuarioactual;
     }
 
@@ -112,49 +111,6 @@ public class Usuario implements Serializable {
 
     public void setCodigo(String codigo) {
         this.codigo = codigo;
-    }
-
-
-    public Boolean getActivo() {
-        return activo;
-    }
-
-    public void setActivo(Boolean activo) {
-        this.activo = activo;
-    }
-
-
-    public Cliente getCodigocliente() {
-        return codigocliente;
-    }
-
-    public void setCodigocliente(Cliente codigocliente) {
-        this.codigocliente = codigocliente;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (codigo != null ? codigo.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Usuario)) {
-            return false;
-        }
-        Usuario other = (Usuario) object;
-        if ((this.codigo == null && other.codigo != null) || (this.codigo != null && !this.codigo.equals(other.codigo))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "ec.com.infinity.modelo.Usuario[ codigo=" + codigo + " ]";
     }
 
     public String getCedula() {
@@ -187,6 +143,14 @@ public class Usuario implements Serializable {
 
     public void setCodigocomercializadora(String codigocomercializadora) {
         this.codigocomercializadora = codigocomercializadora;
+    }
+
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
     }
 
     public String getNiveloperacion() {
@@ -227,6 +191,39 @@ public class Usuario implements Serializable {
 
     public void setUsuarioactual(String usuarioactual) {
         this.usuarioactual = usuarioactual;
+    }
+    
+      public String getCodigocliente() {
+        return codigocliente;
+    }
+
+    public void setCodigocliente(String codigocliente) {
+        this.codigocliente = codigocliente;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (codigo != null ? codigo.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Usuario)) {
+            return false;
+        }
+        Usuario other = (Usuario) object;
+        if ((this.codigo == null && other.codigo != null) || (this.codigo != null && !this.codigo.equals(other.codigo))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "ec.com.infinity.modelo.Usuario[ codigo=" + codigo + " ]";
     }
     
 }

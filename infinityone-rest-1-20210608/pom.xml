@@ -50,7 +50,13 @@
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>1.9.1</version>
-        </dependency>		
+        </dependency>
+        <dependency>
+            <groupId>com.ibm.calendar</groupId>
+            <artifactId>Calendar</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+        </dependency>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>

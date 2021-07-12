@@ -1,5 +1,5 @@
 /*
-* To change this license header, choose License Headers in Project Properties.
+ * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Paul
+ * @author Fernando Tapia
  */
 @Entity
 @Table(name = "permiso")
@@ -32,14 +32,14 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Permiso.findByCodigomenu", query = "SELECT p FROM Permiso p WHERE p.permisoPK.codigomenu = :codigomenu"),
     @NamedQuery(name = "Permiso.findByUsuarioactual", query = "SELECT p FROM Permiso p WHERE p.usuarioactual = :usuarioactual")})
 public class Permiso implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @EmbeddedId
+    protected PermisoPK permisoPK;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "usuarioactual")
     private String usuarioactual;
-    private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected PermisoPK permisoPK;
     @JoinColumn(name = "codigomenu", referencedColumnName = "codigo", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Menu menu;
@@ -68,6 +68,13 @@ public class Permiso implements Serializable {
         this.permisoPK = permisoPK;
     }
 
+    public String getUsuarioactual() {
+        return usuarioactual;
+    }
+
+    public void setUsuarioactual(String usuarioactual) {
+        this.usuarioactual = usuarioactual;
+    }
 
     public Menu getMenu() {
         return menu;
@@ -100,14 +107,6 @@ public class Permiso implements Serializable {
     @Override
     public String toString() {
         return "ec.com.infinity.modelo.Permiso[ permisoPK=" + permisoPK + " ]";
-    }
-
-    public String getUsuarioactual() {
-        return usuarioactual;
-    }
-
-    public void setUsuarioactual(String usuarioactual) {
-        this.usuarioactual = usuarioactual;
     }
     
 }

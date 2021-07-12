@@ -18,6 +18,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -145,7 +146,42 @@ public class MenuFacadeREST extends AbstractFacade<Menu> {
                     build();
         }
     }
+    
+    
+                
+    @GET
+    @Path("/menus")
+    @Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findmenus(@QueryParam("nivel") String nivel) {
+        try {
 
+            TypedQuery<Menu> consultaMenus = em.createNamedQuery("Menu.findByNivel", Menu.class);
+            consultaMenus.setParameter("nivel", nivel);
+            
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            List<Menu> lst = new ArrayList<>();
+            lst = consultaMenus.getResultList();
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }        
+            
     @GET
     @Path("/porId")
     @Secured
