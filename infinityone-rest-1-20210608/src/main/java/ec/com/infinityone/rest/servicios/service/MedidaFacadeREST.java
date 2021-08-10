@@ -59,7 +59,7 @@ public class MedidaFacadeREST extends AbstractFacade<Medida> {
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Medida entity) {
@@ -88,7 +88,7 @@ public class MedidaFacadeREST extends AbstractFacade<Medida> {
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigo") String codigo) {
@@ -116,7 +116,7 @@ public class MedidaFacadeREST extends AbstractFacade<Medida> {
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Medida entity) {
@@ -144,7 +144,7 @@ public class MedidaFacadeREST extends AbstractFacade<Medida> {
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigo") String codigo) {
@@ -173,7 +173,7 @@ public class MedidaFacadeREST extends AbstractFacade<Medida> {
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -202,7 +202,7 @@ public class MedidaFacadeREST extends AbstractFacade<Medida> {
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -211,7 +211,7 @@ public class MedidaFacadeREST extends AbstractFacade<Medida> {
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

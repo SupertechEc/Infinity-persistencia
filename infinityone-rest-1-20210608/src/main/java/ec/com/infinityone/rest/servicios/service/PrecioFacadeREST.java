@@ -64,7 +64,7 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Precio entity) {
@@ -93,7 +93,7 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -139,7 +139,7 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Precio entity) {
@@ -167,7 +167,7 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -214,7 +214,7 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
 
     @GET
     @Path("/paraFactura")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findparafactura(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -231,11 +231,7 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
             entity.setCodigoproducto(codigoproducto);
             entity.setCodigomedida(codigomedida);
             entity.setCodigolistaprecio(codigolistaprecio);
-            entity.setFechainicio(fechainicio);
-            //entity.setSecuencial(secuencial);
-            //entity.setCodigoPrecio(codigoPrecio);
-            //-------------
-                    
+            entity.setFechainicio(fechainicio);             
             TypedQuery<Precio> consultaPrecioParafacturar = em.createNamedQuery("Precio.findForFactura", Precio.class);
             consultaPrecioParafacturar.setParameter("codigocomercializadora", codigocomercializadora);
             consultaPrecioParafacturar.setParameter("codigoterminal", codigoterminal);
@@ -248,17 +244,45 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
             succesMessage.setDeveloperMessage("ejecución correcta");
             List<Precio> lst = new ArrayList<>();
             lst = consultaPrecioParafacturar.getResultList();
-           // lst.add(super.find(entity));
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+    
+    
+    @GET
+    @Path("/porComerEstado")
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findComerEstado(@QueryParam("codigocomercializadora") String codigocomercializadora, 
+            @QueryParam("activo") boolean activo) {
+        try {
             
-            //---------------
-            
-            /*
+            PrecioPK  entity = new PrecioPK();
+            Precio entityPrincipal = new Precio();
+            entity.setCodigocomercializadora(codigocomercializadora);
+            entityPrincipal.setActivo(activo);             
+            TypedQuery<Precio> consultaPrecioParaConsulta = em.createNamedQuery("Precio.findByCodigocomercializadoraYEstado", Precio.class);
+            consultaPrecioParaConsulta.setParameter("codigocomercializadora", codigocomercializadora);
+            consultaPrecioParaConsulta.setParameter("activo", activo); 
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
             succesMessage.setDeveloperMessage("ejecución correcta");
             List<Precio> lst = new ArrayList<>();
-            lst.add(super.find(entity));
-            */
+            lst = consultaPrecioParaConsulta.getResultList();
             succesMessage.setRetorno(lst);
             return Response.status(200)
                     .entity(succesMessage)
@@ -277,7 +301,7 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
     }
     
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -306,7 +330,7 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -315,7 +339,7 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

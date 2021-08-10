@@ -15,6 +15,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -23,6 +25,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -103,7 +106,7 @@ public class RubroterceroFacadeREST1 extends AbstractFacade<Rubrotercero> {
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -112,7 +115,7 @@ public class RubroterceroFacadeREST1 extends AbstractFacade<Rubrotercero> {
 
    @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {
@@ -125,7 +128,7 @@ public class RubroterceroFacadeREST1 extends AbstractFacade<Rubrotercero> {
     }
      
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -154,7 +157,7 @@ public class RubroterceroFacadeREST1 extends AbstractFacade<Rubrotercero> {
     
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find( RubroterceroPK entity) {
@@ -184,7 +187,7 @@ public class RubroterceroFacadeREST1 extends AbstractFacade<Rubrotercero> {
     
      @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Rubrotercero entity) {
@@ -212,7 +215,7 @@ public class RubroterceroFacadeREST1 extends AbstractFacade<Rubrotercero> {
     
      @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(Rubrotercero entity) {
@@ -239,7 +242,7 @@ public class RubroterceroFacadeREST1 extends AbstractFacade<Rubrotercero> {
     }
     
      @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Rubrotercero entity) {
@@ -272,4 +275,95 @@ public class RubroterceroFacadeREST1 extends AbstractFacade<Rubrotercero> {
         super.edit(entity);
         return entity;
     }
+    
+    @GET
+    @Path("/comer")
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findXComer(@QueryParam("codigocomercializadora") String codigocomercializadora) {
+        try {
+            
+            RubroterceroPK entity = new RubroterceroPK();
+            entity.setCodigocomercializadora(codigocomercializadora);
+ 
+            TypedQuery<Rubrotercero> consulta = em.createNamedQuery("Rubrotercero.findByCodigocomercializadora", Rubrotercero.class);
+            consulta.setParameter("codigocomercializadora", codigocomercializadora);
+            
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            List<Rubrotercero> lst = new ArrayList<>();
+            lst = consulta.getResultList();
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+    
+    @POST
+    @Path("/agregar")  
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response crearAutonumerado(Rubrotercero entity) {
+        
+        StringBuilder sqlQuery = new StringBuilder();
+        
+        //entity.getRubroterceroPK().getCodigo()
+        String auxCC = entity.getRubroterceroPK().getCodigocomercializadora().trim();
+        String auxNom = entity.getNombre().trim();
+        boolean auxAc = entity.getActivo();
+        String auxCConta = entity.getCodigocontable().trim();
+        String auxTipo = entity.getTipo().trim();
+        String auxUsu = entity.getUsuarioactual().trim();
+        
+       sqlQuery.append("insert into public.rubrotercero "
+               + "(codigocomercializadora, nombre, activo, codigocontable, tipo, usuarioactual)"
+               + " values (:pauxCC, :pauxNom, :pauxAc, :pauxCConta, :pauxTipo, :pauxUsu)");
+               //+ "values(:, 'FLETE', true, '11111', 'VXG', 'ftt')");
+
+        System.out.println("INSERTAR RUBRO TERCERO FT:: "+ sqlQuery.toString());
+       try {
+            Query qry = this.em.createNativeQuery(sqlQuery.toString());
+            qry.setParameter("pauxCC", auxCC);
+            qry.setParameter("pauxNom", auxNom);
+            qry.setParameter("pauxAc", auxAc);
+            qry.setParameter("pauxCConta", auxCConta);
+            qry.setParameter("pauxTipo", auxTipo);
+            qry.setParameter("pauxUsu", auxUsu);
+             
+             qry.executeUpdate();
+
+            
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("Inserción correcta");
+            
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }   
+    }
+    
 }

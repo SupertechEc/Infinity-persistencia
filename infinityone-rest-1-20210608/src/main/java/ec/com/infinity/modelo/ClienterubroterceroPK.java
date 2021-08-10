@@ -24,8 +24,8 @@ public class ClienterubroterceroPK implements Serializable {
     @Column(name = "codigocomercializadora")
     private String codigocomercializadora;
     @Basic(optional = false)
-    @Column(name = "codigo")
-    private long codigo;
+    @Column(name = "codigorubrotercero")
+    private long codigorubrotercero;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 8)
@@ -35,9 +35,9 @@ public class ClienterubroterceroPK implements Serializable {
     public ClienterubroterceroPK() {
     }
 
-    public ClienterubroterceroPK(String codigocomercializadora, long codigo, String codigocliente) {
+    public ClienterubroterceroPK(String codigocomercializadora, long codigorubrotercero, String codigocliente) {
         this.codigocomercializadora = codigocomercializadora;
-        this.codigo = codigo;
+        this.codigorubrotercero = codigorubrotercero;
         this.codigocliente = codigocliente;
     }
 
@@ -49,12 +49,12 @@ public class ClienterubroterceroPK implements Serializable {
         this.codigocomercializadora = codigocomercializadora;
     }
 
-    public long getCodigo() {
-        return codigo;
+    public long getCodigorubrotercero() {
+        return codigorubrotercero;
     }
 
-    public void setCodigo(long codigo) {
-        this.codigo = codigo;
+    public void setCodigorubrotercero(long codigorubrotercero) {
+        this.codigorubrotercero = codigorubrotercero;
     }
 
     public String getCodigocliente() {
@@ -69,7 +69,7 @@ public class ClienterubroterceroPK implements Serializable {
     public int hashCode() {
         int hash = 0;
         hash += (codigocomercializadora != null ? codigocomercializadora.hashCode() : 0);
-        hash += (int) codigo;
+        hash += (int) codigorubrotercero;
         hash += (codigocliente != null ? codigocliente.hashCode() : 0);
         return hash;
     }
@@ -84,7 +84,7 @@ public class ClienterubroterceroPK implements Serializable {
         if ((this.codigocomercializadora == null && other.codigocomercializadora != null) || (this.codigocomercializadora != null && !this.codigocomercializadora.equals(other.codigocomercializadora))) {
             return false;
         }
-        if (this.codigo != other.codigo) {
+        if (this.codigorubrotercero != other.codigorubrotercero) {
             return false;
         }
         if ((this.codigocliente == null && other.codigocliente != null) || (this.codigocliente != null && !this.codigocliente.equals(other.codigocliente))) {
@@ -95,7 +95,7 @@ public class ClienterubroterceroPK implements Serializable {
 
     @Override
     public String toString() {
-        return "ec.com.infinity.modelo.ClienterubroterceroPK[ codigocomercializadora=" + codigocomercializadora + ", codigo=" + codigo + ", codigocliente=" + codigocliente + " ]";
+        return "ec.com.infinity.modelo.ClienterubroterceroPK[ codigocomercializadora=" + codigocomercializadora + ", codigorubrotercero=" + codigorubrotercero + ", codigocliente=" + codigocliente + " ]";
     }
     
 }

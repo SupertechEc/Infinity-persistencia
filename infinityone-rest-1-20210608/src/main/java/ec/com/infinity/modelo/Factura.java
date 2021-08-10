@@ -34,6 +34,9 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "factura")
 @XmlRootElement
 @NamedQueries({
+    @NamedQuery(name = "Factura.findForVenta",    query = "SELECT n FROM Factura n WHERE n.facturaPK.codigoabastecedora = :codigoabastecedora and n.facturaPK.codigocomercializadora = :codigocomercializadora and n.codigoterminal = :codigoterminal and n.fechaventa = :fecha"),
+    @NamedQuery(name = "Factura.mejorCliente",    query = "select n.nombrecliente as nomcliente, count (DISTINCT n.nombrecliente) as facturas, sum(n.valortotal) as sumatotal from Factura n where n.activa = :activo group by n.nombrecliente order by sumatotal desc"),
+    @NamedQuery(name = "Factura.findForDespacho", query = "SELECT n FROM Factura n WHERE n.facturaPK.codigoabastecedora = :codigoabastecedora and n.facturaPK.codigocomercializadora = :codigocomercializadora and n.codigoterminal = :codigoterminal and n.fechadespacho = :fecha"),
     @NamedQuery(name = "Factura.findAll", query = "SELECT f FROM Factura f"),
     @NamedQuery(name = "Factura.findByCodigoabastecedora", query = "SELECT f FROM Factura f WHERE f.facturaPK.codigoabastecedora = :codigoabastecedora"),
     @NamedQuery(name = "Factura.findByCodigocomercializadora", query = "SELECT f FROM Factura f WHERE f.facturaPK.codigocomercializadora = :codigocomercializadora"),
@@ -157,6 +160,9 @@ public class Factura implements Serializable {
     @Size(max = 2)
     @Column(name = "clienteformapago")
     private String clienteformapago;
+    @Size(max = 3)
+    @Column(name = "tipoplazocredito")
+    private String tipoplazocredito;
     @Column(name = "plazocliente")
     private Integer plazocliente;
     @Size(max = 49)
@@ -196,10 +202,12 @@ public class Factura implements Serializable {
     private String codigodocumento;
     @Column(name = "esagenteretencion")
     private Boolean esagenteretencion;
+    @Size(max = 6)
     @Column(name = "escontribuyenteespacial")
-    private Boolean escontribuyenteespacial;
+    private String escontribuyenteespacial;
+    @Size(max = 2)
     @Column(name = "obligadocontabilidad")
-    private Boolean obligadocontabilidad;
+    private String obligadocontabilidad;
     @Size(max = 2)
     @Column(name = "tipocomprador")
     private String tipocomprador;
@@ -626,19 +634,19 @@ public class Factura implements Serializable {
         this.esagenteretencion = esagenteretencion;
     }
 
-    public Boolean getEscontribuyenteespacial() {
+    public String getEscontribuyenteespacial() {
         return escontribuyenteespacial;
     }
 
-    public void setEscontribuyenteespacial(Boolean escontribuyenteespacial) {
+    public void setEscontribuyenteespacial(String escontribuyenteespacial) {
         this.escontribuyenteespacial = escontribuyenteespacial;
     }
 
-    public Boolean getObligadocontabilidad() {
+    public String getObligadocontabilidad() {
         return obligadocontabilidad;
     }
 
-    public void setObligadocontabilidad(Boolean obligadocontabilidad) {
+    public void setObligadocontabilidad(String obligadocontabilidad) {
         this.obligadocontabilidad = obligadocontabilidad;
     }
 
@@ -665,4 +673,13 @@ public class Factura implements Serializable {
     public void setSeriesri(String seriesri) {
         this.seriesri = seriesri;
     }
+
+    public String getTipoplazocredito() {
+        return tipoplazocredito;
+    }
+
+    public void setTipoplazocredito(String tipoplazocredito) {
+        this.tipoplazocredito = tipoplazocredito;
+    }
+    
 }

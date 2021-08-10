@@ -96,7 +96,7 @@ public class DetallenotapedidoFacadeREST extends AbstractFacade<Detallenotapedid
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Detallenotapedido entity) {
@@ -125,7 +125,7 @@ public class DetallenotapedidoFacadeREST extends AbstractFacade<Detallenotapedid
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigoabastecedora") String codigoabastecedora, 
@@ -165,7 +165,7 @@ public class DetallenotapedidoFacadeREST extends AbstractFacade<Detallenotapedid
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Detallenotapedido entity) {
@@ -193,7 +193,7 @@ public class DetallenotapedidoFacadeREST extends AbstractFacade<Detallenotapedid
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigoabastecedora") String codigoabastecedora, 
@@ -233,7 +233,7 @@ public class DetallenotapedidoFacadeREST extends AbstractFacade<Detallenotapedid
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -262,7 +262,7 @@ public class DetallenotapedidoFacadeREST extends AbstractFacade<Detallenotapedid
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -271,7 +271,7 @@ public class DetallenotapedidoFacadeREST extends AbstractFacade<Detallenotapedid
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

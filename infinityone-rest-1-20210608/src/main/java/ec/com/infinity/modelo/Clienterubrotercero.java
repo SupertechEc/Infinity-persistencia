@@ -7,6 +7,7 @@ package ec.com.infinity.modelo;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -20,6 +21,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -35,7 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Clienterubrotercero.findAll", query = "SELECT c FROM Clienterubrotercero c"),
     @NamedQuery(name = "Clienterubrotercero.findByCodigocomercializadora", query = "SELECT c FROM Clienterubrotercero c WHERE c.clienterubroterceroPK.codigocomercializadora = :codigocomercializadora"),
-    @NamedQuery(name = "Clienterubrotercero.findByCodigo", query = "SELECT c FROM Clienterubrotercero c WHERE c.clienterubroterceroPK.codigo = :codigo"),
+    @NamedQuery(name = "Clienterubrotercero.findByCodigorubrotercero", query = "SELECT c FROM Clienterubrotercero c WHERE c.clienterubroterceroPK.codigorubrotercero = :codigorubrotercero"),
     @NamedQuery(name = "Clienterubrotercero.findByCodigocliente", query = "SELECT c FROM Clienterubrotercero c WHERE c.clienterubroterceroPK.codigocliente = :codigocliente"),
     @NamedQuery(name = "Clienterubrotercero.findByValor", query = "SELECT c FROM Clienterubrotercero c WHERE c.valor = :valor"),
     @NamedQuery(name = "Clienterubrotercero.findByCuotas", query = "SELECT c FROM Clienterubrotercero c WHERE c.cuotas = :cuotas"),
@@ -56,12 +59,19 @@ public class Clienterubrotercero implements Serializable {
     @Size(max = 100)
     @Column(name = "usuarioactual")
     private String usuarioactual;
+    @Size(max = 3)
+    @Column(name = "tipocobro")
+    private String tipocobro;
     @JoinColumn(name = "codigocliente", referencedColumnName = "codigo", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Cliente cliente1;
+    @Column(name = "fechainiciocobro")
+    @Temporal(TemporalType.DATE)
+    private Date fechainiciocobro;
+    
     @JoinColumns({
         @JoinColumn(name = "codigocomercializadora", referencedColumnName = "codigocomercializadora", insertable = false, updatable = false),
-        @JoinColumn(name = "codigo", referencedColumnName = "codigo", insertable = false, updatable = false)})
+        @JoinColumn(name = "codigorubrotercero", referencedColumnName = "codigo", insertable = false, updatable = false)})
     @ManyToOne(optional = false)
     private Rubrotercero rubrotercero;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "clienterubrotercero")
@@ -80,8 +90,8 @@ public class Clienterubrotercero implements Serializable {
         this.cuotas = cuotas;
     }
 
-    public Clienterubrotercero(String codigocomercializadora, long codigo, String codigocliente) {
-        this.clienterubroterceroPK = new ClienterubroterceroPK(codigocomercializadora, codigo, codigocliente);
+    public Clienterubrotercero(String codigocomercializadora, long codigorubrotercero, String codigocliente) {
+        this.clienterubroterceroPK = new ClienterubroterceroPK(codigocomercializadora, codigorubrotercero, codigocliente);
     }
 
     public ClienterubroterceroPK getClienterubroterceroPK() {
@@ -165,5 +175,23 @@ public class Clienterubrotercero implements Serializable {
     public String toString() {
         return "ec.com.infinity.modelo.Clienterubrotercero[ clienterubroterceroPK=" + clienterubroterceroPK + " ]";
     }
+
+    public String getTipocobro() {
+        return tipocobro;
+    }
+
+    public void setTipocobro(String tipocobro) {
+        this.tipocobro = tipocobro;
+    }
+
+    public Date getFechainiciocobro() {
+        return fechainiciocobro;
+    }
+
+    public void setFechainiciocobro(Date fechainiciocobro) {
+        this.fechainiciocobro = fechainiciocobro;
+    }
+    
+    
     
 }

@@ -15,6 +15,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -69,7 +70,7 @@ public class NumeracionFacadeREST extends AbstractFacade<Numeracion> {
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Numeracion entity) {
@@ -98,7 +99,7 @@ public class NumeracionFacadeREST extends AbstractFacade<Numeracion> {
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("id") Long id) {
@@ -126,7 +127,7 @@ public class NumeracionFacadeREST extends AbstractFacade<Numeracion> {
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Numeracion entity) {
@@ -154,7 +155,7 @@ public class NumeracionFacadeREST extends AbstractFacade<Numeracion> {
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("id") Long id) {
@@ -183,7 +184,7 @@ public class NumeracionFacadeREST extends AbstractFacade<Numeracion> {
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -212,7 +213,7 @@ public class NumeracionFacadeREST extends AbstractFacade<Numeracion> {
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to
@@ -222,7 +223,7 @@ public class NumeracionFacadeREST extends AbstractFacade<Numeracion> {
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {
@@ -242,4 +243,54 @@ public class NumeracionFacadeREST extends AbstractFacade<Numeracion> {
         Numeracion respuestaNumeracion = query.getResultList().get(0);
         return respuestaNumeracion;
     }
+    
+    @POST
+    @Path("/agregar")  
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response crearAutonumerado(Numeracion entity) {
+        
+        StringBuilder sqlQuery = new StringBuilder();
+       
+       sqlQuery.append("INSERT INTO public.numeracion (" +
+       "codigocomercializadora, " +
+       " tipodocumento" +
+       ", activo" +
+       ", ultimonumero" +
+       ", version" + 
+       ", usuarioactual)" +
+       " values (:pcodigocomercializadora, :ptipodocumento, :pactivo, :pultimonumero, :pversion, :pusuarioactual)");
+       
+        System.out.println("INSERTAR NUMERCION FT:: "+ sqlQuery.toString());
+       try {
+            Query qry = this.em.createNativeQuery(sqlQuery.toString());
+            qry.setParameter("pcodigocomercializadora", entity.getCodigocomercializadora().getCodigo());
+            qry.setParameter("ptipodocumento", entity.getTipodocumento().trim().toUpperCase());
+            qry.setParameter("pactivo", entity.getActivo());
+            qry.setParameter("pultimonumero", entity.getUltimonumero());
+            qry.setParameter("pversion", entity.getVersion());
+            qry.setParameter("pusuarioactual", entity.getUsuarioactual());
+             
+             qry.executeUpdate();
+  
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("Inserción correcta");
+            
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }   
+    }
+    
 }

@@ -94,7 +94,7 @@ public class DetallefacturaFacadeREST extends AbstractFacade<Detallefactura> {
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Detallefactura entity) {
@@ -123,7 +123,7 @@ public class DetallefacturaFacadeREST extends AbstractFacade<Detallefactura> {
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigoabastecedora") String codigoabastecedora, 
@@ -163,7 +163,7 @@ public class DetallefacturaFacadeREST extends AbstractFacade<Detallefactura> {
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Detallefactura entity) {
@@ -191,7 +191,7 @@ public class DetallefacturaFacadeREST extends AbstractFacade<Detallefactura> {
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigoabastecedora") String codigoabastecedora, 
@@ -231,7 +231,7 @@ public class DetallefacturaFacadeREST extends AbstractFacade<Detallefactura> {
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -260,7 +260,7 @@ public class DetallefacturaFacadeREST extends AbstractFacade<Detallefactura> {
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -269,7 +269,7 @@ public class DetallefacturaFacadeREST extends AbstractFacade<Detallefactura> {
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

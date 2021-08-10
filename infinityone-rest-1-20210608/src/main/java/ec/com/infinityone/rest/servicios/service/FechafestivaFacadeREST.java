@@ -11,12 +11,14 @@ import ec.com.infinity.rest.seguridad.EjecucionMensaje;
 import ec.com.infinity.rest.seguridad.ErrorMessage;
 import ec.com.infinity.rest.seguridad.Secured;
 import ec.com.infinityone.rest.resources.CalendarioPco1;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -84,7 +86,7 @@ public class FechafestivaFacadeREST extends AbstractFacade<Fechafestiva> {
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Fechafestiva entity) {
@@ -113,7 +115,7 @@ public class FechafestivaFacadeREST extends AbstractFacade<Fechafestiva> {
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -146,7 +148,7 @@ public class FechafestivaFacadeREST extends AbstractFacade<Fechafestiva> {
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Fechafestiva entity) {
@@ -174,7 +176,7 @@ public class FechafestivaFacadeREST extends AbstractFacade<Fechafestiva> {
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -209,46 +211,65 @@ public class FechafestivaFacadeREST extends AbstractFacade<Fechafestiva> {
 
     @GET
     @Path("/fechafinal")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findfechafinal(@QueryParam("codigocomercializadora") String codigocomercializadora, 
             @QueryParam("fechainicial") Date fechainicial,
             @QueryParam("tipoplazo") String tipoplazo,
             @QueryParam("plazo") int plazo) {
-        try {
-
-            FechafestivaPK entity = new FechafestivaPK ();
+        
+           List<Date> respuestaFechaFinal = new ArrayList<>();
+           List<Fechafestiva> lst = new ArrayList<>();
+           FechafestivaPK entity = new FechafestivaPK ();
+           String feriados = new String();
+           try {
+            
             entity.setCodigocomercializadora(codigocomercializadora);
             entity.setFestivo(fechainicial);
             
-            EjecucionMensaje succesMessage = new EjecucionMensaje();
-            succesMessage.setStatusCode(200);
-            succesMessage.setDeveloperMessage("ejecución correcta");
-            List<Fechafestiva> lst = new ArrayList<>();
-            // calculo
-              
-            CalendarioPco1 calendario = new CalendarioPco1();
-        //calendario.
-        
-        java.sql.Date fechafinal = new java.sql.Date(System.currentTimeMillis());
-        try{
-        fechafinal = CalendarioPco1.calcularFechaFinal(new java.sql.Date(System.currentTimeMillis()),3,tipoplazo);
-        System.out.println("FECHA: "+fechafinal); 
-        }
-        catch (Throwable t){
-            System.out.println(" error " + t.getMessage());
-        }
+            TypedQuery<Fechafestiva> consultaPorComer = em.createNamedQuery("Fechafestiva.findByCodigocomercializadora", Fechafestiva.class);
+            consultaPorComer.setParameter("codigocomercializadora", codigocomercializadora);
+            lst = consultaPorComer.getResultList();           
+            //s="2021/7/7,2021/7/10,2021/7/15,/2/27,/3/1,/3/2,/3/3,/3/4";
+            for (int i = 0; i < lst.size(); i++) {
+            entity = lst.get(i).getFechafestivaPK();
             
-            lst.add(super.find(entity));
-            succesMessage.setRetorno(lst);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+            StringBuilder sb = new StringBuilder();
+            feriados = feriados + sdf.format(entity.getFestivo())+","; 
+            }
+            feriados = feriados.substring(0, (feriados.length()-1));
+            System.out.println("FechafestivaFACADE.findfechafinal::feriados: "+feriados);
+          } catch (Throwable ex) {
+            lst = new ArrayList<>();
+          }
+                           
+        java.sql.Date fechafinal = new java.sql.Date(System.currentTimeMillis());
+        java.sql.Date fechaInicialSql = new java.sql.Date(fechainicial.getTime());
+         Response exResponse;
+        try{
+        fechafinal = CalendarioPco1.calcularFechaFinal(fechaInicialSql, plazo, tipoplazo, feriados);
+        System.out.println("FECHA: "+fechafinal); 
+        respuestaFechaFinal.add(fechafinal);
+         EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta: "+fechafinal); 
+            succesMessage.setRetorno(respuestaFechaFinal); 
             return Response.status(200)
                     .entity(succesMessage)
                     .type(MediaType.APPLICATION_JSON).
                     build();
-            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
-        } catch (WebApplicationException ex) {
-            Response exResponse = ex.getResponse();
+        }
+        catch (Throwable ex){
+            if (ex instanceof WebApplicationException){
+            exResponse = ((WebApplicationException)ex).getResponse();
+            }else{
+            WebApplicationException error = new WebApplicationException();
+            exResponse = error.getResponse();
+            }
+            System.out.println(" error " + ex.getMessage());
+            //Response exResponse = ex.getResponse();
             ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
             //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
             return Response.status(Response.Status.CONFLICT)
@@ -256,11 +277,13 @@ public class FechafestivaFacadeREST extends AbstractFacade<Fechafestiva> {
                     .type(MediaType.APPLICATION_JSON).
                     build();
         }
+            
+            
     }
     
     
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -289,7 +312,7 @@ public class FechafestivaFacadeREST extends AbstractFacade<Fechafestiva> {
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -298,7 +321,7 @@ public class FechafestivaFacadeREST extends AbstractFacade<Fechafestiva> {
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

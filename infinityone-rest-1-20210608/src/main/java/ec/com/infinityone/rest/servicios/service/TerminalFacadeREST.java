@@ -65,7 +65,7 @@ public class TerminalFacadeREST extends AbstractFacade<Terminal> {
     }
 
     @POST
-    @Secured
+    ////@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Terminal entity) {
@@ -94,7 +94,7 @@ public class TerminalFacadeREST extends AbstractFacade<Terminal> {
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigo") String codigo) {
@@ -122,7 +122,7 @@ public class TerminalFacadeREST extends AbstractFacade<Terminal> {
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Terminal entity) {
@@ -150,7 +150,7 @@ public class TerminalFacadeREST extends AbstractFacade<Terminal> {
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigo") String codigo) {
@@ -179,7 +179,7 @@ public class TerminalFacadeREST extends AbstractFacade<Terminal> {
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -208,7 +208,7 @@ public class TerminalFacadeREST extends AbstractFacade<Terminal> {
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -217,7 +217,7 @@ public class TerminalFacadeREST extends AbstractFacade<Terminal> {
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

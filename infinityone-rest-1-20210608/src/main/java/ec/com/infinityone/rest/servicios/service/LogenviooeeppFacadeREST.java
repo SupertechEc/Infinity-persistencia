@@ -58,7 +58,7 @@ public class LogenviooeeppFacadeREST extends AbstractFacade<Logenviooeepp> {
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Logenviooeepp entity) {
@@ -87,7 +87,7 @@ public class LogenviooeeppFacadeREST extends AbstractFacade<Logenviooeepp> {
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(Logenviooeepp entity) {
@@ -115,7 +115,7 @@ public class LogenviooeeppFacadeREST extends AbstractFacade<Logenviooeepp> {
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Logenviooeepp entity) {
@@ -143,7 +143,7 @@ public class LogenviooeeppFacadeREST extends AbstractFacade<Logenviooeepp> {
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(Logenviooeepp entity) {
@@ -172,7 +172,7 @@ public class LogenviooeeppFacadeREST extends AbstractFacade<Logenviooeepp> {
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -201,7 +201,7 @@ public class LogenviooeeppFacadeREST extends AbstractFacade<Logenviooeepp> {
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -210,7 +210,7 @@ public class LogenviooeeppFacadeREST extends AbstractFacade<Logenviooeepp> {
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

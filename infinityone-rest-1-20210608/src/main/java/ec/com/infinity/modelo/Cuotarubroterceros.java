@@ -32,9 +32,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "cuotarubroterceros")
 @XmlRootElement
 @NamedQueries({
+//    @NamedQuery(name = "Cuotarubroterceros.findParaCobrar", query = "SELECT c FROM Cuotarubroterceros c WHERE c.cuotarubrotercerosPK.codigocliente = :codigocliente "
+//            + " and pagada = FALSE "
+//            + " and tipocobro = 'FAC'"
+//            + " UNION "
+//            + " SELECT c FROM Cuotarubroterceros c "
+//            + "WHERE c.cuotarubrotercerosPK.codigocliente = :codigocliente"
+//            + " and pagada = FALSE "
+//            + " and tipocobro != 'FAC' "
+//            + " and fechacobro <= '2021-06-17'"),
     @NamedQuery(name = "Cuotarubroterceros.findAll", query = "SELECT c FROM Cuotarubroterceros c"),
     @NamedQuery(name = "Cuotarubroterceros.findByCodigocomercializadora", query = "SELECT c FROM Cuotarubroterceros c WHERE c.cuotarubrotercerosPK.codigocomercializadora = :codigocomercializadora"),
-    @NamedQuery(name = "Cuotarubroterceros.findByCodigo", query = "SELECT c FROM Cuotarubroterceros c WHERE c.cuotarubrotercerosPK.codigo = :codigo"),
+    @NamedQuery(name = "Cuotarubroterceros.findByCodigorubrocliente", query = "SELECT c FROM Cuotarubroterceros c WHERE c.cuotarubrotercerosPK.codigorubrotercero = :codigorubrotercero"),
     @NamedQuery(name = "Cuotarubroterceros.findByCodigocliente", query = "SELECT c FROM Cuotarubroterceros c WHERE c.cuotarubrotercerosPK.codigocliente = :codigocliente"),
     @NamedQuery(name = "Cuotarubroterceros.findByCuota", query = "SELECT c FROM Cuotarubroterceros c WHERE c.cuotarubrotercerosPK.cuota = :cuota"),
     @NamedQuery(name = "Cuotarubroterceros.findByPagada", query = "SELECT c FROM Cuotarubroterceros c WHERE c.pagada = :pagada"),
@@ -64,7 +73,7 @@ public class Cuotarubroterceros implements Serializable {
     private String usuarioactual;
     @JoinColumns({
         @JoinColumn(name = "codigocomercializadora", referencedColumnName = "codigocomercializadora", insertable = false, updatable = false),
-        @JoinColumn(name = "codigo", referencedColumnName = "codigo", insertable = false, updatable = false),
+        @JoinColumn(name = "codigorubrotercero", referencedColumnName = "codigorubrotercero", insertable = false, updatable = false),
         @JoinColumn(name = "codigocliente", referencedColumnName = "codigocliente", insertable = false, updatable = false)})
     @ManyToOne(optional = false)
     private Clienterubrotercero clienterubrotercero;
@@ -83,8 +92,8 @@ public class Cuotarubroterceros implements Serializable {
         this.valor = valor;
     }
 
-    public Cuotarubroterceros(String codigocomercializadora, long codigo, String codigocliente, int cuota) {
-        this.cuotarubrotercerosPK = new CuotarubrotercerosPK(codigocomercializadora, codigo, codigocliente, cuota);
+    public Cuotarubroterceros(String codigocomercializadora, long codigorubrotercero, String codigocliente, int cuota) {
+        this.cuotarubrotercerosPK = new CuotarubrotercerosPK(codigocomercializadora, codigorubrotercero, codigocliente, cuota);
     }
 
     public CuotarubrotercerosPK getCuotarubrotercerosPK() {

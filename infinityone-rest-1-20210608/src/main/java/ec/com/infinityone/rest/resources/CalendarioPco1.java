@@ -1,11 +1,14 @@
 package ec.com.infinityone.rest.resources;
 
+
+
 /**
  * Insert the type's description here.
  * Creation date: (28/04/2003 15:12:24)
  * @author: Fernando Tapia
  */
 public class CalendarioPco1 {
+        
 	public static final String CALENDARIO = "CALENDARIO";
 	public static final String LABORABLE = "CALENDARIO";
 	private static com.ibm.calendar.Calendar calendario =null;
@@ -24,15 +27,17 @@ public CalendarioPco1() {
  * @autor ftapia
  * @excepciones throws Throwable
  */
-public static java.sql.Date calcularFechaFinal(java.sql.Date fechaInicial,int numeroDias, String tipoPlazo) throws Throwable{
+public static java.sql.Date calcularFechaFinal(java.sql.Date fechaInicial,int numeroDias, String tipoPlazo, String festivos) throws Throwable{
 	java.sql.Date df = null;
 	
-	getUnCalendario();
+	getUnCalendario(festivos);
 	getUnCalendario().getHolidays();
 
-	if(tipoPlazo.equalsIgnoreCase("cal")){
+	if(tipoPlazo.equalsIgnoreCase("CAL")){
+            System.out.println("CALENDARIO");
 		df = calcularFechaFinalCalendario(fechaInicial, numeroDias);
-	}else if(tipoPlazo.equalsIgnoreCase("lab")){
+	}else if(tipoPlazo.equalsIgnoreCase("LAB")){
+            System.out.println("LABBBBO");
 		df = calcularFechaFinalLaborable(fechaInicial, numeroDias);
 	}
 	
@@ -183,6 +188,8 @@ public static com.ibm.calendar.Calendar getUnCalendario() throws Throwable{
 	if(calendario==null){
 		try{
 			calendario = new com.ibm.calendar.Calendar();
+                                         
+                        
 	//		pco.facturacion.metaData.varios.Festivo f = new pco.facturacion.metaData.varios.Festivo();
 			
 	//		java.util.Vector v = f.buscarTodo(true);
@@ -207,6 +214,40 @@ public static com.ibm.calendar.Calendar getUnCalendario() throws Throwable{
 	
 	return calendario;
 }
+
+public static com.ibm.calendar.Calendar getUnCalendario(String festivos) throws Throwable{
+	
+      
+	if(calendario==null){
+		try{
+			calendario = new com.ibm.calendar.Calendar();
+                                                
+	//		pco.facturacion.metaData.varios.Festivo f = new pco.facturacion.metaData.varios.Festivo();
+			
+	//		java.util.Vector v = f.buscarTodo(true);
+			
+
+                        String s = "";
+			/*
+                        for (int i = 0; i < v.size(); i++){
+				s = s + ((pco.facturacion.metaData.varios.Festivo)v.get(i)).getFestivo().trim();
+				if (i < (v.size()-1)) s = s + ",";
+			}
+			*/
+                        
+			//Borrar esto
+			//	s="2021/7/7,2021/7/10,2021/7/15,/2/27,/3/1,/3/2,/3/3,/3/4";
+			System.out.println("CALENDARIO.getCalendar(festivos) "+festivos);
+                        //Borrar esto
+			calendario.setHolidays(festivos);
+		}catch(Throwable t ){
+			throw new Throwable("No se ha logrado generar el calendario con las fechas festivas");//
+		}
+	}
+	
+	return calendario;
+}
+
 /**
  * Se obtienen las fechas cargadas en la tabla FECHAESPECIALHABIL para tomar fechas por a�o que siendo fines de semana deben ser consideradas
  * como habiles para el calculo de fechas de Vmto o Acredirtaci�n
@@ -239,22 +280,27 @@ public static java.util.Vector obtenerFechasEspecialesHabiles() {
  * @excepciones throws Throwable
  */
 private static java.sql.Date saltaDiasNoLaborables(java.sql.Date fecha) throws Throwable{
-	java.sql.Date fechaFinal = fecha; 
+        System.out.println("saltaDiasNoLaborables: "+ fecha);
+        java.sql.Date fechaFinal = fecha; 
 	getUnCalendario().setSelectedDate(fechaFinal);
+        System.out.println("getUnCalendario().setSelectedDate(fechaFinal): "+ getUnCalendario().getSelectedDate());
 	long numeroDiasFinal=0;
 	java.util.GregorianCalendar gc = new java.util.GregorianCalendar();
 	gc.setTime(fecha);
+        System.out.println("gc.setTime(fecha): "+gc.getTime());
 	numeroDiasFinal =  fecha.getTime();
 	
 	//java.util.StringTokenizer st = ManejadorTokens.armarTokenizer(pco.facturacion.metaData.Empresa.DIAS_ESPECIALES_HABILES,";");
 	if(getUnCalendario().isHoliday(gc)){
+            System.out.println("getUnCalendario().isHoliday(gc): "+ getUnCalendario().isHoliday(gc));
 		numeroDiasFinal = fechaFinal.getTime();
 		numeroDiasFinal = numeroDiasFinal + (24*60*60*1000);
 		java.sql.Date d = new java.sql.Date(numeroDiasFinal);
 		fechaFinal = d;
 		fechaFinal = saltaDiasNoLaborables(fechaFinal);
 	}else if(esFinDeSemana(fecha)){//(gc.get(gc.DAY_OF_WEEK)==1) || (gc.get(gc.DAY_OF_WEEK)==7)) { //getCalendar1().isWeekend(fecha.getDay())){
-		numeroDiasFinal = numeroDiasFinal + (24*60*60*1000);
+		System.out.println("esFinDeSemana(fecha): "+ fecha+ " - "+esFinDeSemana(fecha));
+            numeroDiasFinal = numeroDiasFinal + (24*60*60*1000);
 		java.sql.Date d = new java.sql.Date(numeroDiasFinal);
 			
 		fechaFinal = d;

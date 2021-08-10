@@ -59,7 +59,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Usuario entity) {
@@ -88,7 +88,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigo") String codigo) {
@@ -116,7 +116,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Usuario entity) {
@@ -144,7 +144,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigo") String codigo) {
@@ -173,7 +173,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -202,7 +202,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -211,7 +211,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

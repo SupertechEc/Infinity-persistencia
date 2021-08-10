@@ -24,6 +24,8 @@ import ec.com.infinity.rest.seguridad.EjecucionMensaje;
 import ec.com.infinity.rest.seguridad.ErrorMessage;
 import ec.com.infinity.rest.seguridad.Secured;
 import java.util.ArrayList;
+import javax.persistence.TypedQuery;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
@@ -53,9 +55,9 @@ public class ClienterubroterceroFacadeREST extends AbstractFacade<Clienterubrote
         if (codigocomercializadora != null && !codigocomercializadora.isEmpty()) {
             key.setCodigocomercializadora(codigocomercializadora.get(0));
         }
-        java.util.List<String> codigo = map.get("codigo");
-        if (codigo != null && !codigo.isEmpty()) {
-            key.setCodigo(new java.lang.Long(codigo.get(0)));
+        java.util.List<String> codigorubrotercero = map.get("codigorubrotercero");
+        if (codigorubrotercero != null && !codigorubrotercero.isEmpty()) {
+            key.setCodigorubrotercero(new java.lang.Long(codigorubrotercero.get(0)));
         }
         java.util.List<String> codigocliente = map.get("codigocliente");
         if (codigocliente != null && !codigocliente.isEmpty()) {
@@ -108,7 +110,7 @@ public class ClienterubroterceroFacadeREST extends AbstractFacade<Clienterubrote
     
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -118,7 +120,7 @@ public class ClienterubroterceroFacadeREST extends AbstractFacade<Clienterubrote
    
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {
@@ -131,7 +133,7 @@ public class ClienterubroterceroFacadeREST extends AbstractFacade<Clienterubrote
     }
     
      @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -160,7 +162,7 @@ public class ClienterubroterceroFacadeREST extends AbstractFacade<Clienterubrote
     
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find( ClienterubroterceroPK entity) {
@@ -190,7 +192,7 @@ public class ClienterubroterceroFacadeREST extends AbstractFacade<Clienterubrote
     
      @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Clienterubrotercero entity) {
@@ -218,7 +220,7 @@ public class ClienterubroterceroFacadeREST extends AbstractFacade<Clienterubrote
     
      @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(Clienterubrotercero entity) {
@@ -245,7 +247,7 @@ public class ClienterubroterceroFacadeREST extends AbstractFacade<Clienterubrote
     }
     
      @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Clienterubrotercero entity) {
@@ -279,5 +281,39 @@ public class ClienterubroterceroFacadeREST extends AbstractFacade<Clienterubrote
         return entity;
     }
     
+        @GET
+    @Path("/rubro")
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findXComer(@QueryParam("codigorubrotercero") long codigorubrotercero) {
+        try {
+            
+            ClienterubroterceroPK entity = new ClienterubroterceroPK();
+            entity.setCodigorubrotercero(codigorubrotercero);
+ 
+            TypedQuery<Clienterubrotercero> consulta = em.createNamedQuery("Clienterubrotercero.findByCodigorubrotercero", Clienterubrotercero.class);
+            consulta.setParameter("codigorubrotercero", codigorubrotercero);            
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            List<Clienterubrotercero> lst = new ArrayList<>();
+            lst = consulta.getResultList();
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
 }
 

@@ -52,6 +52,8 @@
     <class>ec.com.infinity.modelo.VNotapedidoydetalle</class>
     <class>ec.com.infinity.modelo.Fechafestiva</class>
     <class>ec.com.infinity.modelo.Menu</class>
+    <class>ec.com.infinity.modelo.Detallefacturarubrotercero</class>
+    <class>ec.com.infinity.modelo.Errorpetro</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>java:jboss/datasources/Infinityone</jta-data-source>

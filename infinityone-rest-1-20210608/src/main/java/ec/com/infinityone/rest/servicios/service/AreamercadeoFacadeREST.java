@@ -65,6 +65,20 @@ public class AreamercadeoFacadeREST extends AbstractFacade<Areamercadeo> {
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Areamercadeo entity) {
+        
+        if (entity == null){
+        System.out.println("Areamercadeo::create1: esta nullo");
+         return Response.status(666)
+                    .entity("malllll")
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+        else{
+                System.out.println("Areamercadeo::create1: NOOOOO nullo");
+                
+                
+                
+        }
         try {
             this.create(entity);
 
@@ -254,6 +268,7 @@ public class AreamercadeoFacadeREST extends AbstractFacade<Areamercadeo> {
     @Override
     protected EntityManager getEntityManager() {
         return em;
+        
     }
 
 }

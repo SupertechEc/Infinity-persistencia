@@ -59,7 +59,7 @@ public class AbastecedoraFacadeREST extends AbstractFacade<Abastecedora> {
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Abastecedora entity) {
@@ -88,7 +88,7 @@ public class AbastecedoraFacadeREST extends AbstractFacade<Abastecedora> {
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigo") String codigo) {
@@ -117,7 +117,7 @@ public class AbastecedoraFacadeREST extends AbstractFacade<Abastecedora> {
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Abastecedora entity) {
@@ -145,7 +145,7 @@ public class AbastecedoraFacadeREST extends AbstractFacade<Abastecedora> {
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigo") String codigo) {
@@ -174,7 +174,7 @@ public class AbastecedoraFacadeREST extends AbstractFacade<Abastecedora> {
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -203,7 +203,7 @@ public class AbastecedoraFacadeREST extends AbstractFacade<Abastecedora> {
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to
@@ -213,7 +213,7 @@ public class AbastecedoraFacadeREST extends AbstractFacade<Abastecedora> {
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

@@ -91,7 +91,7 @@ public class ClientelistaprecioFacadeREST extends AbstractFacade<Clientelistapre
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Clientelistaprecio entity) {
@@ -120,7 +120,7 @@ public class ClientelistaprecioFacadeREST extends AbstractFacade<Clientelistapre
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -157,7 +157,7 @@ public class ClientelistaprecioFacadeREST extends AbstractFacade<Clientelistapre
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Clientelistaprecio entity) {
@@ -185,7 +185,7 @@ public class ClientelistaprecioFacadeREST extends AbstractFacade<Clientelistapre
       
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -220,7 +220,7 @@ public class ClientelistaprecioFacadeREST extends AbstractFacade<Clientelistapre
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -249,7 +249,7 @@ public class ClientelistaprecioFacadeREST extends AbstractFacade<Clientelistapre
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -258,7 +258,7 @@ public class ClientelistaprecioFacadeREST extends AbstractFacade<Clientelistapre
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

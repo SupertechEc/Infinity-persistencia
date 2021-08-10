@@ -5,8 +5,9 @@
  */
 package ec.com.infinityone.rest.servicios.service;
 
-import ec.com.infinity.modelo.Gravamen;
-import ec.com.infinity.modelo.GravamenPK;
+
+import ec.com.infinity.modelo.Errorpetro;
+import ec.com.infinity.modelo.ErrorpetroPK;
 import ec.com.infinity.rest.seguridad.EjecucionMensaje;
 import ec.com.infinity.rest.seguridad.ErrorMessage;
 import ec.com.infinity.rest.seguridad.Secured;
@@ -24,60 +25,38 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.QueryParam;
 
 /**
  *
  * @author Paul
  */
 @Stateless
-@Path("ec.com.infinity.modelo.gravamen")
-public class GravamenFacadeREST extends AbstractFacade<Gravamen> {
+@Path("ec.com.infinity.modelo.errorpetro")
+public class ErrorpetroFacadeREST extends AbstractFacade<Errorpetro> {
 
     @PersistenceContext(unitName = "my_persistence_unit")
     private EntityManager em;
 
-    private GravamenPK getPrimaryKey(PathSegment pathSegment) {
-        /*
-         * pathSemgent represents a URI path segment and any associated matrix parameters.
-         * URI path part is supposed to be in form of 'somePath;codigocomercializadora=codigocomercializadoraValue;codigo=codigoValue'.
-         * Here 'somePath' is a result of getPath() method invocation and
-         * it is ignored in the following code.
-         * Matrix parameters are used as field names to build a primary key instance.
-         */
-        ec.com.infinity.modelo.GravamenPK key = new ec.com.infinity.modelo.GravamenPK();
-        javax.ws.rs.core.MultivaluedMap<String, String> map = pathSegment.getMatrixParameters();
-        java.util.List<String> codigocomercializadora = map.get("codigocomercializadora");
-        if (codigocomercializadora != null && !codigocomercializadora.isEmpty()) {
-            key.setCodigocomercializadora(codigocomercializadora.get(0));
-        }
-        java.util.List<String> codigo = map.get("codigo");
-        if (codigo != null && !codigo.isEmpty()) {
-            key.setCodigo(codigo.get(0));
-        }
-        return key;
-    }
-
-    public GravamenFacadeREST() {
-        super(Gravamen.class);
+    public ErrorpetroFacadeREST() {
+        super(Errorpetro.class);
     }
 
     @Override
-    public Gravamen create(Gravamen entity) {
+    public Errorpetro create(Errorpetro entity) {
         return super.create(entity);
     }
 
     @Override
-    public List<Gravamen> findAll() {
+    public List<Errorpetro> findAll() {
         return super.findAll();
     }
 
     @Override
-    public Gravamen edit(Gravamen entity) {
+    public Errorpetro edit(Errorpetro entity) {
         super.edit(entity);
         return entity;
     }
@@ -86,7 +65,7 @@ public class GravamenFacadeREST extends AbstractFacade<Gravamen> {
     //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response create1(Gravamen entity) {
+    public Response create1(Errorpetro entity) {
         try {
             this.create(entity);
 
@@ -115,17 +94,13 @@ public class GravamenFacadeREST extends AbstractFacade<Gravamen> {
     //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response remove(@QueryParam("codigocomercializadora") String codigocomercializadora, 
-            @QueryParam("codigo") String codigo) {
+    public Response remove(Errorpetro entity) {
         try {
-            GravamenPK entity = new GravamenPK ();
-            entity.setCodigocomercializadora(codigocomercializadora);
-            entity.setCodigo(codigo);
-                    
-            super.remove(entity);
+
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
             succesMessage.setDeveloperMessage("ejecución correcta");
+            super.remove(entity);
             return Response.status(200)
                     .entity(succesMessage)
                     .type(MediaType.APPLICATION_JSON).
@@ -148,7 +123,7 @@ public class GravamenFacadeREST extends AbstractFacade<Gravamen> {
     //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response edit1(Gravamen entity) {
+    public Response edit1(Errorpetro entity) {
         try {
             this.edit(entity);
             EjecucionMensaje succesMessage = new EjecucionMensaje();
@@ -176,18 +151,17 @@ public class GravamenFacadeREST extends AbstractFacade<Gravamen> {
     //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response find(@QueryParam("codigocomercializadora") String codigocomercializadora, 
+    public Response find(@QueryParam("proceso") String proceso, 
             @QueryParam("codigo") String codigo) {
         try {
-
-            GravamenPK entity = new GravamenPK ();
-            entity.setCodigocomercializadora(codigocomercializadora);
-            entity.setCodigo(codigo);
             
+            ErrorpetroPK entity = new ErrorpetroPK();
+            entity.setCodigo(codigo);
+            entity.setProceso(proceso);
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
             succesMessage.setDeveloperMessage("ejecución correcta");
-            List<Gravamen> lst = new ArrayList<>();
+            List<Errorpetro> lst = new ArrayList<>();
             lst.add(super.find(entity));
             succesMessage.setRetorno(lst);
             return Response.status(200)
@@ -215,7 +189,7 @@ public class GravamenFacadeREST extends AbstractFacade<Gravamen> {
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
             succesMessage.setDeveloperMessage("ejecución correcta");
-            List<Gravamen> lst = this.findAll();
+            List<Errorpetro> lst = this.findAll();
             succesMessage.setRetorno(lst);
             return Response.status(200)
                     .entity(succesMessage)
@@ -257,26 +231,29 @@ public class GravamenFacadeREST extends AbstractFacade<Gravamen> {
         return em;
     }
     
+    
     @GET
-    @Path("/comer")
+    @Path("/porPK")
     //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response findXComer(@QueryParam("codigocomercializadora") String codigocomercializadora) {
+    public Response findXPk(@QueryParam("proceso") String proceso, @QueryParam("codigo") String codigo) {
         try {
             
-            GravamenPK entity = new GravamenPK();
-            entity.setCodigocomercializadora(codigocomercializadora);
- 
-                  
-            TypedQuery<Gravamen> consultaGravamenComer = em.createNamedQuery("Gravamen.findByCodigocomercializadora", Gravamen.class);
-            consultaGravamenComer.setParameter("codigocomercializadora", codigocomercializadora);
-            
+            ErrorpetroPK entity = new ErrorpetroPK();
+            entity.setProceso(proceso);
+            entity.setCodigo(codigo);
+
+            TypedQuery<Errorpetro> consulta = em.createNamedQuery("Errorpetro.findByProcesoCodigo", Errorpetro.class);
+            consulta.setParameter("proceso", proceso);
+            consulta.setParameter("codigo", codigo);
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
             succesMessage.setDeveloperMessage("ejecución correcta");
-            List<Gravamen> lst = new ArrayList<>();
-            lst = consultaGravamenComer.getResultList();
+            List<Errorpetro> lst = new ArrayList<>();
+            lst = consulta.getResultList();
+            //lst.add(super.find(entity));
+            //lst.add(clip.)
             succesMessage.setRetorno(lst);
             return Response.status(200)
                     .entity(succesMessage)

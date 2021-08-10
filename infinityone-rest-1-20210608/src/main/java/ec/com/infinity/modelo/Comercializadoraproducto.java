@@ -72,6 +72,8 @@ public class Comercializadoraproducto implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "usuarioactual")
     private String usuarioactual;
+    @Column(name = "procesar")
+    private boolean procesar;
     @JoinColumn(name = "codigomedida", referencedColumnName = "codigo", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Medida medida;
@@ -217,6 +219,14 @@ public class Comercializadoraproducto implements Serializable {
     @Override
     public String toString() {
         return "ec.com.infinity.modelo.Comercializadoraproducto[ comercializadoraproductoPK=" + comercializadoraproductoPK + " ]";
+    }
+
+    public boolean isProcesar() {
+        return procesar;
+    }
+
+    public void setProcesar(boolean procesar) {
+        this.procesar = procesar;
     }
     
 }

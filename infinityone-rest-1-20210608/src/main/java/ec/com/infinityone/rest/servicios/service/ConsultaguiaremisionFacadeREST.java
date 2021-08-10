@@ -7,6 +7,7 @@ package ec.com.infinityone.rest.servicios.service;
 
 import ec.com.infinity.modelo.Consultaguiaremision;
 import ec.com.infinity.modelo.ConsultaguiaremisionPK;
+import ec.com.infinity.modelo.MejorProductoGuia;
 import ec.com.infinity.modelo2.ParametrosSOAP;
 import ec.com.infinity.rest.seguridad.EjecucionMensaje;
 import ec.com.infinity.rest.seguridad.ErrorMessage;
@@ -23,6 +24,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -32,6 +34,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
@@ -98,7 +101,7 @@ public class ConsultaguiaremisionFacadeREST extends AbstractFacade<Consultaguiar
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Consultaguiaremision entity) {
@@ -127,7 +130,7 @@ public class ConsultaguiaremisionFacadeREST extends AbstractFacade<Consultaguiar
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(Consultaguiaremision entity) {
@@ -155,7 +158,7 @@ public class ConsultaguiaremisionFacadeREST extends AbstractFacade<Consultaguiar
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Consultaguiaremision entity) {
@@ -183,7 +186,7 @@ public class ConsultaguiaremisionFacadeREST extends AbstractFacade<Consultaguiar
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(ConsultaguiaremisionPK entity) {
@@ -212,7 +215,7 @@ public class ConsultaguiaremisionFacadeREST extends AbstractFacade<Consultaguiar
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -241,7 +244,7 @@ public class ConsultaguiaremisionFacadeREST extends AbstractFacade<Consultaguiar
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -250,7 +253,7 @@ public class ConsultaguiaremisionFacadeREST extends AbstractFacade<Consultaguiar
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {
@@ -263,9 +266,9 @@ public class ConsultaguiaremisionFacadeREST extends AbstractFacade<Consultaguiar
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
-    @Produces({"application/json"})
+    @Produces({"application/json"}) 
     @Path("/actualizacion")
     public Response consultaSOAPGarantia(ParametrosSOAP parametros) {
         List<Consultaguiaremision> lstGuardar = new ArrayList<>();
@@ -347,5 +350,54 @@ public class ConsultaguiaremisionFacadeREST extends AbstractFacade<Consultaguiar
         ConsultaGuias service = new ConsultaGuias();
         ConsultaGuiasSoapPort port = service.getConsultaGuiasSoapPort();
         return port.execute(parameters);
+    }
+    
+    @GET
+    @Path("/mejorProducto")  
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findMejorProducto(@QueryParam("activo") boolean activo) {
+        
+        List<Object[]> objetosList;
+        StringBuilder sqlQuery = new StringBuilder();
+        List<MejorProductoGuia> lista = new ArrayList<>();
+       sqlQuery.append("select SUBSTRING(n.fecha, 5, 2) as mesventa, n.producto, sum (n.volumenentregado) as despacho")
+               .append(" from consultaguiaremision n")
+               .append(" where")
+               .append(" n.activo = true and n.estado = 'ACT'")
+               .append(" group by mesventa, n.producto order by despacho desc");
+
+        System.out.println("findMejorCliente FT:: "+ sqlQuery.toString());
+       try {
+            Query qry = this.em.createNativeQuery(sqlQuery.toString());
+            //qry.setParameter("activo", activo);
+             
+             objetosList = qry.getResultList();
+
+            for (Object[] o : objetosList) {
+                MejorProductoGuia mc = new MejorProductoGuia();
+                mc.setNombremes(String.valueOf(o[0]));
+                mc.setNombreproducto(String.valueOf(o[1]));
+                mc.setVolumentotal((new BigDecimal(String.valueOf(o[2]))));
+                lista.add(mc);
+            }
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecuciòn correcta");
+            succesMessage.setRetorno(lista);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }   
     }
 }

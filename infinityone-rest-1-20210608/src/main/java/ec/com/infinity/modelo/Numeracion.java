@@ -61,6 +61,9 @@ public class Numeracion implements Serializable {
     @JoinColumn(name = "codigocomercializadora", referencedColumnName = "codigo")
     @ManyToOne(optional = false)
     private Comercializadora codigocomercializadora;
+     @Size(max = 100)
+    @Column(name = "usuarioactual")
+    private String usuarioactual;
 
     public Numeracion() {
     }
@@ -148,5 +151,15 @@ public class Numeracion implements Serializable {
     public String toString() {
         return "ec.com.infinity.modelo.Numeracion[ id=" + id + " ]";
     }
+
+    public String getUsuarioactual() {
+        return usuarioactual;
+    }
+
+    public void setUsuarioactual(String usuarioactual) {
+        this.usuarioactual = usuarioactual;
+    }
+    
+    
     
 }

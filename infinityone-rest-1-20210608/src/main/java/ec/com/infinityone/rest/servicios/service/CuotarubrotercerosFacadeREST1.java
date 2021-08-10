@@ -7,6 +7,8 @@ package ec.com.infinityone.rest.servicios.service;
 
 import ec.com.infinity.modelo.Cuotarubroterceros;
 import ec.com.infinity.modelo.CuotarubrotercerosPK;
+import ec.com.infinity.modelo.Precio;
+import ec.com.infinity.modelo.PrecioPK;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -24,6 +26,10 @@ import ec.com.infinity.rest.seguridad.EjecucionMensaje;
 import ec.com.infinity.rest.seguridad.ErrorMessage;
 import ec.com.infinity.rest.seguridad.Secured;
 import java.util.ArrayList;
+import java.util.Date;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
@@ -53,9 +59,9 @@ public class CuotarubrotercerosFacadeREST1 extends AbstractFacade<Cuotarubroterc
         if (codigocomercializadora != null && !codigocomercializadora.isEmpty()) {
             key.setCodigocomercializadora(codigocomercializadora.get(0));
         }
-        java.util.List<String> codigo = map.get("codigo");
-        if (codigo != null && !codigo.isEmpty()) {
-            key.setCodigo(new java.lang.Long(codigo.get(0)));
+        java.util.List<String> codigorubrotercero = map.get("codigorubrotercero");
+        if (codigorubrotercero != null && !codigorubrotercero.isEmpty()) {
+            key.setCodigorubrotercero(new java.lang.Long(codigorubrotercero.get(0)));
         }
         java.util.List<String> codigocliente = map.get("codigocliente");
         if (codigocliente != null && !codigocliente.isEmpty()) {
@@ -110,7 +116,7 @@ public class CuotarubrotercerosFacadeREST1 extends AbstractFacade<Cuotarubroterc
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -119,7 +125,7 @@ public class CuotarubrotercerosFacadeREST1 extends AbstractFacade<Cuotarubroterc
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public String countREST() {
@@ -132,7 +138,7 @@ public class CuotarubrotercerosFacadeREST1 extends AbstractFacade<Cuotarubroterc
     }
     
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -161,7 +167,7 @@ public class CuotarubrotercerosFacadeREST1 extends AbstractFacade<Cuotarubroterc
     
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find( CuotarubrotercerosPK entity) {
@@ -191,7 +197,7 @@ public class CuotarubrotercerosFacadeREST1 extends AbstractFacade<Cuotarubroterc
     
      @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Cuotarubroterceros entity) {
@@ -219,7 +225,7 @@ public class CuotarubrotercerosFacadeREST1 extends AbstractFacade<Cuotarubroterc
     
      @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(Cuotarubroterceros entity) {
@@ -246,7 +252,7 @@ public class CuotarubrotercerosFacadeREST1 extends AbstractFacade<Cuotarubroterc
     }
     
      @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Cuotarubroterceros entity) {
@@ -280,4 +286,73 @@ public class CuotarubrotercerosFacadeREST1 extends AbstractFacade<Cuotarubroterc
         return entity;
     }
 
+    
+    @GET
+    @Path("/paraCobrar")
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findParaCobrar(@QueryParam("codigocomercializadora") String codigocomercializadora, 
+            @QueryParam("codigocliente") String codigocliente,
+            @QueryParam("fechaventa") Date fechaventa) {
+        try {
+            
+            
+            List<Object[]> objetosList;
+            StringBuilder sqlQuery = new StringBuilder();
+            List<Cuotarubroterceros> lista = new ArrayList<>();
+            sqlQuery.append("SELECT * FROM Cuotarubroterceros c WHERE codigocliente = :codigocliente ")
+            .append(" and pagada = false ")
+            .append(" and tipocobro = 'FAC'")
+            .append(" UNION ")
+            .append(" SELECT * FROM Cuotarubroterceros d ")
+            .append("WHERE codigocliente = :codigocliente ")
+            .append(" and pagada = false")
+            .append(" and tipocobro != 'FAC' ")
+            .append(" and fechacobro <= :fechaventa");
+
+             System.out.println("findParaCobrar FT:: "+ sqlQuery.toString());
+                Query qry = this.em.createNativeQuery(sqlQuery.toString());
+                qry.setParameter("codigocliente", codigocliente);
+                qry.setParameter("fechaventa", fechaventa);
+                lista = qry.getResultList();
+            
+            
+//            
+//            CuotarubrotercerosPK  entity = new CuotarubrotercerosPK();
+//            Cuotarubroterceros entityPrincipal = new Cuotarubroterceros();
+//
+//            entity.setCodigocomercializadora(codigocomercializadora);
+//            entity.setCodigocliente(codigocliente);
+//            entityPrincipal.setFechacobro(fechaventa);             
+//            TypedQuery<Cuotarubroterceros> consultaCuotasParaCobrar = em.createNamedQuery("Cuotarubroterceros.findParaCobrar", Cuotarubroterceros.class);
+//            consultaCuotasParaCobrar.setParameter("codigocomercializadora", codigocomercializadora);
+//            consultaCuotasParaCobrar.setParameter("codigocliente", codigocliente);
+//            consultaCuotasParaCobrar.setParameter("fechaventa", fechaventa);
+//            EjecucionMensaje succesMessage = new EjecucionMensaje();
+//            succesMessage.setStatusCode(200);
+//            succesMessage.setDeveloperMessage("ejecución correcta");
+//            List<Cuotarubroterceros> lst = new ArrayList<>();
+//            lst = consultaCuotasParaCobrar.getResultList();
+
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            succesMessage.setRetorno(lista);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+    
 }

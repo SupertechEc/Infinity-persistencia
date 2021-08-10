@@ -20,6 +20,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -91,7 +92,7 @@ public class FacturadordespachadorFacadeREST extends AbstractFacade<Facturadorde
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Facturadordespachador entity) {
@@ -120,7 +121,7 @@ public class FacturadordespachadorFacadeREST extends AbstractFacade<Facturadorde
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -156,7 +157,7 @@ public class FacturadordespachadorFacadeREST extends AbstractFacade<Facturadorde
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Facturadordespachador entity) {
@@ -184,7 +185,7 @@ public class FacturadordespachadorFacadeREST extends AbstractFacade<Facturadorde
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -220,7 +221,7 @@ public class FacturadordespachadorFacadeREST extends AbstractFacade<Facturadorde
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -249,7 +250,7 @@ public class FacturadordespachadorFacadeREST extends AbstractFacade<Facturadorde
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -258,7 +259,7 @@ public class FacturadordespachadorFacadeREST extends AbstractFacade<Facturadorde
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {
@@ -268,6 +269,43 @@ public class FacturadordespachadorFacadeREST extends AbstractFacade<Facturadorde
     @Override
     protected EntityManager getEntityManager() {
         return em;
+    }
+    
+    @GET
+    @Path("/porComercializadora")
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findXComer(@QueryParam("codigocomercializadora") String codigocomercializadora) {
+        try {
+            
+            FacturadordespachadorPK entity = new FacturadordespachadorPK();
+            entity.setCodigocomercializadora(codigocomercializadora);
+ 
+                  
+            TypedQuery<Facturadordespachador> consultaFacturadorComer = em.createNamedQuery("Facturadordespachador.findByCodigocomercializadora", Facturadordespachador.class);
+            consultaFacturadorComer.setParameter("codigocomercializadora", codigocomercializadora);
+            
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            List<Facturadordespachador> lst = new ArrayList<>();
+            lst = consultaFacturadorComer.getResultList();
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
     }
 
 }

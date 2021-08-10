@@ -87,7 +87,7 @@ public class ClienteproductoFacadeREST extends AbstractFacade<Clienteproducto> {
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Clienteproducto entity) {
@@ -116,7 +116,7 @@ public class ClienteproductoFacadeREST extends AbstractFacade<Clienteproducto> {
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigocliente") String codigocliente, 
@@ -151,7 +151,7 @@ public class ClienteproductoFacadeREST extends AbstractFacade<Clienteproducto> {
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Clienteproducto entity) {
@@ -179,7 +179,7 @@ public class ClienteproductoFacadeREST extends AbstractFacade<Clienteproducto> {
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigocliente") String codigocliente, 
@@ -214,7 +214,7 @@ public class ClienteproductoFacadeREST extends AbstractFacade<Clienteproducto> {
     
     @GET
     @Path("/porCliente")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigocliente") String codigocliente) {
@@ -250,7 +250,7 @@ public class ClienteproductoFacadeREST extends AbstractFacade<Clienteproducto> {
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -279,7 +279,7 @@ public class ClienteproductoFacadeREST extends AbstractFacade<Clienteproducto> {
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -288,7 +288,7 @@ public class ClienteproductoFacadeREST extends AbstractFacade<Clienteproducto> {
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

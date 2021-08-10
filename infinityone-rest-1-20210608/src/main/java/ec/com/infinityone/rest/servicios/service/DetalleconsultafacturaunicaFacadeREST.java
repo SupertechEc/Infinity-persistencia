@@ -65,7 +65,7 @@ public class DetalleconsultafacturaunicaFacadeREST extends AbstractFacade<Detall
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Detalleconsultafacturaunica entity) {
@@ -94,7 +94,7 @@ public class DetalleconsultafacturaunicaFacadeREST extends AbstractFacade<Detall
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(Detalleconsultafacturaunica entity) {
@@ -122,7 +122,7 @@ public class DetalleconsultafacturaunicaFacadeREST extends AbstractFacade<Detall
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Detalleconsultafacturaunica entity) {
@@ -150,7 +150,7 @@ public class DetalleconsultafacturaunicaFacadeREST extends AbstractFacade<Detall
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(Detalleconsultafacturaunica entity) {
@@ -179,7 +179,7 @@ public class DetalleconsultafacturaunicaFacadeREST extends AbstractFacade<Detall
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -208,7 +208,7 @@ public class DetalleconsultafacturaunicaFacadeREST extends AbstractFacade<Detall
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -217,7 +217,7 @@ public class DetalleconsultafacturaunicaFacadeREST extends AbstractFacade<Detall
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

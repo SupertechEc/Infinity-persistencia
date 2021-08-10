@@ -94,7 +94,7 @@ public class ClientegarantiaFacadeREST extends AbstractFacade<Clientegarantia> {
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Clientegarantia entity) {
@@ -123,7 +123,7 @@ public class ClientegarantiaFacadeREST extends AbstractFacade<Clientegarantia> {
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -166,7 +166,7 @@ public class ClientegarantiaFacadeREST extends AbstractFacade<Clientegarantia> {
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Clientegarantia entity) {
@@ -194,7 +194,7 @@ public class ClientegarantiaFacadeREST extends AbstractFacade<Clientegarantia> {
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -234,7 +234,7 @@ public class ClientegarantiaFacadeREST extends AbstractFacade<Clientegarantia> {
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -263,7 +263,7 @@ public class ClientegarantiaFacadeREST extends AbstractFacade<Clientegarantia> {
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

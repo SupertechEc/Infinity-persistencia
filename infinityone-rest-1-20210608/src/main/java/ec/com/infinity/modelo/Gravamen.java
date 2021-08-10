@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Gravamen.findAll", query = "SELECT g FROM Gravamen g"),
-    @NamedQuery(name = "Gravamen.findByCodigocomercializadora", query = "SELECT g FROM Gravamen g WHERE g.gravamenPK.codigocomercializadora = :codigocomercializadora"),
+    @NamedQuery(name = "Gravamen.findByCodigocomercializadora", query = "SELECT g FROM Gravamen g WHERE g.gravamenPK.codigocomercializadora = :codigocomercializadora and g.activo = true order by secuencial"),
     @NamedQuery(name = "Gravamen.findByCodigo", query = "SELECT g FROM Gravamen g WHERE g.gravamenPK.codigo = :codigo"),
     @NamedQuery(name = "Gravamen.findByNombre", query = "SELECT g FROM Gravamen g WHERE g.nombre = :nombre"),
     @NamedQuery(name = "Gravamen.findByActivo", query = "SELECT g FROM Gravamen g WHERE g.activo = :activo"),
@@ -56,6 +56,8 @@ public class Gravamen implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "valordefecto")
     private BigDecimal valordefecto;
+    @Column(name = "secuencial")
+    private int secuencial;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
@@ -168,6 +170,13 @@ public class Gravamen implements Serializable {
     @Override
     public String toString() {
         return "ec.com.infinity.modelo.Gravamen[ gravamenPK=" + gravamenPK + " ]";
+    }
+    public int getSecuencial() {
+        return secuencial;
+    }
+
+    public void setSecuencial(int secuencial) {
+        this.secuencial = secuencial;
     }
     
 }

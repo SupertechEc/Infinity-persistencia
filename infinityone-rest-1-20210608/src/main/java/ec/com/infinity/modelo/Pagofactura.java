@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Pagofactura.findAll", query = "SELECT p FROM Pagofactura p"),
     @NamedQuery(name = "Pagofactura.findByCodigoabastecedora", query = "SELECT p FROM Pagofactura p WHERE p.pagofacturaPK.codigoabastecedora = :codigoabastecedora"),
     @NamedQuery(name = "Pagofactura.findByCodigocomercializadora", query = "SELECT p FROM Pagofactura p WHERE p.pagofacturaPK.codigocomercializadora = :codigocomercializadora"),
+    @NamedQuery(name = "Pagofactura.findByCodigocomercializadoraYFecha", query = "SELECT p FROM Pagofactura p WHERE p.pagofacturaPK.codigocomercializadora = :codigocomercializadora and p.fecha = :fecha"),
     @NamedQuery(name = "Pagofactura.findByNumero", query = "SELECT p FROM Pagofactura p WHERE p.pagofacturaPK.numero = :numero"),
     @NamedQuery(name = "Pagofactura.findByCodigobanco", query = "SELECT p FROM Pagofactura p WHERE p.pagofacturaPK.codigobanco = :codigobanco"),
     @NamedQuery(name = "Pagofactura.findByFecha", query = "SELECT p FROM Pagofactura p WHERE p.fecha = :fecha"),

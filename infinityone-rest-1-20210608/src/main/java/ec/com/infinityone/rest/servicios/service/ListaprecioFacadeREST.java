@@ -20,6 +20,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -87,7 +88,7 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Listaprecio entity) {
@@ -116,7 +117,7 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -149,7 +150,7 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Listaprecio entity) {
@@ -177,7 +178,7 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -209,9 +210,47 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
                     build();
         }
     }
-
+    
+    
     @GET
-    @Secured
+    @Path("/porComercializadora")
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findXComer(@QueryParam("codigocomercializadora") String codigocomercializadora) {
+        try {
+            
+            ListaprecioPK entity = new ListaprecioPK();
+            entity.setCodigocomercializadora(codigocomercializadora);
+ 
+                  
+            TypedQuery<Listaprecio> consultaListaPrecioPorComer = em.createNamedQuery("Listaprecio.findByCodigocomercializadora", Listaprecio.class);
+            consultaListaPrecioPorComer.setParameter("codigocomercializadora", codigocomercializadora);
+            
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            List<Listaprecio> lst = new ArrayList<>();
+            lst = consultaListaPrecioPorComer.getResultList();
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+
+    @ GET
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -240,7 +279,7 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -249,7 +288,7 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

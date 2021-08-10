@@ -7,6 +7,8 @@ package ec.com.infinityone.rest.servicios.service;
 
 import ec.com.infinity.modelo.Comercializadoraproducto;
 import ec.com.infinity.modelo.ComercializadoraproductoPK;
+import ec.com.infinity.modelo.Listaprecio;
+import ec.com.infinity.modelo.ListaprecioPK;
 import ec.com.infinity.rest.seguridad.EjecucionMensaje;
 import ec.com.infinity.rest.seguridad.ErrorMessage;
 import ec.com.infinity.rest.seguridad.Secured;
@@ -15,6 +17,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -86,7 +89,7 @@ public class ComercializadoraproductoFacadeREST extends AbstractFacade<Comercial
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Comercializadoraproducto entity) {
@@ -115,7 +118,7 @@ public class ComercializadoraproductoFacadeREST extends AbstractFacade<Comercial
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -151,7 +154,7 @@ public class ComercializadoraproductoFacadeREST extends AbstractFacade<Comercial
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Comercializadoraproducto entity) {
@@ -179,7 +182,7 @@ public class ComercializadoraproductoFacadeREST extends AbstractFacade<Comercial
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -215,7 +218,7 @@ public class ComercializadoraproductoFacadeREST extends AbstractFacade<Comercial
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -241,10 +244,49 @@ public class ComercializadoraproductoFacadeREST extends AbstractFacade<Comercial
         }
 
     }
+    
+    
+    @GET
+    @Path("/porComercializadora")
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findXComer(@QueryParam("codigocomercializadora") String codigocomercializadora) {
+        try {
+            
+            ComercializadoraproductoPK entity = new ComercializadoraproductoPK();
+            entity.setCodigocomercializadora(codigocomercializadora);
+ 
+                  
+            TypedQuery<Comercializadoraproducto> consultaComerProd = em.createNamedQuery("Comercializadoraproducto.findByCodigocomercializadora", Comercializadoraproducto.class);
+            consultaComerProd.setParameter("codigocomercializadora", codigocomercializadora);
+            
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            List<Comercializadoraproducto> lst = new ArrayList<>();
+            lst = consultaComerProd.getResultList();
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+    
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

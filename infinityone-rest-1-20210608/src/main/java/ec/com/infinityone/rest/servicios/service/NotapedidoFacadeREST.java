@@ -114,7 +114,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
 //    public Response create1(Notapedido entity) {
@@ -171,7 +171,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigoabastecedora") String codigoabastecedora, 
@@ -207,7 +207,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Notapedido entity) {
@@ -235,7 +235,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigoabastecedora") String codigoabastecedora, 
@@ -272,7 +272,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
     
     @GET
     @Path("/paraFactura")  
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigoabastecedora") String codigoabastecedora, 
@@ -288,19 +288,29 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
             //entity.setNumero(numero);
             List<Notapedido> lst = new ArrayList<>();
             //List<EnvioPedidoRest> lst = new ArrayList<>();
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd");  
-            String date = "2021/06/18";
+            
+//            DateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd");  
+//            String date = "2021/06/18";
+//            
             if(tipofecha.equals("1")){
                 System.out.println("1");
-                StringBuilder sb = new StringBuilder();
-                    sb.append("select *")
-                    .append(" FROM Notapedido n join Detallenotapedido d" )
-                    .append(" on n.numero = d.numero")
-                    .append(" where n.codigoabastecedora = '").append(codigoabastecedora).append("'")
-                    .append(" and n.codigocomercializadora = '").append(codigocomercializadora).append("'")
-                    .append(" and n.codigoterminal = '").append(codigoterminal).append("'")
-                    .append(" and n.fechaventa = '").append(date).append("'");
-                Query qry = em.createNativeQuery(sb.toString(), Notapedido.class);
+//                StringBuilder sb = new StringBuilder();
+//                    sb.append("select *")
+//                    .append(" FROM Notapedido n join Detallenotapedido d" )
+//                    .append(" on n.numero = d.numero")
+//                    .append(" where n.codigoabastecedora = '").append(codigoabastecedora).append("'")
+//                    .append(" and n.codigocomercializadora = '").append(codigocomercializadora).append("'")
+//                    .append(" and n.codigoterminal = '").append(codigoterminal).append("'")
+//                    .append(" and n.fechaventa = '").append(date).append("'");
+//                Query qry = em.createNativeQuery(sb.toString(), Notapedido.class);
+                
+                TypedQuery<Notapedido> consultaPorFVenta = em.createNamedQuery("Notapedido.findForVenta", Notapedido.class);
+                consultaPorFVenta.setParameter("codigoabastecedora", codigoabastecedora);
+                consultaPorFVenta.setParameter("codigocomercializadora", codigocomercializadora);
+                consultaPorFVenta.setParameter("codigoterminal", codigoterminal);
+                //consultaPorAbastecedora.setParameter("tipofecha", tipofecha);
+                consultaPorFVenta.setParameter("fecha", fecha);
+                
                 /*TypedQuery<Notapedido> consultaPorAbastecedora = em.createNamedQuery("Notapedido.findForVenta", Notapedido.class);
                 //TypedQuery<Notapedido> consultaPorAbastecedora = em.createQuery("SELECT * FROM Notapedido n join Detallenotapeido d on n.numero = d.numero WHERE n.notapedidoPK.codigoabastecedora = :codigoabastecedora and n.notapedidoPK.codigocomercializadora = :codigocomercializadora and n.codigoterminal.codigo = :codigoterminal and n.fechaventa = :fecha");
                 consultaPorAbastecedora.setParameter("codigoabastecedora", codigoabastecedora);
@@ -308,16 +318,16 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
                 consultaPorAbastecedora.setParameter("codigoterminal", codigoterminal);
                 //consultaPorAbastecedora.setParameter("tipofecha", tipofecha);
                 consultaPorAbastecedora.setParameter("fecha", fecha);*/
-                lst = qry.getResultList();
+                lst = consultaPorFVenta.getResultList();
             }else {
                 System.out.println("2");
-                TypedQuery<Notapedido> consultaPorAbastecedora = em.createNamedQuery("Notapedido.findForDespacho", Notapedido.class);
-                consultaPorAbastecedora.setParameter("codigoabastecedora", codigoabastecedora);
-                consultaPorAbastecedora.setParameter("codigocomercializadora", codigocomercializadora);
-                consultaPorAbastecedora.setParameter("codigoterminal", codigoterminal);
+                TypedQuery<Notapedido> consultaPorFDespacho = em.createNamedQuery("Notapedido.findForDespacho", Notapedido.class);
+                consultaPorFDespacho.setParameter("codigoabastecedora", codigoabastecedora);
+                consultaPorFDespacho.setParameter("codigocomercializadora", codigocomercializadora);
+                consultaPorFDespacho.setParameter("codigoterminal", codigoterminal);
                 //consultaPorAbastecedora.setParameter("tipofecha", tipofecha);
-                consultaPorAbastecedora.setParameter("fecha", fecha);
-                lst = consultaPorAbastecedora.getResultList();
+                consultaPorFDespacho.setParameter("fecha", fecha);
+                lst = consultaPorFDespacho.getResultList();
             }
             
             EjecucionMensaje succesMessage = new EjecucionMensaje();
@@ -325,7 +335,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
             succesMessage.setDeveloperMessage("ejecuciòn correcta");
             //List<Notapedido> lst = new ArrayList<>();
             //lst = consultaPorAbastecedora.getResultList();
-            lst.add(super.find(entity));
+            //lst.add(super.find(entity));
             succesMessage.setRetorno(lst);
             return Response.status(200)
                     .entity(succesMessage)
@@ -345,11 +355,11 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
 
       @POST
     @Path("/tramaOE") 
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"}) 
-    public Response find(EnvioPedidoREST entity, @QueryParam("nfactura") String nfactura, 
-            @QueryParam("clave") String clave) {
+    public Response find(@QueryParam("nfactura") String nfactura, 
+            @QueryParam("clave") String clave, EnvioPedidoREST entity) {
         try {
             
             String tramaResp = "-";
@@ -382,7 +392,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
     
     
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -411,7 +421,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -420,7 +430,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {
@@ -437,7 +447,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
 
     @POST
     @Path("/envio")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response envio(NotaPedidoSOAP entity) {
@@ -495,7 +505,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
 
     @GET
     @Path("/cancelacion")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response anulacion(NotaPedidoSOAP entity) {
@@ -590,4 +600,5 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
     public void setServicioDetalleNP(DetallenotapedidoFacadeREST servicioDetalleNP) {
         this.servicioDetalleNP = servicioDetalleNP;
     }
+        
 }

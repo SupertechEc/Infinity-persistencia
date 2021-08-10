@@ -15,6 +15,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -94,7 +95,7 @@ public class ListaprecioterminalproductoFacadeREST extends AbstractFacade<Listap
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Listaprecioterminalproducto entity) {
@@ -123,7 +124,7 @@ public class ListaprecioterminalproductoFacadeREST extends AbstractFacade<Listap
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -163,7 +164,7 @@ public class ListaprecioterminalproductoFacadeREST extends AbstractFacade<Listap
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Listaprecioterminalproducto entity) {
@@ -191,7 +192,7 @@ public class ListaprecioterminalproductoFacadeREST extends AbstractFacade<Listap
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -231,7 +232,7 @@ public class ListaprecioterminalproductoFacadeREST extends AbstractFacade<Listap
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -260,7 +261,7 @@ public class ListaprecioterminalproductoFacadeREST extends AbstractFacade<Listap
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -269,7 +270,7 @@ public class ListaprecioterminalproductoFacadeREST extends AbstractFacade<Listap
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {
@@ -281,4 +282,46 @@ public class ListaprecioterminalproductoFacadeREST extends AbstractFacade<Listap
         return em;
     }
 
+     @GET
+    @Path("/paraPreciodos")
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findPorProd(@QueryParam("codigocomercializadora") String codigocomercializadora, @QueryParam("codigoproducto") String codigoproducto,
+                         @QueryParam("codigomedida") String codigomedida) {
+        try {
+            
+            ListaprecioterminalproductoPK entity = new ListaprecioterminalproductoPK();
+            entity.setCodigocomercializadora(codigocomercializadora);
+            entity.setCodigoproducto(codigoproducto);
+            entity.setCodigomedida(codigomedida);
+            
+            TypedQuery<Listaprecioterminalproducto> consulta = em.createNamedQuery("Listaprecioterminalproducto.paraPreciodos", Listaprecioterminalproducto.class);
+            consulta.setParameter("codigocomercializadora", codigocomercializadora);
+            consulta.setParameter("codigoproducto", codigoproducto);
+            consulta.setParameter("codigomedida", codigomedida);            
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            List<Listaprecioterminalproducto> lst = new ArrayList<>();
+            lst = consulta.getResultList();
+            //lst.add(super.find(entity));
+            //lst.add(clip.)
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+    
 }

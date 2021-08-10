@@ -89,7 +89,7 @@ public class ConsultapagofacturaunicaFacadeREST extends AbstractFacade<Consultap
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Consultapagofacturaunica entity) {
@@ -118,7 +118,7 @@ public class ConsultapagofacturaunicaFacadeREST extends AbstractFacade<Consultap
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(Consultapagofacturaunica entity) {
@@ -146,7 +146,7 @@ public class ConsultapagofacturaunicaFacadeREST extends AbstractFacade<Consultap
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Consultapagofacturaunica entity) {
@@ -174,7 +174,7 @@ public class ConsultapagofacturaunicaFacadeREST extends AbstractFacade<Consultap
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(ConsultapagofacturaunicaPK entity) {
@@ -203,7 +203,7 @@ public class ConsultapagofacturaunicaFacadeREST extends AbstractFacade<Consultap
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -232,7 +232,7 @@ public class ConsultapagofacturaunicaFacadeREST extends AbstractFacade<Consultap
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -241,7 +241,7 @@ public class ConsultapagofacturaunicaFacadeREST extends AbstractFacade<Consultap
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

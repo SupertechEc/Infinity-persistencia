@@ -74,7 +74,7 @@ public class ConsultafacturaunicaFacadeREST extends AbstractFacade<Consultafactu
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Consultafacturaunica entity) {
@@ -103,7 +103,7 @@ public class ConsultafacturaunicaFacadeREST extends AbstractFacade<Consultafactu
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(Consultafacturaunica entity) {
@@ -131,7 +131,7 @@ public class ConsultafacturaunicaFacadeREST extends AbstractFacade<Consultafactu
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Consultafacturaunica entity) {
@@ -159,7 +159,7 @@ public class ConsultafacturaunicaFacadeREST extends AbstractFacade<Consultafactu
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(Consultafacturaunica entity) {
@@ -188,7 +188,7 @@ public class ConsultafacturaunicaFacadeREST extends AbstractFacade<Consultafactu
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -217,7 +217,7 @@ public class ConsultafacturaunicaFacadeREST extends AbstractFacade<Consultafactu
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -226,7 +226,7 @@ public class ConsultafacturaunicaFacadeREST extends AbstractFacade<Consultafactu
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {
@@ -239,7 +239,7 @@ public class ConsultafacturaunicaFacadeREST extends AbstractFacade<Consultafactu
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     @Path("/actualizacion")

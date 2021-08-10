@@ -63,7 +63,7 @@ public class DireccioninenFacadeREST extends AbstractFacade<Direccioninen> {
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Direccioninen entity) {
@@ -92,7 +92,7 @@ public class DireccioninenFacadeREST extends AbstractFacade<Direccioninen> {
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigo") String codigo) {
@@ -120,7 +120,7 @@ public class DireccioninenFacadeREST extends AbstractFacade<Direccioninen> {
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Direccioninen entity) {
@@ -148,7 +148,7 @@ public class DireccioninenFacadeREST extends AbstractFacade<Direccioninen> {
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigo") String codigo) {
@@ -177,7 +177,7 @@ public class DireccioninenFacadeREST extends AbstractFacade<Direccioninen> {
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -206,7 +206,7 @@ public class DireccioninenFacadeREST extends AbstractFacade<Direccioninen> {
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -215,7 +215,7 @@ public class DireccioninenFacadeREST extends AbstractFacade<Direccioninen> {
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

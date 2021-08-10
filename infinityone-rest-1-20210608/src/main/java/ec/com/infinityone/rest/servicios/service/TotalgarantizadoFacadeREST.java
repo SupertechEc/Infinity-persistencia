@@ -82,7 +82,7 @@ public class TotalgarantizadoFacadeREST extends AbstractFacade<Totalgarantizado>
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Totalgarantizado entity) {
@@ -111,7 +111,7 @@ public class TotalgarantizadoFacadeREST extends AbstractFacade<Totalgarantizado>
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -145,7 +145,7 @@ public class TotalgarantizadoFacadeREST extends AbstractFacade<Totalgarantizado>
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Totalgarantizado entity) {
@@ -173,7 +173,7 @@ public class TotalgarantizadoFacadeREST extends AbstractFacade<Totalgarantizado>
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigocomercializadora") String codigocomercializadora, 
@@ -207,7 +207,7 @@ public class TotalgarantizadoFacadeREST extends AbstractFacade<Totalgarantizado>
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -236,7 +236,7 @@ public class TotalgarantizadoFacadeREST extends AbstractFacade<Totalgarantizado>
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -245,7 +245,7 @@ public class TotalgarantizadoFacadeREST extends AbstractFacade<Totalgarantizado>
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

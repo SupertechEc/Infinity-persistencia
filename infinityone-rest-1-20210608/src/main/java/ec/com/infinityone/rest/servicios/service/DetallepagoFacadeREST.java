@@ -20,6 +20,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -95,7 +96,7 @@ public class DetallepagoFacadeREST extends AbstractFacade<Detallepago> {
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Detallepago entity) {
@@ -124,7 +125,7 @@ public class DetallepagoFacadeREST extends AbstractFacade<Detallepago> {
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigoabastecedora") String codigoabastecedora, 
@@ -166,7 +167,7 @@ public class DetallepagoFacadeREST extends AbstractFacade<Detallepago> {
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Detallepago entity) {
@@ -194,7 +195,7 @@ public class DetallepagoFacadeREST extends AbstractFacade<Detallepago> {
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigoabastecedora") String codigoabastecedora, 
@@ -236,7 +237,7 @@ public class DetallepagoFacadeREST extends AbstractFacade<Detallepago> {
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -265,7 +266,7 @@ public class DetallepagoFacadeREST extends AbstractFacade<Detallepago> {
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -274,7 +275,7 @@ public class DetallepagoFacadeREST extends AbstractFacade<Detallepago> {
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {
@@ -286,4 +287,40 @@ public class DetallepagoFacadeREST extends AbstractFacade<Detallepago> {
         return em;
     }
 
+    @GET
+    @Path("/porNumero")
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findComerFecha(@QueryParam("numero") String numero) {
+        try {
+            
+            DetallepagoPK  entity = new DetallepagoPK();
+            
+            entity.setNumero(numero);
+             
+            TypedQuery<Detallepago> consultaPagoComerFecha = em.createNamedQuery("Detallepago.findByNumero", Detallepago.class);
+            consultaPagoComerFecha.setParameter("numero", numero);
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            List<Detallepago> lst = new ArrayList<>();
+            lst = consultaPagoComerFecha.getResultList();
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+    
 }

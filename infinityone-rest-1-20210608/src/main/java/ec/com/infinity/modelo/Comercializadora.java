@@ -182,8 +182,9 @@ public class Comercializadora implements Serializable {
     @Size(min = 1, max = 4)
     @Column(name = "codigo")
     private String codigo;
+    @Size(min = 1, max = 6)
     @Column(name = "escontribuyenteespacial")
-    private Boolean escontribuyenteespacial;
+    private String escontribuyenteespacial;
     @Column(name = "diasplazocredito")
     private Short diasplazocredito;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
@@ -238,11 +239,11 @@ public class Comercializadora implements Serializable {
     }
 
 
-    public Boolean getEscontribuyenteespacial() {
+    public String getEscontribuyenteespacial() {
         return escontribuyenteespacial;
     }
 
-    public void setEscontribuyenteespacial(Boolean escontribuyenteespacial) {
+    public void setEscontribuyenteespacial(String escontribuyenteespacial) {
         this.escontribuyenteespacial = escontribuyenteespacial;
     }
 

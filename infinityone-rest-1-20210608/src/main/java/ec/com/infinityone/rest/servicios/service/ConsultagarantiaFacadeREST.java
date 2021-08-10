@@ -89,7 +89,7 @@ public class ConsultagarantiaFacadeREST extends AbstractFacade<Consultagarantia>
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Consultagarantia entity) {
@@ -118,7 +118,7 @@ public class ConsultagarantiaFacadeREST extends AbstractFacade<Consultagarantia>
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(Consultagarantia entity) {
@@ -146,7 +146,7 @@ public class ConsultagarantiaFacadeREST extends AbstractFacade<Consultagarantia>
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Consultagarantia entity) {
@@ -174,7 +174,7 @@ public class ConsultagarantiaFacadeREST extends AbstractFacade<Consultagarantia>
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(ConsultagarantiaPK entity) {
@@ -202,13 +202,14 @@ public class ConsultagarantiaFacadeREST extends AbstractFacade<Consultagarantia>
         }
     }
 
-    @GET
-    @Secured
+    @POST
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     @Path("/actualizacion")
     public Response consultaSOAPGarantia(ParametrosSOAP parametros) {
         try {
+            System.out.println("FT:: consultaSOAPGarantia");
             ConsultaGarantiaExecute paramWS = new ConsultaGarantiaExecute();
             ConsultaGarantiaExecuteResponse respuesta = new ConsultaGarantiaExecuteResponse();
 
@@ -270,7 +271,7 @@ public class ConsultagarantiaFacadeREST extends AbstractFacade<Consultagarantia>
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -305,7 +306,7 @@ public class ConsultagarantiaFacadeREST extends AbstractFacade<Consultagarantia>
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -314,7 +315,7 @@ public class ConsultagarantiaFacadeREST extends AbstractFacade<Consultagarantia>
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {

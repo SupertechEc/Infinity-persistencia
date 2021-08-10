@@ -50,6 +50,7 @@ import javax.xml.bind.annotation.XmlTransient;
             + " and p.fechafin = NULL"
             + " ORDER BY p.precioPK.secuencial  DESC" ),
     @NamedQuery(name = "Precio.findByCodigocomercializadora", query = "SELECT p FROM Precio p WHERE p.precioPK.codigocomercializadora = :codigocomercializadora"),
+    @NamedQuery(name = "Precio.findByCodigocomercializadoraYEstado", query = "SELECT p FROM Precio p WHERE p.precioPK.codigocomercializadora = :codigocomercializadora and p.activo = :activo"),
     @NamedQuery(name = "Precio.findByCodigoterminal", query = "SELECT p FROM Precio p WHERE p.precioPK.codigoterminal = :codigoterminal"),
     @NamedQuery(name = "Precio.findByCodigoproducto", query = "SELECT p FROM Precio p WHERE p.precioPK.codigoproducto = :codigoproducto"),
     @NamedQuery(name = "Precio.findByCodigomedida", query = "SELECT p FROM Precio p WHERE p.precioPK.codigomedida = :codigomedida"),

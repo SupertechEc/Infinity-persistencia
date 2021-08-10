@@ -113,6 +113,8 @@ public class Notapedido implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "usuarioactual")
     private String usuarioactual;
+     @Column(name = "procesar")
+    private boolean procesar;
     
     
     @JoinColumn(name = "codigoabastecedora", referencedColumnName = "codigo", insertable = false, updatable = false)
@@ -347,6 +349,16 @@ public class Notapedido implements Serializable {
         this.prefijo = prefijo;
     }
 
+    public boolean isProcesar() {
+        return procesar;
+    }
+
+    public void setProcesar(boolean procesar) {
+        this.procesar = procesar;
+    }
+
+    
+    
     @Override
     public int hashCode() {
         int hash = 0;

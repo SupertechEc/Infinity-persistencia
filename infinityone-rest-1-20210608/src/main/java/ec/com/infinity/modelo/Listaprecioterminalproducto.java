@@ -31,6 +31,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Listaprecioterminalproducto.findAll", query = "SELECT l FROM Listaprecioterminalproducto l"),
     @NamedQuery(name = "Listaprecioterminalproducto.findByCodigocomercializadora", query = "SELECT l FROM Listaprecioterminalproducto l WHERE l.listaprecioterminalproductoPK.codigocomercializadora = :codigocomercializadora"),
+    @NamedQuery(name = "Listaprecioterminalproducto.paraPreciodos", query = "SELECT l FROM Listaprecioterminalproducto l WHERE l.listaprecioterminalproductoPK.codigocomercializadora = :codigocomercializadora"
+            + " and l.listaprecioterminalproductoPK.codigoproducto = :codigoproducto"
+            + " and l.listaprecioterminalproductoPK.codigomedida = :codigomedida"),
     @NamedQuery(name = "Listaprecioterminalproducto.findByCodigolistaprecio", query = "SELECT l FROM Listaprecioterminalproducto l WHERE l.listaprecioterminalproductoPK.codigolistaprecio = :codigolistaprecio"),
     @NamedQuery(name = "Listaprecioterminalproducto.findByCodigoterminal", query = "SELECT l FROM Listaprecioterminalproducto l WHERE l.listaprecioterminalproductoPK.codigoterminal = :codigoterminal"),
     @NamedQuery(name = "Listaprecioterminalproducto.findByCodigoproducto", query = "SELECT l FROM Listaprecioterminalproducto l WHERE l.listaprecioterminalproductoPK.codigoproducto = :codigoproducto"),

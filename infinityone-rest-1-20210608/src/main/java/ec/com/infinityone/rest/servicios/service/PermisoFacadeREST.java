@@ -83,7 +83,7 @@ public class PermisoFacadeREST extends AbstractFacade<Permiso> {
     }
 
     @POST
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response create1(Permiso entity) {
@@ -112,7 +112,7 @@ public class PermisoFacadeREST extends AbstractFacade<Permiso> {
 
     @DELETE
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("niveloperacion") String niveloperacion, 
@@ -145,7 +145,7 @@ public class PermisoFacadeREST extends AbstractFacade<Permiso> {
 
     @PUT
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response edit1(Permiso entity) {
@@ -173,7 +173,7 @@ public class PermisoFacadeREST extends AbstractFacade<Permiso> {
 
     @GET
     @Path("/porId")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("niveloperacion") String niveloperacion, 
@@ -207,7 +207,7 @@ public class PermisoFacadeREST extends AbstractFacade<Permiso> {
     }
 
     @GET
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findAll2() {
@@ -236,7 +236,7 @@ public class PermisoFacadeREST extends AbstractFacade<Permiso> {
 
     @GET
     @Path("{from}/{to}")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -245,7 +245,7 @@ public class PermisoFacadeREST extends AbstractFacade<Permiso> {
 
     @GET
     @Path("count")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response countREST() {
@@ -260,7 +260,7 @@ public class PermisoFacadeREST extends AbstractFacade<Permiso> {
     
     @GET
     @Path("/accesos")
-    @Secured
+    //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response findaccesos(@QueryParam("niveloperacion") String niveloperacion) {
