@@ -71,6 +71,12 @@ public class Cuotarubroterceros implements Serializable {
     @Size(max = 100)
     @Column(name = "usuarioactual")
     private String usuarioactual;
+     @Size(max = 3)
+    @Column(name = "tipocobro")
+    private String tipocobro;
+     @Column(name = "fechainiciocobro")
+    @Temporal(TemporalType.DATE)
+    private Date fechainiciocobro;
     @JoinColumns({
         @JoinColumn(name = "codigocomercializadora", referencedColumnName = "codigocomercializadora", insertable = false, updatable = false),
         @JoinColumn(name = "codigorubrotercero", referencedColumnName = "codigorubrotercero", insertable = false, updatable = false),
@@ -168,5 +174,23 @@ public class Cuotarubroterceros implements Serializable {
     public String toString() {
         return "ec.com.infinity.modelo.Cuotarubroterceros[ cuotarubrotercerosPK=" + cuotarubrotercerosPK + " ]";
     }
+
+    public String getTipocobro() {
+        return tipocobro;
+    }
+
+    public void setTipocobro(String tipocobro) {
+        this.tipocobro = tipocobro;
+    }
+
+    public Date getFechainiciocobro() {
+        return fechainiciocobro;
+    }
+
+    public void setFechainiciocobro(Date fechainiciocobro) {
+        this.fechainiciocobro = fechainiciocobro;
+    }
+    
+    
     
 }
