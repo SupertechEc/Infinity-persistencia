@@ -10,11 +10,13 @@ import ec.com.infinity.modelo.ListaprecioterminalproductoPK;
 import ec.com.infinity.rest.seguridad.EjecucionMensaje;
 import ec.com.infinity.rest.seguridad.ErrorMessage;
 import ec.com.infinity.rest.seguridad.Secured;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -282,7 +284,7 @@ public class ListaprecioterminalproductoFacadeREST extends AbstractFacade<Listap
         return em;
     }
 
-     @GET
+    @GET
     @Path("/paraPreciodos")
     //@Secured
     @Consumes({"application/json"})
@@ -322,6 +324,113 @@ public class ListaprecioterminalproductoFacadeREST extends AbstractFacade<Listap
                     .type(MediaType.APPLICATION_JSON).
                     build();
         }
+    }
+    
+    @GET
+    @Path("/porLista")
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findPorCodLista(@QueryParam("codigolistaprecio") String codigolistaprecio) {
+        try {
+            
+            ListaprecioterminalproductoPK entity = new ListaprecioterminalproductoPK();
+            entity.setCodigolistaprecio(codigolistaprecio);
+            TypedQuery<Listaprecioterminalproducto> consulta = em.createNamedQuery("Listaprecioterminalproducto.findByCodigolistaprecio", Listaprecioterminalproducto.class);
+            consulta.setParameter("codigolistaprecio", codigolistaprecio);
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            List<Listaprecioterminalproducto> lst = new ArrayList<>();
+            lst = consulta.getResultList();
+            //lst.add(super.find(entity));
+            //lst.add(clip.)
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+    
+    @GET
+    @Path("/paraPrecioUno")
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findDiferenteTerminal(@QueryParam("codigocomercializadora") String codigocomercializadora, @QueryParam("codigoproducto") String codigoproducto,
+                         @QueryParam("codigomedida") String codigomedida) {
+        
+        ListaprecioterminalproductoPK entity = new ListaprecioterminalproductoPK();
+        Listaprecioterminalproducto entityPrincipal = new Listaprecioterminalproducto();
+        
+        List<Object[]> objetosList;
+        StringBuilder sqlQuery = new StringBuilder();
+        List<Listaprecioterminalproducto> lista = new ArrayList<>();
+       sqlQuery.append("SELECT DISTINCT on(codigocomercializadora, codigolistaprecio, codigoproducto, codigomedida) codigocomercializadora, codigolistaprecio, codigoproducto, codigomedida, codigoterminal, margenporcentaje, margenvalorcomercializadora, usuarioactual")
+               .append(" FROM public.listaprecioterminalproducto")
+               .append(" where codigocomercializadora= :pcodigocomercializadora and codigoproducto = :pcodigoproducto and codigomedida = :pcodigomedida")
+               .append(" order by codigoproducto");
+
+        System.out.println("findMejorCliente FT:: "+ sqlQuery.toString());
+       try {
+            Query qry = this.em.createNativeQuery(sqlQuery.toString());
+            qry.setParameter("pcodigocomercializadora", codigocomercializadora);
+            qry.setParameter("pcodigoproducto", codigoproducto);
+            qry.setParameter("pcodigomedida", codigomedida);
+            //lista = qry.getResultList();
+            objetosList = qry.getResultList();
+
+            for (Object[] o : objetosList) {
+                Listaprecioterminalproducto obj = new Listaprecioterminalproducto();
+                ListaprecioterminalproductoPK objPk = new ListaprecioterminalproductoPK();
+                objPk.setCodigocomercializadora(String.valueOf(o[0]));
+                objPk.setCodigolistaprecio(String.valueOf(o[1]));
+                objPk.setCodigoproducto(String.valueOf(o[2]));
+                objPk.setCodigomedida(String.valueOf(o[3]));
+                objPk.setCodigoterminal(String.valueOf(o[4]));
+                obj.setListaprecioterminalproductoPK(objPk);
+                BigDecimal valorAux = new BigDecimal(String.valueOf(o[5]));
+                if (valorAux == new BigDecimal("-99")){
+                    obj.setMargenporcentaje((BigDecimal)null);
+                }else{
+                     obj.setMargenporcentaje(valorAux);
+                }
+                valorAux = new BigDecimal(String.valueOf(o[6]));
+                if (valorAux == new BigDecimal("-99")){
+                    obj.setMargenvalorcomercializadora((BigDecimal)null);
+                }else{
+                     obj.setMargenvalorcomercializadora(valorAux);
+                }
+                obj.setUsuarioactual(String.valueOf(o[7]));
+                lista.add(obj);
+            }
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecuciòn correcta");
+            succesMessage.setRetorno(lista);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }   
     }
     
 }

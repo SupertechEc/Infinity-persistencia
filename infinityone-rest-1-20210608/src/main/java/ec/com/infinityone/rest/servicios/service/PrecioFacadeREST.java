@@ -10,12 +10,15 @@ import ec.com.infinity.modelo.PrecioPK;
 import ec.com.infinity.rest.seguridad.EjecucionMensaje;
 import ec.com.infinity.rest.seguridad.ErrorMessage;
 import ec.com.infinity.rest.seguridad.Secured;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
+import javax.management.openmbean.SimpleType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -351,4 +354,76 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
         return em;
     }
 
+     
+    @POST
+    @Path("/agregar")  
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response crearAutonumerado(Precio entity) {
+        
+        StringBuilder sqlQuery = new StringBuilder();
+        
+        
+        //entity.getRubroterceroPK().getCodigo()
+        String auxCC = entity.getPrecioPK().getCodigocomercializadora().trim();
+        String auxTer = entity.getPrecioPK().getCodigoterminal().trim();
+        String auxProd = entity.getPrecioPK().getCodigoproducto().trim();
+        String auxMed = entity.getPrecioPK().getCodigomedida().trim();
+        String auxLisPre = entity.getPrecioPK().getCodigolistaprecio().trim();
+        Date auxFeIni = entity.getPrecioPK().getFechainicio();
+        int  auxSec = entity.getPrecioPK().getSecuencial();
+        String auxCod = entity.getPrecioPK().getCodigoPrecio();
+        
+        Date auxFeFin = entity.getFechafin();
+        boolean auxAct = entity.getActivo(); 
+        String auxObs = entity.getObservacion().trim();
+        BigDecimal auxPrePro = entity.getPrecioproducto();
+        String auxUsu = entity.getUsuarioactual().trim();
+        
+        //codigo,
+        //:pcodigo,
+       sqlQuery.append("insert into public.precio "
+               + "(codigocomercializadora, codigoterminal, codigoproducto, codigomedida, codigolistaprecio, "
+               + " fechainicio, secuencial, fechafin, activo, observacion, precioproducto, usuarioactual)"
+               + " values (:pcodigocomercializadora, :pcodigoterminal, :pcodigoproducto, :pcodigomedida, :pcodigolistaprecio, "
+               + " :pfechainicio, :psecuencial,  :pfechafin, :pactivo, :pobservacion, :pprecioproducto, :pusuarioactual)"); 
+       System.out.println("INSERTAR RUBRO TERCERO FT:: "+ sqlQuery.toString());
+       try {
+            Query qry = this.em.createNativeQuery(sqlQuery.toString());
+            qry.setParameter("pcodigocomercializadora", auxCC);
+            qry.setParameter("pcodigoterminal", auxTer);
+            qry.setParameter("pcodigoproducto", auxProd);
+            qry.setParameter("pcodigomedida", auxMed);
+            qry.setParameter("pcodigolistaprecio", auxLisPre);
+            qry.setParameter("pfechainicio", auxFeIni);
+            qry.setParameter("psecuencial", auxSec);
+          //  qry.setParameter("pcodigo", auxCod);
+            qry.setParameter("pfechafin", auxFeIni);
+            qry.setParameter("pactivo", auxAct);
+            qry.setParameter("pobservacion", auxObs); 
+            qry.setParameter("pprecioproducto", auxPrePro);
+            qry.setParameter("pusuarioactual", auxUsu);
+             qry.executeUpdate();
+
+            
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("Inserción correcta");
+            
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }   
+    }
+    
 }
