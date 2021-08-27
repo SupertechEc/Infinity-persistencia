@@ -86,7 +86,7 @@ public class Detalleprecio implements Serializable {
         this.usuarioactual = usuarioactual;
     }
 
-    public Detalleprecio(String codigocomercializadora, String codigoterminal, String codigoproducto, String codigomedida, String codigolistaprecio, Date fechainicio, int secuencial, String codigo, String codigogravamen) {
+    public Detalleprecio(String codigocomercializadora, String codigoterminal, String codigoproducto, String codigomedida, String codigolistaprecio, Date fechainicio, int secuencial, long codigo, String codigogravamen) {
         this.detalleprecioPK = new DetalleprecioPK(codigocomercializadora, codigoterminal, codigoproducto, codigomedida, codigolistaprecio, fechainicio, secuencial, codigo, codigogravamen);
     }
 

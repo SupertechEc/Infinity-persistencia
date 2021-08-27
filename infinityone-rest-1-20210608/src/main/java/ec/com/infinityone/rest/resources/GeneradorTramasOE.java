@@ -46,7 +46,7 @@ public class GeneradorTramasOE {
     StringBuilder sb = new StringBuilder();
     String f = sdf.format(entidad.getNotapedido().getFechaventa());
     trama = trama + f;
-    System.out.println("7- generarTramaEnvioOE trama: "+trama);    
+    System.out.println("7- generarTramaEnvioOE trama: fec + tra "+entidad.getNotapedido().getFechaventa()+" tra- "+trama);    
     
     //WPE IDECLI	numeric(8.0)	CÓDIGO DE CLIENTE.
     trama = trama+ entidad.getNotapedido().getCodigocliente().getCodigo();
@@ -82,7 +82,15 @@ public class GeneradorTramasOE {
     trama = trama+ String.format("%25s", "0").replace(' ','0');
         System.out.println("16- generarTramaEnvioOE trama: "+trama);    
     //WPE FACSRI	Numeric (13.0)	# FACTURA DE SRI
-    trama = trama+ nfactura;  
+        //001001000000099 
+        System.out.println("17antes- nfactura: "+nfactura);    
+    String nestsri = nfactura.substring(0, 3);
+    System.out.println("17antes- nfactura: "+nestsri);
+    String nptosri = nfactura.substring(3, 6);
+    System.out.println("17antes- nfactura: "+nptosri);
+    String nfacsri = nfactura.substring(8, 15);
+    System.out.println("17antes- nfactura: "+nfacsri);
+    trama = trama+ nestsri + nptosri + nfacsri;  
             System.out.println("17- generarTramaEnvioOE trama: "+trama);    
     //FL	char(22)	Espacio en blanco va con cero
     trama = trama+ String.format("%22s", "0").replace(' ','0');    

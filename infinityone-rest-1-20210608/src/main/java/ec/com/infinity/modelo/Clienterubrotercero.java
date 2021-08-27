@@ -38,6 +38,12 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Clienterubrotercero.findAll", query = "SELECT c FROM Clienterubrotercero c"),
     @NamedQuery(name = "Clienterubrotercero.findByCodigocomercializadora", query = "SELECT c FROM Clienterubrotercero c WHERE c.clienterubroterceroPK.codigocomercializadora = :codigocomercializadora"),
+    @NamedQuery(name = "Clienterubrotercero.findByFAC", query = "SELECT c FROM Clienterubrotercero c "
+            + "WHERE c.clienterubroterceroPK.codigocomercializadora = :codigocomercializadora"
+            + " and c.clienterubroterceroPK.codigocliente = :codigocliente"
+            + " and c.tipocobro = :tipocobro"
+            + " and c.activo = :activo"
+            + " and c.fechainiciocobro <= :fechainiciocobro"),
     @NamedQuery(name = "Clienterubrotercero.findByCodigorubrotercero", query = "SELECT c FROM Clienterubrotercero c WHERE c.clienterubroterceroPK.codigorubrotercero = :codigorubrotercero"),
     @NamedQuery(name = "Clienterubrotercero.findByCodigocliente", query = "SELECT c FROM Clienterubrotercero c WHERE c.clienterubroterceroPK.codigocliente = :codigocliente"),
     @NamedQuery(name = "Clienterubrotercero.findByValor", query = "SELECT c FROM Clienterubrotercero c WHERE c.valor = :valor"),
@@ -68,6 +74,8 @@ public class Clienterubrotercero implements Serializable {
     @Column(name = "fechainiciocobro")
     @Temporal(TemporalType.DATE)
     private Date fechainiciocobro;
+    @Column(name = "activo")
+    private boolean activo;
     
     @JoinColumns({
         @JoinColumn(name = "codigocomercializadora", referencedColumnName = "codigocomercializadora", insertable = false, updatable = false),
@@ -190,6 +198,14 @@ public class Clienterubrotercero implements Serializable {
 
     public void setFechainiciocobro(Date fechainiciocobro) {
         this.fechainiciocobro = fechainiciocobro;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
     
     

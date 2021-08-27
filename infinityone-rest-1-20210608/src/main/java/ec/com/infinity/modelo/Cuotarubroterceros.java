@@ -45,6 +45,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Cuotarubroterceros.findByCodigocomercializadora", query = "SELECT c FROM Cuotarubroterceros c WHERE c.cuotarubrotercerosPK.codigocomercializadora = :codigocomercializadora"),
     @NamedQuery(name = "Cuotarubroterceros.findByCodigorubrocliente", query = "SELECT c FROM Cuotarubroterceros c WHERE c.cuotarubrotercerosPK.codigorubrotercero = :codigorubrotercero"),
     @NamedQuery(name = "Cuotarubroterceros.findByCodigocliente", query = "SELECT c FROM Cuotarubroterceros c WHERE c.cuotarubrotercerosPK.codigocliente = :codigocliente"),
+    @NamedQuery(name = "Cuotarubroterceros.findByComerCli", query = "SELECT c FROM Cuotarubroterceros c WHERE c.cuotarubrotercerosPK.codigocomercializadora = :codigocomercializadora and c.cuotarubrotercerosPK.codigorubrotercero = :codigorubrotercero and c.cuotarubrotercerosPK.codigocliente = :codigocliente"),
     @NamedQuery(name = "Cuotarubroterceros.findByCuota", query = "SELECT c FROM Cuotarubroterceros c WHERE c.cuotarubrotercerosPK.cuota = :cuota"),
     @NamedQuery(name = "Cuotarubroterceros.findByPagada", query = "SELECT c FROM Cuotarubroterceros c WHERE c.pagada = :pagada"),
     @NamedQuery(name = "Cuotarubroterceros.findByFechacobro", query = "SELECT c FROM Cuotarubroterceros c WHERE c.fechacobro = :fechacobro"),

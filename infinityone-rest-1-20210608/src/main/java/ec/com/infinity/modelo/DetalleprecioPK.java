@@ -58,9 +58,9 @@ public class DetalleprecioPK implements Serializable {
     private int secuencial;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 20)
+   // @Size(min = 1, max = 20)
     @Column(name = "codigo")
-    private String codigo;
+    private long codigo;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 4)
@@ -70,7 +70,7 @@ public class DetalleprecioPK implements Serializable {
     public DetalleprecioPK() {
     }
 
-    public DetalleprecioPK(String codigocomercializadora, String codigoterminal, String codigoproducto, String codigomedida, String codigolistaprecio, Date fechainicio, int secuencial, String codigo, String codigogravamen) {
+    public DetalleprecioPK(String codigocomercializadora, String codigoterminal, String codigoproducto, String codigomedida, String codigolistaprecio, Date fechainicio, int secuencial, long codigo, String codigogravamen) {
         this.codigocomercializadora = codigocomercializadora;
         this.codigoterminal = codigoterminal;
         this.codigoproducto = codigoproducto;
@@ -138,11 +138,11 @@ public class DetalleprecioPK implements Serializable {
         this.secuencial = secuencial;
     }
 
-    public String getCodigo() {
+    public long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(String codigo) {
+    public void setCodigo(long codigo) {
         this.codigo = codigo;
     }
 
@@ -164,7 +164,7 @@ public class DetalleprecioPK implements Serializable {
         hash += (codigolistaprecio != null ? codigolistaprecio.hashCode() : 0);
         hash += (fechainicio != null ? fechainicio.hashCode() : 0);
         hash += (int) secuencial;
-        hash += (codigo != null ? codigo.hashCode() : 0);
+        hash += (long) codigo;
         hash += (codigogravamen != null ? codigogravamen.hashCode() : 0);
         return hash;
     }
@@ -197,7 +197,7 @@ public class DetalleprecioPK implements Serializable {
         if (this.secuencial != other.secuencial) {
             return false;
         }
-        if ((this.codigo == null && other.codigo != null) || (this.codigo != null && !this.codigo.equals(other.codigo))) {
+        if (this.codigo != other.codigo) {
             return false;
         }
         if ((this.codigogravamen == null && other.codigogravamen != null) || (this.codigogravamen != null && !this.codigogravamen.equals(other.codigogravamen))) {

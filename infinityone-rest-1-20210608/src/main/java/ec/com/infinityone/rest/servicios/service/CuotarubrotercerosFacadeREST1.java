@@ -25,6 +25,7 @@ import javax.ws.rs.core.PathSegment;
 import ec.com.infinity.rest.seguridad.EjecucionMensaje;
 import ec.com.infinity.rest.seguridad.ErrorMessage;
 import ec.com.infinity.rest.seguridad.Secured;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.persistence.Query;
@@ -301,44 +302,105 @@ public class CuotarubrotercerosFacadeREST1 extends AbstractFacade<Cuotarubroterc
             List<Object[]> objetosList;
             StringBuilder sqlQuery = new StringBuilder();
             List<Cuotarubroterceros> lista = new ArrayList<>();
-            sqlQuery.append("SELECT * FROM Cuotarubroterceros c WHERE codigocliente = :codigocliente ")
-            .append(" and pagada = false ")
-            .append(" and tipocobro = 'FAC'")
+            
+            // DEBE BUSCAR CUOTAS DE CLIENTERUBROS ACTIVOS
+            
+//            SELECT c.* FROM Cuotarubroterceros c, clienterubrotercero cl WHERE 
+//             cl.codigocomercializadora = c.codigocomercializadora
+//             and cl.codigorubrotercero = c.codigorubrotercero
+//				and cl.codigocliente = c.codigocliente 
+//             and c. codigocliente = '02010001' 
+//              and cl.activo = true
+//           and c.pagada = FALSE
+//           and c. tipocobro = 'LIB'
+//		   and c.fechainiciocobro <= '2021-10-05'
+//           and c.fechacobro <= '2021-10-05'
+//           --order by fechacobro  limit 1
+//           UNION
+//           SELECT c.* FROM Cuotarubroterceros c, clienterubrotercero cl WHERE 
+//            cl.codigocomercializadora = c.codigocomercializadora
+//            and cl.codigorubrotercero = c.codigorubrotercero
+//            and cl.codigocliente = c.codigocliente 
+//             and c. codigocliente = '02010001' 
+//             and cl.activo = true
+//           and c.pagada = FALSE
+//           and c. tipocobro = 'MEN'
+//		   and c.fechainiciocobro <= '2021-10-05'
+//           and c.fechacobro <= '2021-10-05'
+//           order by fechacobro  limit 2
+//            
+            sqlQuery.append("SELECT c.* FROM Cuotarubroterceros c, clienterubrotercero cl WHERE  ")
+            .append(" cl.codigocomercializadora = c.codigocomercializadora ") 
+            .append(" and cl.codigorubrotercero = c.codigorubrotercero ")
+            .append(" and cl.codigocliente = c.codigocliente ")
+            .append(" and c.codigocomercializadora = :pcodigocomercializadora ") 
+            .append(" and c.codigocliente = :pcodigocliente ")
+            .append(" and cl.activo = true ")
+            .append(" and c.pagada = false ")
+            .append(" and c.tipocobro = 'LIB' ")
+            .append(" and c.fechainiciocobro <= :pfecha ") 
+            .append(" and c.fechacobro <= :pfecha  ")
             .append(" UNION ")
-            .append(" SELECT * FROM Cuotarubroterceros d ")
-            .append("WHERE codigocliente = :codigocliente ")
-            .append(" and pagada = false")
-            .append(" and tipocobro != 'FAC' ")
-            .append(" and fechacobro <= :fechaventa");
-
+            .append("SELECT c.* FROM Cuotarubroterceros c, clienterubrotercero cl WHERE  ")
+            .append(" cl.codigocomercializadora = c.codigocomercializadora ") 
+            .append(" and cl.codigorubrotercero = c.codigorubrotercero ")
+            .append(" and cl.codigocliente = c.codigocliente ")
+            .append(" and c.codigocomercializadora = :pcodigocomercializadora ") 
+            .append(" and c.codigocliente = :pcodigocliente ")
+            .append(" and cl.activo = true ")
+            .append(" and c.pagada = false ")
+            .append(" and c.tipocobro = 'MEN' ")
+            .append(" and c.fechainiciocobro <= :pfecha  ") 
+            .append(" and c.fechacobro <= :pfecha  ")
+            .append(" order by fechacobro  limit 2"); 
+            
              System.out.println("findParaCobrar FT:: "+ sqlQuery.toString());
                 Query qry = this.em.createNativeQuery(sqlQuery.toString());
-                qry.setParameter("codigocliente", codigocliente);
-                qry.setParameter("fechaventa", fechaventa);
+                qry.setParameter("pcodigocomercializadora", codigocomercializadora);
+                qry.setParameter("pcodigocliente", codigocliente);
+                qry.setParameter("pfecha", fechaventa);
                 lista = qry.getResultList();
-            
-            
-//            
-//            CuotarubrotercerosPK  entity = new CuotarubrotercerosPK();
-//            Cuotarubroterceros entityPrincipal = new Cuotarubroterceros();
-//
-//            entity.setCodigocomercializadora(codigocomercializadora);
-//            entity.setCodigocliente(codigocliente);
-//            entityPrincipal.setFechacobro(fechaventa);             
-//            TypedQuery<Cuotarubroterceros> consultaCuotasParaCobrar = em.createNamedQuery("Cuotarubroterceros.findParaCobrar", Cuotarubroterceros.class);
-//            consultaCuotasParaCobrar.setParameter("codigocomercializadora", codigocomercializadora);
-//            consultaCuotasParaCobrar.setParameter("codigocliente", codigocliente);
-//            consultaCuotasParaCobrar.setParameter("fechaventa", fechaventa);
-//            EjecucionMensaje succesMessage = new EjecucionMensaje();
-//            succesMessage.setStatusCode(200);
-//            succesMessage.setDeveloperMessage("ejecución correcta");
-//            List<Cuotarubroterceros> lst = new ArrayList<>();
-//            lst = consultaCuotasParaCobrar.getResultList();
-
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
             succesMessage.setDeveloperMessage("ejecución correcta");
             succesMessage.setRetorno(lista);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+    
+    @GET
+    @Path("/comercli")
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findXComerCli(@QueryParam("codigocomercializadora") String codigocomercializadora, @QueryParam("codigocliente") String codigocliente, @QueryParam("codigorubrotercero") long codigorubrotercero) {
+        try {
+            System.out.println("FT::findXComerCli");
+            CuotarubrotercerosPK entity = new CuotarubrotercerosPK();
+            entity.setCodigocomercializadora(codigocomercializadora);
+ 
+            TypedQuery<Cuotarubroterceros> consulta = em.createNamedQuery("Cuotarubroterceros.findByComerCli", Cuotarubroterceros.class);
+            consulta.setParameter("codigocomercializadora", codigocomercializadora);            
+            consulta.setParameter("codigocliente", codigocliente);
+            consulta.setParameter("codigorubrotercero", codigorubrotercero);
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            List<Cuotarubroterceros> lst = new ArrayList<>();
+            lst = consulta.getResultList();
+            succesMessage.setRetorno(lst);
             return Response.status(200)
                     .entity(succesMessage)
                     .type(MediaType.APPLICATION_JSON).

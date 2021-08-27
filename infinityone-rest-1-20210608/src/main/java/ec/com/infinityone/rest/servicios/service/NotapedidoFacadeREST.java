@@ -121,9 +121,12 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
     public Response create1(EnvioPedidoREST entity) {
         String tipodocumento = "NPE";
         try {
-
-            Numeracion respuestaNumeracion = servicioNumeracion.consulta(tipodocumento, entity.getNotapedido().getComercializadora().getCodigo());
-
+            Numeracion respuestaNumeracion = new Numeracion();
+            try{
+                respuestaNumeracion = servicioNumeracion.consulta(tipodocumento, entity.getNotapedido().getComercializadora().getCodigo());
+            }catch(Throwable x){
+                throw new WebApplicationException(x);
+            }
             bloqueo.lock(respuestaNumeracion, LockModeType.PESSIMISTIC_WRITE);
             
             DecimalFormat df = new DecimalFormat("000000");
@@ -468,7 +471,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
                 succesMessage.setRetorno(respuesta);
                 succesMessage.setStatusCode(400);
 
-                return Response.status(200)
+                return Response.status(400)
                         .entity(succesMessage)
                         .type(MediaType.APPLICATION_JSON).
                         build();
@@ -491,9 +494,11 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
                         .type(MediaType.APPLICATION_JSON).
                         build();
             }
-        } catch (WebApplicationException ex) {
-            Response exResponse = ex.getResponse();
-            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+        } catch (Throwable ex) {
+            System.out.println("FT::ERROR EN NotaPedidoSOAP::envio "+ex.getMessage()+" -Causa-. "+ex.getCause().getMessage());
+            
+            //Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(555, ex.getCause().getMessage());
             //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
             return Response.status(Response.Status.CONFLICT)
                     .entity(errorMessage)
@@ -503,7 +508,7 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
         }
     }
 
-    @GET
+    @POST
     @Path("/cancelacion")
     //@Secured
     @Consumes({"application/json"})
@@ -548,10 +553,11 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
                         .type(MediaType.APPLICATION_JSON).
                         build();
             }   //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
-        } catch (WebApplicationException ex) {
-            Response exResponse = ex.getResponse();
-            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
-            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (Throwable ex) {
+             System.out.println("FT::ERROR EN NotaPedidoSOAP::Cancelación "+ex.getMessage()+" -Causa-. "+ex.getCause().getMessage());
+            
+            //Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(555, ex.getCause().getMessage());
             return Response.status(Response.Status.CONFLICT)
                     .entity(errorMessage)
                     .type(MediaType.APPLICATION_JSON).

@@ -57,6 +57,18 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Factura.findByCodigobanco", query = "SELECT f FROM Factura f WHERE f.codigobanco = :codigobanco"),
     @NamedQuery(name = "Factura.findByAdelantar", query = "SELECT f FROM Factura f WHERE f.adelantar = :adelantar"),
     @NamedQuery(name = "Factura.findBySeriesri", query = "SELECT f FROM Factura f WHERE f.seriesri = :seriesri"),
+    @NamedQuery(name = "Factura.findByPagarFVenta", query = "SELECT f FROM Factura f WHERE f.fechaventa = :fechaventa and "
+             + " f.facturaPK.codigocomercializadora = :codigocomercializadora and"
+            + " f.oeenpetro = :oeenpetro and"
+            + " f.activa = :activa and"
+            + " f.pagada = :pagada"
+            + " order by f.codigobanco, f.fechaventa, f.fechavencimiento"),
+    @NamedQuery(name = "Factura.findByPagarFVencimiento", query = "SELECT f FROM Factura f WHERE f.fechavencimiento = :fechavencimiento and"
+             + " f.facturaPK.codigocomercializadora = :codigocomercializadora and"
+            + " f.oeenpetro = :oeenpetro and"
+            + " f.activa = :activa and"
+            + " f.pagada = :pagada"
+            + " order by f.codigobanco, f.fechaventa, f.fechavencimiento"),
     @NamedQuery(name = "Factura.findByUsuarioactual", query = "SELECT f FROM Factura f WHERE f.usuarioactual = :usuarioactual")})
 
 public class Factura implements Serializable {

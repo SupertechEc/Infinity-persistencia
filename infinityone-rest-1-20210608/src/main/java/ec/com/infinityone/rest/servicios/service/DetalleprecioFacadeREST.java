@@ -82,7 +82,7 @@ public class DetalleprecioFacadeREST extends AbstractFacade<Detalleprecio> {
         }
         java.util.List<String> codigo = map.get("codigo");
         if (codigo != null && !codigo.isEmpty()) {
-            key.setCodigo(codigo.get(0));
+            key.setCodigo((new java.lang.Long(codigo.get(0))).longValue());
         }
         java.util.List<String> codigogravamen = map.get("codigogravamen");
         if (codigogravamen != null && !codigogravamen.isEmpty()) {
@@ -151,7 +151,7 @@ public class DetalleprecioFacadeREST extends AbstractFacade<Detalleprecio> {
             @QueryParam("codigolistaprecio") String codigolistaprecio,
             @QueryParam("fechainicio") Date fechainicio,
             @QueryParam("secuencial") int secuencial,
-            @QueryParam("codigo") String codigo,
+            @QueryParam("codigo") long codigo,
              @QueryParam("codigogravamen") String codigogravamen) {
         try {
             
@@ -227,7 +227,7 @@ public class DetalleprecioFacadeREST extends AbstractFacade<Detalleprecio> {
             @QueryParam("codigolistaprecio") String codigolistaprecio,
             @QueryParam("fechainicio") Date fechainicio,
             @QueryParam("secuencial") int secuencial,
-            @QueryParam("codigo") String codigo,
+            @QueryParam("codigo") long codigo,
              @QueryParam("codigogravamen") String codigogravamen) {
         try {
             
@@ -269,7 +269,7 @@ public class DetalleprecioFacadeREST extends AbstractFacade<Detalleprecio> {
     //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response findparafactura(@QueryParam("codigo") String codigo) {
+    public Response findparafactura(@QueryParam("codigo") long codigo) {
         try {
             
             DetalleprecioPK  entity = new DetalleprecioPK();

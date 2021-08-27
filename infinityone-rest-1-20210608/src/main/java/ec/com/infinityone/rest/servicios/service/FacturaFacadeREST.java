@@ -57,12 +57,20 @@ import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.QueryParam;
 import com.google.gson.Gson;
+import ec.com.infinity.modelo.Clienterubrotercero;
+import ec.com.infinity.modelo.Cuotarubroterceros;
+import ec.com.infinity.modelo.CuotarubrotercerosPK;
 import ec.com.infinity.modelo.DetallefacturaPK;
+import ec.com.infinity.modelo.Detallefacturarubrotercero;
+import ec.com.infinity.modelo.DetallefacturarubroterceroPK;
 import ec.com.infinity.modelo.Detalleprecio;
 import ec.com.infinity.modelo.DetalleprecioPK;
 import ec.com.infinity.modelo.Medida;
 import ec.com.infinity.modelo.Precio;
 import ec.com.infinity.modelo.PrecioPK;
+import java.io.OutputStreamWriter;
+import java.math.BigInteger;
+import java.math.MathContext;
 import java.math.RoundingMode;
 
 /**
@@ -78,6 +86,10 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
 
     @EJB
     private NumeracionFacadeREST servicioNumeracion;
+    
+    @EJB
+    private DetallefacturarubroterceroFacadeREST servicioDetFacRubro;
+    //@PersistenceContext(unitName = "my_persistence_unit")
 
     @EJB
     private DetallefacturaFacadeREST servicioDetalleFact;
@@ -154,7 +166,7 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
     //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public boolean createCrear(EnvioFacturaREST entity) {
+    public boolean createCrear(EnvioFacturaREST entity) throws Throwable{
         
         boolean respuesta = false;
         
@@ -163,17 +175,13 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
          return respuesta;
         }
         else{
-                System.out.println("FACTURAFACADEREST::create1: NOOOOO nullo");
-                
-                
-                
+                System.out.println("FACTURAFACADEREST::create1: NOOOOO nullo");  
         }
      
         String tipodocumento = "fct";
         
         System.out.println("FACTURAFACADEREST::create1: +entity.getClass()");
         
-                
         try {
             //System.out.println("FACTURAFACADEREST::create1: "+entity.toString());
                         
@@ -215,21 +223,12 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
             for(Detallefactura det: listafacturaDetalle){
                  servicioDetalleFact.createS(det);
             }
-            /*facturaDetalle = entity.getDetalle();
-            facturaDetalle.getDetallefacturaPK().setCodigoabastecedora(entity.getFactura().getFacturaPK().getCodigoabastecedora());
-            facturaDetalle.getDetallefacturaPK().setCodigocomercializadora(entity.getFactura().getFacturaPK().getCodigocomercializadora());
-            facturaDetalle.getDetallefacturaPK().setNumero(entity.getFactura().getFacturaPK().getNumero());
-            facturaDetalle.getDetallefacturaPK().setNumeronotapedido(entity.getFactura().getFacturaPK().getNumeronotapedido());
-            servicioDetalleFact.createS(facturaDetalle);*/            
-            //listafacturaDetalle.add(facturaDetalle);
-            /*for(Detallefactura det: listafacturaDetalle){
-                 servicioDetalleFact.createS(det);
-            }*/
-            // iterar la lista y grabar lista de DETALLES DE FACTURA
-            
-            
+            System.out.println("FT:: terminó de grabar factura y detalles de FACTURA");
             respuestaNumeracion.setUltimonumero(numeracion);
             getServicioNumeracion().edit(respuestaNumeracion);
+            System.out.println("FT:: terminó de getServicioNumeracion().edit(respuestaNumeracion)::"+numeracion);
+            crearDetallesFacturaCuotasRubros(entity);
+            System.out.println("FT::crearDetallesFacturaCuotasRubros(entity)::"+entity.toString());
             //bloqueo.getTransaction().commit();
             //bloqueo.close();
 
@@ -244,10 +243,11 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
 
             //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
          respuesta = true;
-        } catch (WebApplicationException ex) {
-            System.out.println("INCIO FACTURAFACADEREST::create1- WebApplicationException: "+ex.getMessage());
-            ex.printStackTrace(System.out);
-            System.out.println("FIN FACTURAFACADEREST::create1- WebApplicationException: "+ex.getMessage());
+        } catch (Throwable t) {
+            System.out.println("FT:: Error Capturado: "+this.toString()+" - "+t.getMessage());
+            t.printStackTrace(System.out);
+            throw new Throwable ("Error Capturado: "+this.toString()+":createCrear - "+t.getMessage());
+             
 //            Response exResponse = ex.getResponse();
 //            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
 //            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
@@ -269,8 +269,8 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
             @QueryParam("codigocomercializadora") String codigocomercializadora,
             @QueryParam("numeronotapedido") String numeronotapedido,
             @QueryParam("numero") String numero) {
-         List<EnvioFacturaREST> lst = new ArrayList<>();
-         precio = new Precio();
+        List<EnvioFacturaREST> lst = new ArrayList<>();
+        precio = new Precio();
         precioPK = new PrecioPK();
         detallePrecio = new Detalleprecio();
         detallePrecioPK = new DetalleprecioPK();
@@ -297,27 +297,27 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
                         
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
-            succesMessage.setDeveloperMessage("SOLO CON PARAMETROS");
+            succesMessage.setDeveloperMessage("Factura se ha generado correctamente!");
             succesMessage.setRetorno(lst);
             return Response.status(200)
                     .entity(succesMessage)
                     .type(MediaType.APPLICATION_JSON).
                     build();
         }catch(Throwable t){
-            System.out.println("FT:: Throwable capturada: "+t.getMessage());
+            System.out.println("FT:: Throwable capturada:createF "+t.getMessage());
             t.printStackTrace(System.out);
             EjecucionMensaje succesMessage = new EjecucionMensaje();
-            succesMessage.setStatusCode(200);
-            succesMessage.setDeveloperMessage("SOLO CON PARAMETROS");
+            succesMessage.setStatusCode(555);
+            succesMessage.setDeveloperMessage("Error al crear la Factura: "+t.getMessage());
             succesMessage.setRetorno(lst);
-            return Response.status(200)
+            return Response.status(555)
                     .entity(succesMessage)
                     .type(MediaType.APPLICATION_JSON).
                     build();
         }
     }
     
-    public EnvioPedidoREST buscarNP(String codigoabastecedora, String codigocomercializadora, String numeronotapedido, String numero){
+    public EnvioPedidoREST buscarNP(String codigoabastecedora, String codigocomercializadora, String numeronotapedido, String numero)throws Throwable{
         
         EnvioPedidoREST pedido = new EnvioPedidoREST();
         Notapedido unaNP = new Notapedido();
@@ -351,7 +351,9 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
             pedido.setDetalle(unDetNP);
             
         }catch(Throwable t){
-            System.out.println("Throwable capturada: "+this.toString()+" - "+t.getMessage());
+            System.out.println("FT:: Error Capturado: "+this.toString()+" - "+t.getMessage());
+            t.printStackTrace(System.out);
+            throw new Throwable ("Error Capturado: "+this.toString()+" - "+t.getMessage());
         }
         return pedido;
     }
@@ -663,7 +665,7 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
         this.servicioDetalleFact = servicioDetalleFact;
     }
 
-     public EnvioFacturaREST generarFactura(EnvioPedidoREST envNP) {
+     public EnvioFacturaREST generarFactura(EnvioPedidoREST envNP) throws Throwable {
          
          SimpleDateFormat  date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Factura fac = new Factura();
@@ -746,8 +748,9 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
         System.out.println("FT::-generarFactura-obtenerPrecio");
         envF = obtenerPrecio(envNP, envF, envF.getFactura());
          }catch(Throwable t){
-             System.out.println("FT::ERROR EN "+this.toString() + "::generarFactura "+ t.getMessage());
+             System.out.println("FT:: ERROR EN "+this.toString() + "::generarFactura "+ t.getMessage());
              t.printStackTrace(System.out);
+             throw new Throwable("FT:: ERROR EN "+this.toString() + "::generarFactura "+ t.getMessage()); 
          }
              
         return envF;
@@ -818,7 +821,7 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
             detalleFactura.setCodigomedida(med);
             detalleFactura.setVolumennaturalautorizado(envNP.getDetalle().getVolumennaturalautorizado());
             detalleFactura.setVolumennaturalrequerido(envNP.getDetalle().getVolumennaturalrequerido());
-            detalleFactura.setCodigoprecio(precio.getPrecioPK().getCodigoPrecio());
+            detalleFactura.setCodigoprecio(String.valueOf(precio.getPrecioPK().getCodigoPrecio()));
             detalleFactura.setPrecioproducto(precio.getPrecioproducto());
             subtotal = envNP.getDetalle().getVolumennaturalautorizado().multiply(precio.getPrecioproducto());
             detalleFactura.setSubtotal(subtotal.setScale(2, RoundingMode.HALF_UP));
@@ -843,7 +846,7 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
     }
      
      
-     public EnvioFacturaREST actionFactura(Factura fac, EnvioPedidoREST envNP, Detallefactura detalleFactura, String codigoPecio, EnvioFacturaREST envF) {
+     public EnvioFacturaREST actionFactura(Factura fac, EnvioPedidoREST envNP, Detallefactura detalleFactura, String codigoPecio, EnvioFacturaREST envF) throws Throwable {
 
         List<Detallefactura> detFact = new ArrayList<>();
         Detallefactura detalleFact = new Detallefactura();
@@ -868,7 +871,7 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
             while ((tmp = br.readLine()) != null) {
                 respuesta += tmp;
             }
-            System.out.println("FT:: actionFactura::-respuesta del servicio buscardetalle precio" + respuesta);
+//            System.out.println("FT:: actionFactura::-respuesta del servicio buscardetalle precio" + respuesta);
             JSONObject objetoJson = new JSONObject(respuesta);
             JSONArray retorno = objetoJson.getJSONArray("retorno");
             for (int indice = 0; indice < retorno.length(); indice++) {
@@ -912,20 +915,22 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
                     }
                 }
             }
-            System.out.println("FT:: actionFactura::Impuesto no usado");
+//            System.out.println("FT:: actionFactura::Impuesto no usado");
             fac.setValortotal(totalimpuestos.add(fac.getValorsinimpuestos()).setScale(2, RoundingMode.HALF_UP));
             detFact.add(detalleFactura);
             
             envF.setDetalle(detFact);
-            System.out.println("FT:: actionFactura::FIN DE CARGA DE DETALLES:: "+envF.getDetalle().size());
+//            System.out.println("FT:: actionFactura::FIN DE CARGA DE DETALLES:: "+envF.getDetalle().size());
             detFact = new ArrayList<>();
             
             //this.getTrama2(envF);
             //this.getTrama3(envF);
             System.out.println(connection.getResponseCode());
             System.out.println(connection.getResponseMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Throwable t) {
+             System.out.println("FT:: ERROR EN "+this.toString() + "::actionFactura "+ t.getMessage());
+             t.printStackTrace(System.out);
+             throw new Throwable("FT:: ERROR EN "+this.toString() + "::actionFactura "+ t.getMessage());
         }
 //        System.out.println("FT:: TERMINÓ ACTIONFACTURA-FAC::  "+envF.getFactura().getFacturaPK().getNumeronotapedido());
 //        System.out.println("FT:: TERMINÓ ACTIONFACTURA-DETFA:: + "+envF.getDetalle().get(0).getSubtotal());
@@ -967,4 +972,339 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
             }
         return res; 
     }
+    
+    @GET
+    @Path("/paraCobrar")  
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findParaCobrar(@QueryParam("codigocomercializadora") String  codigocomercializadora,
+            @QueryParam("tipofecha") String  tipofecha, 
+            @QueryParam("oeenpetro") boolean oeenpetro, 
+            @QueryParam("activa") boolean activa, 
+            @QueryParam("pagada") boolean pagada,
+            @QueryParam("fecha") Date fecha) {
+        try {
+
+            FacturaPK entity = new FacturaPK();
+            
+            List<Factura> lst = new ArrayList<>();
+            
+//            DateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd");  
+//            String date = "2021/06/18";
+//            
+            if(tipofecha.equals("1")){
+                System.out.println("1-fecha de venta");
+                TypedQuery<Factura> consulta = em.createNamedQuery("Factura.findByPagarFVenta", Factura.class);
+                consulta.setParameter("codigocomercializadora", codigocomercializadora);
+                consulta.setParameter("oeenpetro", oeenpetro);
+                consulta.setParameter("activa", activa);
+                consulta.setParameter("pagada", pagada);
+                consulta.setParameter("fechaventa", fecha);
+                lst = consulta.getResultList();
+            }else {
+                System.out.println("2-fecha de despacho");
+                TypedQuery<Factura> consulta = em.createNamedQuery("Factura.findByPagarFVencimiento", Factura.class);
+                consulta.setParameter("codigocomercializadora", codigocomercializadora);
+                consulta.setParameter("oeenpetro", oeenpetro);
+                consulta.setParameter("activa", activa);
+                consulta.setParameter("pagada", pagada);
+                consulta.setParameter("fechavencimiento", fecha);
+                lst = consulta.getResultList();
+            }
+            
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecuciòn correcta");
+            //List<Notapedido> lst = new ArrayList<>();
+            //lst = consultaPorAbastecedora.getResultList();
+           // lst.add(super.find(entity));
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+    public void crearDetallesFacturaCuotasRubros (EnvioFacturaREST unaFactura)throws Throwable{
+        System.out.println("ENTRA EN crearDetallesFacturaCuotasRubros FT:: ");
+        List<Cuotarubroterceros> cuotas = new ArrayList<>();
+        Cuotarubroterceros unaCuota = new Cuotarubroterceros(); 
+        CuotarubrotercerosPK unaCuotaPK = new CuotarubrotercerosPK(); 
+        Detallefacturarubrotercero detalleFactCuota = new Detallefacturarubrotercero();
+        DetallefacturarubroterceroPK detalleFactCuotaPK = new DetallefacturarubroterceroPK();
+        List<Object[]> objetosList;
+        StringBuilder sqlQuery = new StringBuilder();
+        List<Cuotarubroterceros> lista = new ArrayList<>();
+        try{    
+            // DEBE BUSCAR CUOTAS DE CLIENTERUBROS ACTIVOS
+            
+//            SELECT c.* FROM Cuotarubroterceros c, clienterubrotercero cl WHERE 
+//             cl.codigocomercializadora = c.codigocomercializadora
+//             and cl.codigorubrotercero = c.codigorubrotercero
+//				and cl.codigocliente = c.codigocliente 
+//             and c. codigocliente = '02010001' 
+//              and cl.activo = true
+//           and c.pagada = FALSE
+//           and c. tipocobro = 'LIB'
+//		   and c.fechainiciocobro <= '2021-10-05'
+//           and c.fechacobro <= '2021-10-05'
+//           --order by fechacobro  limit 1
+//           UNION
+//           SELECT c.* FROM Cuotarubroterceros c, clienterubrotercero cl WHERE 
+//            cl.codigocomercializadora = c.codigocomercializadora
+//            and cl.codigorubrotercero = c.codigorubrotercero
+//            and cl.codigocliente = c.codigocliente 
+//             and c. codigocliente = '02010001' 
+//             and cl.activo = true
+//           and c.pagada = FALSE
+//           and c. tipocobro = 'MEN'
+//		   and c.fechainiciocobro <= '2021-10-05'
+//           and c.fechacobro <= '2021-10-05'
+//           order by fechacobro  limit 2
+//            
+            sqlQuery.append("SELECT c.* FROM Cuotarubroterceros c, clienterubrotercero cl WHERE  ")
+            .append(" cl.codigocomercializadora = c.codigocomercializadora ") 
+            .append(" and cl.codigorubrotercero = c.codigorubrotercero ")
+            .append(" and cl.codigocliente = c.codigocliente ")
+            .append(" and c.codigocomercializadora = :pcodigocomercializadora ") 
+            .append(" and c.codigocliente = :pcodigocliente ")
+            .append(" and cl.activo = true ")
+            .append(" and c.pagada = false ")
+            .append(" and c.tipocobro = 'LIB' ")
+            .append(" and c.fechainiciocobro <= :pfecha ") 
+            .append(" and c.fechacobro <= :pfecha  ")
+            .append(" UNION ")
+            .append("SELECT c.* FROM Cuotarubroterceros c, clienterubrotercero cl WHERE  ")
+            .append(" cl.codigocomercializadora = c.codigocomercializadora ") 
+            .append(" and cl.codigorubrotercero = c.codigorubrotercero ")
+            .append(" and cl.codigocliente = c.codigocliente ")
+            .append(" and c.codigocomercializadora = :pcodigocomercializadora ") 
+            .append(" and c.codigocliente = :pcodigocliente ")
+            .append(" and cl.activo = true ")
+            .append(" and c.pagada = false ")
+            .append(" and c.tipocobro = 'MEN' ")
+            .append(" and c.fechainiciocobro <= :pfecha  ") 
+            .append(" and c.fechacobro <= :pfecha  ")
+            .append(" order by fechacobro  limit 2"); 
+            
+             System.out.println("findParaCobrar FT:: "+ sqlQuery.toString());
+                Query qry = this.em.createNativeQuery(sqlQuery.toString());
+                qry.setParameter("pcodigocomercializadora", unaFactura.getFactura().getFacturaPK().getCodigocomercializadora().trim());
+                qry.setParameter("pcodigocliente", unaFactura.getFactura().getCodigocliente().trim());
+                qry.setParameter("pfecha", unaFactura.getFactura().getFechaventa());
+                objetosList = qry.getResultList();
+            System.out.println("findParaCobrar FT-RESULTADO:: "+ objetosList.size());    
+                for (Object[] o : objetosList) {
+                     
+                 detalleFactCuotaPK.setCodigoabastecedora(unaFactura.getFactura().getFacturaPK().getCodigoabastecedora().trim());
+                 detalleFactCuotaPK.setCodigocomercializadora(unaFactura.getFactura().getFacturaPK().getCodigocomercializadora().trim());
+                 detalleFactCuotaPK.setNumerofactura(unaFactura.getFactura().getFacturaPK().getNumero());
+                 detalleFactCuotaPK.setNumeronotapedido(unaFactura.getFactura().getFacturaPK().getNumeronotapedido());
+                 detalleFactCuotaPK.setCodigoclientecuota(String.valueOf(o[2]));
+                 detalleFactCuotaPK.setCodigorubrotercero(new BigInteger(String.valueOf(o[1])).longValue());
+                 detalleFactCuotaPK.setCuota(new Integer(String.valueOf(o[3])).intValue());
+                 detalleFactCuota.setDetallefacturarubroterceroPK(detalleFactCuotaPK);
+                 System.out.println("FT::----Fechacobrocuota:: "+String.valueOf(o[5]));
+                 detalleFactCuota.setFechacobrocuota(new SimpleDateFormat("yyyy-MM-dd").parse(String.valueOf(o[5])));
+//                 detalleFactCuota.setFechacobrocuota(new Date(new Long(String.valueOf(o[5]))));
+                 detalleFactCuota.setFechacobroreal(unaFactura.getFactura().getFechaventa());
+                 detalleFactCuota.setValorcuota(new BigDecimal(String.valueOf(o[6])));
+                 detalleFactCuota.setUsuarioactual("ft");
+//                 lista.add(mc);
+                 //grabarDetFacRubr(detalleFactCuota);
+                servicioDetFacRubro.create(detalleFactCuota);
+                detalleFactCuotaPK = new DetallefacturarubroterceroPK();
+                detalleFactCuota = new Detallefacturarubrotercero();
+            }
+                
+                gestionarCuotasXFactura(unaFactura);
+                
+        }catch (Throwable t){
+            System.out.println("Error en crearDetallesFacturaCuotasRubros:: "+t.getMessage()+" causa:: "+t.getCause());
+            t.printStackTrace(System.out);
+            throw t;
+        }
+        
+        //--------------
+        
+        
+         
+    }
+    
+    public void gestionarCuotasXFactura(EnvioFacturaREST unaFactura)throws Throwable{
+        
+        List<Clienterubrotercero> lst = new ArrayList<>();
+        Cuotarubroterceros nuevaCuota = new Cuotarubroterceros();
+        CuotarubrotercerosPK nuevaCuotaPK = new CuotarubrotercerosPK();
+        Detallefacturarubrotercero detalleFactCuota = new Detallefacturarubrotercero();
+        DetallefacturarubroterceroPK detalleFactCuotaPK = new DetallefacturarubroterceroPK();
+        int contadorCuota = 1;
+       
+        try{
+            TypedQuery<Clienterubrotercero> consulta = em.createNamedQuery("Clienterubrotercero.findByFAC", Clienterubrotercero.class);
+            consulta.setParameter("codigocomercializadora", unaFactura.getFactura().getFacturaPK().getCodigocomercializadora().trim());
+            consulta.setParameter("codigocliente", unaFactura.getFactura().getCodigocliente().trim());
+            consulta.setParameter("tipocobro", "FAC");
+            consulta.setParameter("activo", true);
+            consulta.setParameter("fechainiciocobro", unaFactura.getFactura().getFechaventa());
+            lst = consulta.getResultList();
+             for (Clienterubrotercero o : lst) {
+                 nuevaCuotaPK.setCodigocomercializadora(o.getClienterubroterceroPK().getCodigocomercializadora());
+                 nuevaCuotaPK.setCodigocliente(o.getClienterubroterceroPK().getCodigocliente());
+                 nuevaCuotaPK.setCodigorubrotercero(o.getClienterubroterceroPK().getCodigorubrotercero());
+                 nuevaCuotaPK.setCuota(contadorCuota);
+                 nuevaCuota.setCuotarubrotercerosPK(nuevaCuotaPK);
+                 nuevaCuota.setFechacobro(unaFactura.getFactura().getFechaventa());
+                 nuevaCuota.setFechainiciocobro(o.getFechainiciocobro());
+                 nuevaCuota.setPagada(true);
+                 nuevaCuota.setTipocobro("FAC");
+                 nuevaCuota.setValor(unaFactura.getFactura().getValortotal());
+                 nuevaCuota.setUsuarioactual(o.getUsuarioactual());
+             
+                 //------ servicio de creacion
+                  String respuesta;
+//            String fechaS = "";
+//            DateFormat date = new SimpleDateFormat("yyyy-MM-dd");
+//            if (listaCuotarubro.get(i).getFechacobro() != null) {
+//                fechaS = date.format(listaCuotarubro.get(i).getFechacobro());
+//            }
+//            String fechaIniS = date.format(listaCuotarubro.get(i).getFechainiciocobro());
+            URL url = new URL("http://localhost:8082/infinityone-rest-1-1.0-SNAPSHOT/resources/ec.com.infinity.modelo.cuotarubroterceros");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoOutput(true);
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-type", "application/json");
+
+            System.out.println("FT:: CREAR UNA CUOTA TIPO -FAC- POR EJECUTAR: " + url.toString());
+            
+            OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+            JSONObject obj = new JSONObject();
+            JSONObject objPk = new JSONObject();
+            objPk.put("codigocomercializadora", o.getClienterubroterceroPK().getCodigocomercializadora());
+            objPk.put("codigorubrotercero", o.getClienterubroterceroPK().getCodigorubrotercero());
+            objPk.put("codigocliente", o.getClienterubroterceroPK().getCodigocliente());
+            objPk.put("cuota", contadorCuota);
+            obj.put("cuotarubrotercerosPK", objPk);
+            obj.put("pagada", "true");
+            obj.put("fechacobro", unaFactura.getFactura().getFechaventa());
+            obj.put("valor", (unaFactura.getDetalle().get(0).getVolumennaturalautorizado().multiply(o.getValor(), MathContext.UNLIMITED)));
+            obj.put("tipocobro", "FAC");
+            obj.put("fechainiciocobro", o.getFechainiciocobro());
+            obj.put("usuarioactual", "ft");
+            respuesta = obj.toString();
+            writer.write(respuesta);
+            writer.close();
+            if (connection.getResponseCode() == 200) {
+                System.out.println("FT:: gravación CUOTA OK: "+objPk.toString());
+            } else {
+                System.out.println("FT:: gravación CUOTA ERROR: "+objPk.toString());
+            }
+            
+            // generar detallefacrubro
+             detalleFactCuotaPK.setCodigoabastecedora(unaFactura.getFactura().getFacturaPK().getCodigoabastecedora().trim());
+             detalleFactCuotaPK.setCodigocomercializadora(unaFactura.getFactura().getFacturaPK().getCodigocomercializadora().trim());
+             detalleFactCuotaPK.setNumerofactura(unaFactura.getFactura().getFacturaPK().getNumero());
+             detalleFactCuotaPK.setNumeronotapedido(unaFactura.getFactura().getFacturaPK().getNumeronotapedido());
+             detalleFactCuotaPK.setCodigoclientecuota(unaFactura.getFactura().getCodigocliente());
+             detalleFactCuotaPK.setCodigorubrotercero(o.getClienterubroterceroPK().getCodigorubrotercero());
+             detalleFactCuotaPK.setCuota(contadorCuota);
+             detalleFactCuota.setDetallefacturarubroterceroPK(detalleFactCuotaPK);
+//             System.out.println("FT::----Fechacobrocuota:: " + String.valueOf(o[5]));
+             detalleFactCuota.setFechacobrocuota(unaFactura.getFactura().getFechaventa());
+//                 detalleFactCuota.setFechacobrocuota(new Date(new Long(String.valueOf(o[5]))));
+             detalleFactCuota.setFechacobroreal(unaFactura.getFactura().getFechaventa());
+             detalleFactCuota.setValorcuota(unaFactura.getDetalle().get(0).getVolumennaturalautorizado().multiply(o.getValor(), MathContext.UNLIMITED));
+             detalleFactCuota.setUsuarioactual("ft");
+//                 lista.add(mc);
+             //grabarDetFacRubr(detalleFactCuota);
+             servicioDetFacRubro.create(detalleFactCuota);
+            
+            // generar detallefacrubro
+            
+            contadorCuota++;
+            
+           }            
+        }catch(Throwable t){
+            System.out.println("Error en crearDetallesFacturaCuotasRubros::gestionarCuotasXFactura- "+t.getMessage()+" causa:: "+t.getCause());
+            t.printStackTrace(System.out);
+            throw new Throwable("Error en crearDetallesFacturaCuotasRubros::gestionarCuotasXFactura. "+t.getMessage()+" causa. "+t.getCause());
+        }
+    }
+  //  public void(Detallefacturarubrotercero detalleFactCuota){
+        
+    //}
+    
+     
+ 
+
+//--and f.fechavencimiento = '2021-08-24'
+//
+//     
+//         @GET
+//    @Path("/totalbcofec")  
+//    //@Secured
+//    @Consumes({"application/json"})
+//    @Produces({"application/json"})
+//    public Response findTotalXbcoFec(@QueryParam("codigocomercializadora") String  codigocomercializadora,
+//            @QueryParam("tipofecha") String  tipofecha, 
+//            @QueryParam("oeenpetro") boolean oeenpetro, 
+//            @QueryParam("activa") boolean activa, 
+//            @QueryParam("pagada") boolean pagada,
+//            @QueryParam("fecha") Date fecha){
+//        
+//        List<Object[]> objetosList;
+//        StringBuilder sqlQuery = new StringBuilder();
+//        List<MejorCliente> lista = new ArrayList<>();
+//       sqlQuery.append("select f.codigobanco, f.fechaventa, f.fechavencimiento, count (f.codigobanco) as facturas, sum(f.valortotal) as sumatotal from Factura f"
+//               + "where f.codigocomercializadora = :codigocomercializadora" 
+//            + " f.oeenpetro = :oeenpetro and"
+//            + " f.activa = :activa and"
+//            + " f.pagada = :pagada and "
+//            + " f.fechaventa = :fechaventa"   
+//            + "group by f.codigobanco, f.fechaventa, f.fechavencimiento"
+//            + " order by f.codigobanco, f.fechaventa, f.fechavencimiento"
+//
+//        System.out.println("findMejorCliente FT:: "+ sqlQuery.toString());
+//       try {
+//            Query qry = this.em.createNativeQuery(sqlQuery.toString());
+//            qry.setParameter("activo", activo);
+//             
+//             objetosList = qry.getResultList();
+//
+//            for (Object[] o : objetosList) {
+//                MejorCliente mc = new MejorCliente();
+//                mc.setNombrecliente(String.valueOf(o[0]));
+//                mc.setFacturas(new Integer(String.valueOf(o[1])));
+//                mc.setSumatotal(new BigDecimal(String.valueOf(o[2])));
+//                lista.add(mc);
+//            }
+//            EjecucionMensaje succesMessage = new EjecucionMensaje();
+//            succesMessage.setStatusCode(200);
+//            succesMessage.setDeveloperMessage("ejecuciòn correcta");
+//            succesMessage.setRetorno(lista);
+//            return Response.status(200)
+//                    .entity(succesMessage)
+//                    .type(MediaType.APPLICATION_JSON).
+//                    build();
+//            
+//        } catch (WebApplicationException ex) {
+//            Response exResponse = ex.getResponse();
+//            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+//            return Response.status(Response.Status.CONFLICT)
+//                    .entity(errorMessage)
+//                    .type(MediaType.APPLICATION_JSON).
+//                    build();
+//        }   
+//    }
+        
 }

@@ -57,15 +57,15 @@ public class PrecioPK implements Serializable {
     private int secuencial;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 20)
+   // @Size(min = 1, max = 20)
     //@Column(name = "codigo_precio")
     @Column(name = "codigo")
-    private String codigoPrecio;
+    private long codigoPrecio;
 
     public PrecioPK() {
     }
 
-    public PrecioPK(String codigocomercializadora, String codigoterminal, String codigoproducto, String codigomedida, String codigolistaprecio, Date fechainicio, int secuencial, String codigoPrecio) {
+    public PrecioPK(String codigocomercializadora, String codigoterminal, String codigoproducto, String codigomedida, String codigolistaprecio, Date fechainicio, int secuencial, long codigoPrecio) {
         this.codigocomercializadora = codigocomercializadora;
         this.codigoterminal = codigoterminal;
         this.codigoproducto = codigoproducto;
@@ -132,11 +132,11 @@ public class PrecioPK implements Serializable {
         this.secuencial = secuencial;
     }
 
-    public String getCodigoPrecio() {
+    public long getCodigoPrecio() {
         return codigoPrecio;
     }
 
-    public void setCodigoPrecio(String codigoPrecio) {
+    public void setCodigoPrecio(long codigoPrecio) {
         this.codigoPrecio = codigoPrecio;
     }
 
@@ -150,7 +150,7 @@ public class PrecioPK implements Serializable {
         hash += (codigolistaprecio != null ? codigolistaprecio.hashCode() : 0);
         hash += (fechainicio != null ? fechainicio.hashCode() : 0);
         hash += (int) secuencial;
-        hash += (codigoPrecio != null ? codigoPrecio.hashCode() : 0);
+        hash += (int)codigoPrecio; 
         return hash;
     }
 
@@ -182,7 +182,7 @@ public class PrecioPK implements Serializable {
         if (this.secuencial != other.secuencial) {
             return false;
         }
-        if ((this.codigoPrecio == null && other.codigoPrecio != null) || (this.codigoPrecio != null && !this.codigoPrecio.equals(other.codigoPrecio))) {
+        if (this.codigoPrecio != other.codigoPrecio) {
             return false;
         }
         return true;

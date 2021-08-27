@@ -5,16 +5,20 @@
  */
 package ec.com.infinityone.rest.servicios.service;
 
+import ec.com.infinity.modelo.Detalleprecio;
+import ec.com.infinity.modelo.MaximoCodigoPrecio;
 import ec.com.infinity.modelo.Precio;
 import ec.com.infinity.modelo.PrecioPK;
 import ec.com.infinity.rest.seguridad.EjecucionMensaje;
 import ec.com.infinity.rest.seguridad.ErrorMessage;
 import ec.com.infinity.rest.seguridad.Secured;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
+import javax.faces.application.ProjectStage;
 import javax.management.openmbean.SimpleType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -106,7 +110,7 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
             @QueryParam("codigolistaprecio") String codigolistaprecio,
             @QueryParam("fechainicio") Date fechainicio,
             @QueryParam("secuencial") int secuencial,
-            @QueryParam("codigoPrecio") String codigoPrecio) {
+            @QueryParam("codigoPrecio") long codigoPrecio) {
         try {
             
             PrecioPK  entity = new PrecioPK();
@@ -180,7 +184,7 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
             @QueryParam("codigolistaprecio") String codigolistaprecio,
             @QueryParam("fechainicio") Date fechainicio,
             @QueryParam("secuencial") int secuencial,
-            @QueryParam("codigoPrecio") String codigoPrecio) {
+            @QueryParam("codigoPrecio") long codigoPrecio) {
         try {
             
             PrecioPK  entity = new PrecioPK();
@@ -361,10 +365,11 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response crearAutonumerado(Precio entity) {
+    //public Response crearAutonumerado(Precio entity) {
         
         StringBuilder sqlQuery = new StringBuilder();
         
-        
+        try {
         //entity.getRubroterceroPK().getCodigo()
         String auxCC = entity.getPrecioPK().getCodigocomercializadora().trim();
         String auxTer = entity.getPrecioPK().getCodigoterminal().trim();
@@ -373,8 +378,15 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
         String auxLisPre = entity.getPrecioPK().getCodigolistaprecio().trim();
         Date auxFeIni = entity.getPrecioPK().getFechainicio();
         int  auxSec = entity.getPrecioPK().getSecuencial();
-        String auxCod = entity.getPrecioPK().getCodigoPrecio();
-        
+        long auxCod = -1;
+        boolean grabacionDetallesOK = false;
+        MaximoCodigoPrecio codigoMax = calcularCodigoPrecio(entity);
+        if (codigoMax.getCodigoPrecio() == -1){
+            throw new WebApplicationException("El código de Precio NO ha podido ser calculado: " + codigoMax.getCodigoPrecio());
+        }else {
+            auxCod = codigoMax.getCodigoPrecio();    
+        }
+         
         Date auxFeFin = entity.getFechafin();
         boolean auxAct = entity.getActivo(); 
         String auxObs = entity.getObservacion().trim();
@@ -385,11 +397,11 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
         //:pcodigo,
        sqlQuery.append("insert into public.precio "
                + "(codigocomercializadora, codigoterminal, codigoproducto, codigomedida, codigolistaprecio, "
-               + " fechainicio, secuencial, fechafin, activo, observacion, precioproducto, usuarioactual)"
+               + " fechainicio, secuencial, codigo, fechafin, activo, observacion, precioproducto, usuarioactual)"
                + " values (:pcodigocomercializadora, :pcodigoterminal, :pcodigoproducto, :pcodigomedida, :pcodigolistaprecio, "
-               + " :pfechainicio, :psecuencial,  :pfechafin, :pactivo, :pobservacion, :pprecioproducto, :pusuarioactual)"); 
+               + " :pfechainicio, :psecuencial,  :pcodigo, NULL, :pactivo, :pobservacion, :pprecioproducto, :pusuarioactual)"); 
        System.out.println("INSERTAR RUBRO TERCERO FT:: "+ sqlQuery.toString());
-       try {
+       
             Query qry = this.em.createNativeQuery(sqlQuery.toString());
             qry.setParameter("pcodigocomercializadora", auxCC);
             qry.setParameter("pcodigoterminal", auxTer);
@@ -398,18 +410,21 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
             qry.setParameter("pcodigolistaprecio", auxLisPre);
             qry.setParameter("pfechainicio", auxFeIni);
             qry.setParameter("psecuencial", auxSec);
-          //  qry.setParameter("pcodigo", auxCod);
-            qry.setParameter("pfechafin", auxFeIni);
+             qry.setParameter("pcodigo", auxCod);
+          //  qry.setParameter("pfechafin", auxFeIni);
             qry.setParameter("pactivo", auxAct);
             qry.setParameter("pobservacion", auxObs); 
             qry.setParameter("pprecioproducto", auxPrePro);
             qry.setParameter("pusuarioactual", auxUsu);
              qry.executeUpdate();
 
+             // grabar DETALLES DE PRECIO
+             
+             //grabacionDetallesOK = grabarDetallePrecio(listaDetPrecio, auxCod);
             
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
-            succesMessage.setDeveloperMessage("Inserción correcta");
+            succesMessage.setDeveloperMessage(String.valueOf(auxCod));
             
             return Response.status(200)
                     .entity(succesMessage)
@@ -425,5 +440,92 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
                     build();
         }   
     }
+    public MaximoCodigoPrecio calcularCodigoPrecio(Precio entity){
+         
+        StringBuilder sqlQuery = new StringBuilder();
+       List<MaximoCodigoPrecio> lista = new ArrayList<>();
+       BigInteger maximo = new BigInteger("-1");
+       BigInteger siguienteCodigo = new BigInteger("-1");
+       sqlQuery.append("select max(codigo) from precio"
+//               + " where codigocomercializadora = :pcodigocomercializadora"
+//               + " and codigoterminal = :pcodigoterminal"
+//               + " and codigoproducto = :pcodigoproducto"
+//               + " and codigomedida = :pcodigomedida"
+//               + " and TRIM(codigolistaprecio) = :pcodigolistaprecio"
+                ); 
+
+        System.out.println("FT BUSCAR EL MAXIMO CODIGO:: "+ sqlQuery.toString());
+        MaximoCodigoPrecio obj = new MaximoCodigoPrecio();
+       try {
+            Query qry = this.em.createNativeQuery(sqlQuery.toString());
+//            qry.setParameter("pcodigocomercializadora", entity.getPrecioPK().getCodigocomercializadora());
+//            qry.setParameter("pcodigoterminal", entity.getPrecioPK().getCodigoterminal());
+//            qry.setParameter("pcodigoproducto", entity.getPrecioPK().getCodigoproducto());
+//            qry.setParameter("pcodigomedida", entity.getPrecioPK().getCodigomedida());
+//            qry.setParameter("pcodigolistaprecio", entity.getPrecioPK().getCodigolistaprecio().trim());
+//            
+            System.out.println("FT BUSCAR EL MAXIMO query completo:: "+ sqlQuery.toString());
+           
+            //objetosList = qry.getResultList();
+            maximo = (BigInteger) qry.getSingleResult();
+//            if(){
+//                
+//            }
+            siguienteCodigo = maximo.add(new BigInteger("1"));
+//            for (BigInteger[] o : objetosList) {  
+                System.out.println("FT BUSCAR EL MAXIMO CODIGO for:: ");
+                obj.setCodigoPrecio(siguienteCodigo.byteValueExact()); 
+//            }
+            
+        } catch (Throwable ex) {
+            System.out.println("FT:: error:: "+ ex.getMessage());
+            ex.printStackTrace(System.out);
+             obj.setCodigoPrecio(1); 
+        } 
+       System.out.println("FT BUSCAR EL MAXIMO RETORNO:: "+ obj.toString());
+       return obj;
+    }
     
+    public boolean grabarDetallePrecio(List<Detalleprecio> listaDetPrecio, long auxCod){
+        StringBuilder sqlQuery = new StringBuilder();
+        Detalleprecio entity = new Detalleprecio();
+        int resultadoIns = -1;
+        boolean respuesta = false;
+        try {
+      
+          sqlQuery.append("insert into public.detalleprecio "
+               + "(codigocomercializadora, codigoterminal, codigoproducto, codigomedida, codigolistaprecio, "
+               + " fechainicio, secuencial, codigo, codigogravamen, valor, usuarioactual)"
+               + " values (:pcodigocomercializadora, :pcodigoterminal, :pcodigoproducto, :pcodigomedida, :pcodigolistaprecio, "
+               + " :pfechainicio, :psecuencial,  :pcodigo, :pcodigogravamen, :pvalor, :pusuarioactual)"); 
+       System.out.println("INSERTAR RUBRO TERCERO FT:: "+ sqlQuery.toString());
+         for (int indice = 0; indice < listaDetPrecio.size(); indice++) {
+            Query qry = this.em.createNativeQuery(sqlQuery.toString());
+            qry.setParameter("pcodigocomercializadora", listaDetPrecio.get(indice).getDetalleprecioPK().getCodigocomercializadora());
+            qry.setParameter("pcodigoterminal", listaDetPrecio.get(indice).getDetalleprecioPK().getCodigoterminal());
+            qry.setParameter("pcodigoproducto", listaDetPrecio.get(indice).getDetalleprecioPK().getCodigoproducto());
+            qry.setParameter("pcodigomedida", listaDetPrecio.get(indice).getDetalleprecioPK().getCodigomedida());
+            qry.setParameter("pcodigolistaprecio", listaDetPrecio.get(indice).getDetalleprecioPK().getCodigolistaprecio());
+            qry.setParameter("pfechainicio", listaDetPrecio.get(indice).getDetalleprecioPK().getFechainicio());
+            qry.setParameter("psecuencial", listaDetPrecio.get(indice).getDetalleprecioPK().getSecuencial());
+             qry.setParameter("pcodigo", auxCod);
+          //  qry.setParameter("pfechafin", auxFeIni);
+            qry.setParameter("pcodigogravamen", listaDetPrecio.get(indice).getDetalleprecioPK().getCodigogravamen());
+            qry.setParameter("pvalor", listaDetPrecio.get(indice).getValor()); 
+            qry.setParameter("pusuarioactual", listaDetPrecio.get(indice).getUsuarioactual());
+            resultadoIns = qry.executeUpdate();
+            
+            if (resultadoIns == 1){
+                respuesta = true;
+            }else {
+                respuesta = false;
+            }
+         }
+            
+        } catch (Throwable ex) {
+            System.out.println("FT:: error en grabarDetallePrecio:: "+ ex.getMessage());
+            ex.printStackTrace(System.out);
+        }
+        return respuesta;
+    }
 }

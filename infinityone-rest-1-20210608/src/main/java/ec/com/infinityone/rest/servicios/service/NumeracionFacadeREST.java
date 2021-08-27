@@ -235,12 +235,18 @@ public class NumeracionFacadeREST extends AbstractFacade<Numeracion> {
         return em;
     }
 
-    public Numeracion consulta(String tipodocumento, String codigo) {
+    public Numeracion consulta(String tipodocumento, String codigo) throws Throwable{
         String queryStr = "SELECT t FROM Numeracion t WHERE t.tipodocumento='"
                 + tipodocumento + "' and t.codigocomercializadora='" + codigo + "'";
         //         bloqueo.getTransaction().begin();
+       Numeracion respuestaNumeracion = new Numeracion();
+        try{
         TypedQuery<Numeracion> query = em.createQuery(queryStr, Numeracion.class);
-        Numeracion respuestaNumeracion = query.getResultList().get(0);
+        respuestaNumeracion = query.getResultList().get(0);
+        }catch(Throwable t){
+            t.printStackTrace(System.out);
+            throw new Throwable("Error en: "+this.toString()+" - no se puedo ejecutar consulta de Número de documento");
+        }
         return respuestaNumeracion;
     }
     
