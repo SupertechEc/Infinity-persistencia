@@ -78,7 +78,7 @@ public class Listaprecio implements Serializable {
         this.usuarioactual = usuarioactual;
     }
 
-    public Listaprecio(String codigocomercializadora, String codigo) {
+    public Listaprecio(String codigocomercializadora, long codigo) {
         this.listaprecioPK = new ListaprecioPK(codigocomercializadora, codigo);
     }
 

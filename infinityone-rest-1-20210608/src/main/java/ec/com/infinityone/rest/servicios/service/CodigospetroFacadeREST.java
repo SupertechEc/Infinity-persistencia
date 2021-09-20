@@ -150,14 +150,19 @@ public class CodigospetroFacadeREST extends AbstractFacade<Codigospetro> {
     //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response find(Codigospetro entity) {
+    public Response find(@QueryParam("proceso") String proceso, 
+            @QueryParam("codigo") String codigo) {
+        
+            CodigospetroPK entity = new CodigospetroPK();
+            entity.setProceso(proceso);
+            entity.setCodigo(codigo);
         try {
 
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
             succesMessage.setDeveloperMessage("ejecución correcta");
             List<Codigospetro> lst = new ArrayList<>();
-// FT           lst.add(super.find(entity.getCodigo()));
+            lst.add(super.find(entity));
             succesMessage.setRetorno(lst);
             return Response.status(200)
                     .entity(succesMessage)

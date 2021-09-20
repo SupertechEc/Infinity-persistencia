@@ -72,7 +72,7 @@ public class Listaprecioterminalproducto implements Serializable {
 
     public Listaprecioterminalproducto() {
     }
-
+ 
     public Listaprecioterminalproducto(ListaprecioterminalproductoPK listaprecioterminalproductoPK) {
         this.listaprecioterminalproductoPK = listaprecioterminalproductoPK;
     }
@@ -82,7 +82,7 @@ public class Listaprecioterminalproducto implements Serializable {
         this.usuarioactual = usuarioactual;
     }
 
-    public Listaprecioterminalproducto(String codigocomercializadora, String codigolistaprecio, String codigoterminal, String codigoproducto, String codigomedida) {
+    public Listaprecioterminalproducto(String codigocomercializadora, long codigolistaprecio, String codigoterminal, String codigoproducto, String codigomedida) {
         this.listaprecioterminalproductoPK = new ListaprecioterminalproductoPK(codigocomercializadora, codigolistaprecio, codigoterminal, codigoproducto, codigomedida);
     }
 

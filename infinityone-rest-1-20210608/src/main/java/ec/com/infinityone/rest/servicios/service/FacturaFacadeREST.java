@@ -68,6 +68,7 @@ import ec.com.infinity.modelo.DetalleprecioPK;
 import ec.com.infinity.modelo.Medida;
 import ec.com.infinity.modelo.Precio;
 import ec.com.infinity.modelo.PrecioPK;
+import ec.com.infinity.modelo.Totalgarantizado;
 import java.io.OutputStreamWriter;
 import java.math.BigInteger;
 import java.math.MathContext;
@@ -178,7 +179,7 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
                 System.out.println("FACTURAFACADEREST::create1: NOOOOO nullo");  
         }
      
-        String tipodocumento = "fct";
+        String tipodocumento = "FAC";
         
         System.out.println("FACTURAFACADEREST::create1: +entity.getClass()");
         
@@ -227,6 +228,7 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
             respuestaNumeracion.setUltimonumero(numeracion);
             getServicioNumeracion().edit(respuestaNumeracion);
             System.out.println("FT:: terminó de getServicioNumeracion().edit(respuestaNumeracion)::"+numeracion);
+            System.out.println("FT:: INCIA CREACION DE DETALLESRUBROSFACTURAS)::"+numeracion);
             crearDetallesFacturaCuotasRubros(entity);
             System.out.println("FT::crearDetallesFacturaCuotasRubros(entity)::"+entity.toString());
             //bloqueo.getTransaction().commit();
@@ -874,6 +876,7 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
 //            System.out.println("FT:: actionFactura::-respuesta del servicio buscardetalle precio" + respuesta);
             JSONObject objetoJson = new JSONObject(respuesta);
             JSONArray retorno = objetoJson.getJSONArray("retorno");
+            BigDecimal valor3xmilSRI = new BigDecimal("0");
             for (int indice = 0; indice < retorno.length(); indice++) {
                 String bandera = "000" + count;
                 if (!retorno.isNull(indice)) {
@@ -881,7 +884,7 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
                     JSONObject detailPePK = detailP.getJSONObject("detalleprecioPK");
                     JSONObject grv = detailP.getJSONObject("gravamen");
                     JSONObject grvPK = grv.getJSONObject("gravamenPK");
-                    if (grvPK.getString("codigo").equals("0001") || grvPK.getString("codigo").equals("0009")) {
+                    if (grvPK.getString("codigo").equals("0001") || grvPK.getString("codigo").equals("0009")|| grvPK.getString("codigo").equals("0005")) {
                         System.out.println("FT:: actionFactura::Impuesto no usado" + grvPK.getString("codigo"));
                     } else {
                         detalleFactPK.setCodigoabastecedora(fac.getFacturaPK().getCodigoabastecedora());
@@ -903,7 +906,11 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
                         detalleFact.setCodigoimpuesto(detailPePK.getString("codigogravamen"));
                         detalleFact.setNombreimpuesto(grv.getString("nombre"));
                         detalleFact.setSeimprime(grv.getBoolean("seimprime"));
-                        detalleFact.setValordefecto(new BigDecimal(0));
+                        valor3xmilSRI = grv.getBigDecimal("valordefecto");
+                        if (detalleFact.getCodigoimpuesto().equalsIgnoreCase("0328")){
+                            valor3xmilSRI = valor3xmilSRI.multiply(new BigDecimal("100"));
+                        }
+                        detalleFact.setValordefecto(valor3xmilSRI);
                         if (detalleFact.getCodigoimpuesto().equals("0002")) {
                             fac.setIvatotal(detalleFact.getSubtotal());
                         }
@@ -917,6 +924,14 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
             }
 //            System.out.println("FT:: actionFactura::Impuesto no usado");
             fac.setValortotal(totalimpuestos.add(fac.getValorsinimpuestos()).setScale(2, RoundingMode.HALF_UP));
+            fac.setValorconrubro(fac.getValortotal());
+            if (envNP.getNotapedido().getCodigocliente().getControlagarantia()){
+                try{
+                    validarGarantia(fac);
+                }catch(Throwable a){
+                    throw a;//new Throwable("Error al validar la garantía de este cliente");
+                }
+            }
             detFact.add(detalleFactura);
             
             envF.setDetalle(detFact);
@@ -930,13 +945,40 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
         } catch (Throwable t) {
              System.out.println("FT:: ERROR EN "+this.toString() + "::actionFactura "+ t.getMessage());
              t.printStackTrace(System.out);
-             throw new Throwable("FT:: ERROR EN "+this.toString() + "::actionFactura "+ t.getMessage());
+             throw t;  
         }
 //        System.out.println("FT:: TERMINÓ ACTIONFACTURA-FAC::  "+envF.getFactura().getFacturaPK().getNumeronotapedido());
 //        System.out.println("FT:: TERMINÓ ACTIONFACTURA-DETFA:: + "+envF.getDetalle().get(0).getSubtotal());
-//        System.out.println("FT:: TERMINÓ ACTIONFACTURA-DETFA:: + "+envF.getDetalle().get(1).getSubtotal());
+          System.out.println("FT:: TERMINÓ ACTIONFACTURA-DETFA:: Y AUN CON FT:: ERROR EN CONTINUA--- MALLLL - SE DEBE VERIFICAR CANCELAR EL PROCESO Y ENVIAR UN ERROR AL USUARIO ");
         return envF;
     }
+     public void validarGarantia(Factura fac)throws Throwable{
+         
+        Totalgarantizado totalGarantizado = null;
+        List<Totalgarantizado> lst = new ArrayList<>();
+        List<Detallenotapedido> lstD = new ArrayList<>();
+        try{
+            TypedQuery<Totalgarantizado> consulta = em.createNamedQuery("Totalgarantizado.findByComerCli", Totalgarantizado.class);
+            consulta.setParameter("codigocomercializadora", fac.getFacturaPK().getCodigocomercializadora().trim());
+            consulta.setParameter("codigocliente", fac.getCodigocliente().trim());
+            try{
+            totalGarantizado = consulta.getSingleResult();
+            }catch(Throwable a){
+               throw new Throwable("Error al buscar Totalgarantizado para este cliente (Verifique Garantías): " + fac.getCodigocliente().trim());     
+            }
+            BigDecimal saldo = new BigDecimal("0.00"); 
+            if (totalGarantizado == null ){
+                  throw new Throwable("No se ha encontrado un valor garantizado para este cliente: " + fac.getCodigocliente().trim());
+            }else{
+                saldo = totalGarantizado.getTotalgarantizado().subtract(totalGarantizado.getTotaldeuda());
+                if( saldo.compareTo(new BigDecimal(BigInteger.ZERO))== -1){
+                    throw new Throwable("El valor de esta compra SUPERARÁ el saldo garantizado de este cliente: "+ fac.getCodigocliente().trim()); 
+                }
+            }
+        }catch(Throwable x){
+            throw x;
+        }
+     }
 
     public Precio buscarPrecio(EnvioPedidoREST envNP){
             Precio res = new Precio();
@@ -1046,32 +1088,7 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
         StringBuilder sqlQuery = new StringBuilder();
         List<Cuotarubroterceros> lista = new ArrayList<>();
         try{    
-            // DEBE BUSCAR CUOTAS DE CLIENTERUBROS ACTIVOS
-            
-//            SELECT c.* FROM Cuotarubroterceros c, clienterubrotercero cl WHERE 
-//             cl.codigocomercializadora = c.codigocomercializadora
-//             and cl.codigorubrotercero = c.codigorubrotercero
-//				and cl.codigocliente = c.codigocliente 
-//             and c. codigocliente = '02010001' 
-//              and cl.activo = true
-//           and c.pagada = FALSE
-//           and c. tipocobro = 'LIB'
-//		   and c.fechainiciocobro <= '2021-10-05'
-//           and c.fechacobro <= '2021-10-05'
-//           --order by fechacobro  limit 1
-//           UNION
-//           SELECT c.* FROM Cuotarubroterceros c, clienterubrotercero cl WHERE 
-//            cl.codigocomercializadora = c.codigocomercializadora
-//            and cl.codigorubrotercero = c.codigorubrotercero
-//            and cl.codigocliente = c.codigocliente 
-//             and c. codigocliente = '02010001' 
-//             and cl.activo = true
-//           and c.pagada = FALSE
-//           and c. tipocobro = 'MEN'
-//		   and c.fechainiciocobro <= '2021-10-05'
-//           and c.fechacobro <= '2021-10-05'
-//           order by fechacobro  limit 2
-//            
+            // DEBE BUSCAR CUOTAS DE CLIENTERUBROS ACTIVOS  
             sqlQuery.append("SELECT c.* FROM Cuotarubroterceros c, clienterubrotercero cl WHERE  ")
             .append(" cl.codigocomercializadora = c.codigocomercializadora ") 
             .append(" and cl.codigorubrotercero = c.codigorubrotercero ")
@@ -1149,7 +1166,7 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
         Detallefacturarubrotercero detalleFactCuota = new Detallefacturarubrotercero();
         DetallefacturarubroterceroPK detalleFactCuotaPK = new DetallefacturarubroterceroPK();
         int contadorCuota = 1;
-       
+        int contadorCuotaBDD = 1;
         try{
             TypedQuery<Clienterubrotercero> consulta = em.createNamedQuery("Clienterubrotercero.findByFAC", Clienterubrotercero.class);
             consulta.setParameter("codigocomercializadora", unaFactura.getFactura().getFacturaPK().getCodigocomercializadora().trim());
@@ -1179,7 +1196,12 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
 //                fechaS = date.format(listaCuotarubro.get(i).getFechacobro());
 //            }
 //            String fechaIniS = date.format(listaCuotarubro.get(i).getFechainiciocobro());
-            URL url = new URL("http://localhost:8082/infinityone-rest-1-1.0-SNAPSHOT/resources/ec.com.infinity.modelo.cuotarubroterceros");
+            contadorCuotaBDD = buscarMaxCuota(o.getClienterubroterceroPK().getCodigocomercializadora(), o.getClienterubroterceroPK().getCodigorubrotercero(), o.getClienterubroterceroPK().getCodigocliente(), "FAC");
+            if(contadorCuota < contadorCuotaBDD){
+                contadorCuota = contadorCuotaBDD;
+            }
+            
+            URL url = new URL("https://www.supertech.ec:8443/infinityone1/resources/ec.com.infinity.modelo.cuotarubroterceros");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(true);
             connection.setRequestMethod("POST");
@@ -1196,7 +1218,10 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
             objPk.put("cuota", contadorCuota);
             obj.put("cuotarubrotercerosPK", objPk);
             obj.put("pagada", "true");
-            obj.put("fechacobro", unaFactura.getFactura().getFechaventa());
+            System.out.println("FT:: FECHA DE VENTA PARA GRABAR EN NUEVA CUOTA. "+unaFactura.getFactura().getFechaventa());
+            SimpleDateFormat fechD = new SimpleDateFormat("yyyy-MM-dd'T'11:00:00'Z'");
+            String fechaV = fechD.format(unaFactura.getFactura().getFechaventa());
+            obj.put("fechacobro", fechaV);
             obj.put("valor", (unaFactura.getDetalle().get(0).getVolumennaturalautorizado().multiply(o.getValor(), MathContext.UNLIMITED)));
             obj.put("tipocobro", "FAC");
             obj.put("fechainiciocobro", o.getFechainiciocobro());
@@ -1205,12 +1230,13 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
             writer.write(respuesta);
             writer.close();
             if (connection.getResponseCode() == 200) {
-                System.out.println("FT:: gravación CUOTA OK: "+objPk.toString());
+                System.out.println("FT:: grabación CUOTA OK: "+objPk.toString());
             } else {
-                System.out.println("FT:: gravación CUOTA ERROR: "+objPk.toString());
+                System.out.println("FT:: grabación CUOTA ERROR: "+objPk.toString());
             }
             
             // generar detallefacrubro
+            System.out.println("FT:: INICIA CREACION DE detalleFactCuotaPK: ");
              detalleFactCuotaPK.setCodigoabastecedora(unaFactura.getFactura().getFacturaPK().getCodigoabastecedora().trim());
              detalleFactCuotaPK.setCodigocomercializadora(unaFactura.getFactura().getFacturaPK().getCodigocomercializadora().trim());
              detalleFactCuotaPK.setNumerofactura(unaFactura.getFactura().getFacturaPK().getNumero());
@@ -1227,7 +1253,9 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
              detalleFactCuota.setUsuarioactual("ft");
 //                 lista.add(mc);
              //grabarDetFacRubr(detalleFactCuota);
+            System.out.println("FT:: INICIA GRABACIÓN DE detalleFactCuotaPK: ");
              servicioDetFacRubro.create(detalleFactCuota);
+             System.out.println("FT:: TERMINA GRABACIÓN DE detalleFactCuotaPK: ");
             
             // generar detallefacrubro
             
@@ -1307,4 +1335,35 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
 //        }   
 //    }
         
+    public int buscarMaxCuota(String codigocomercializadora, long codigorubrotercero, String codigocliente, String tipocobro){
+        int maxCuota = 0;
+        
+        Object objetosList;
+        StringBuilder sqlQuery = new StringBuilder();
+        List<MejorCliente> lista = new ArrayList<>();
+       System.out.println("FT:: buscarMaxCuota parametros: comer "+ codigocomercializadora+" codigorubrotercero "+codigorubrotercero+" codigocliente "+codigocliente+ "tipocobro " +tipocobro);
+       sqlQuery.append("select max(cuota) from public.cuotarubroterceros"
+               + " where codigocomercializadora = :pcodigocomercializadora and codigorubrotercero = :pcodigorubrotercero and "
+               + " codigocliente = :pcodigocliente and tipocobro = :ptipocobro");
+
+        System.out.println("FT:: BUSCAR EL MAX DE CUOTAS TIPO FAC"+ sqlQuery.toString());
+       try {
+            Query qry = this.em.createNativeQuery(sqlQuery.toString());
+            qry.setParameter("pcodigocomercializadora", codigocomercializadora);
+           qry.setParameter("pcodigorubrotercero", codigorubrotercero);
+           qry.setParameter("pcodigocliente", codigocliente);
+           qry.setParameter("ptipocobro", tipocobro);
+             
+             objetosList = qry.getSingleResult();
+           
+                maxCuota = (new Integer(String.valueOf(objetosList))).intValue();
+                
+            return maxCuota + 1;
+            
+        } catch (Throwable ex) {
+            System.out.println("FT:: ERROR-BUSCAR EL MAX DE CUOTAS TIPO FAC Throwable. "+ex.getMessage());
+            return maxCuota;
+        }   
+    }
+    
 }

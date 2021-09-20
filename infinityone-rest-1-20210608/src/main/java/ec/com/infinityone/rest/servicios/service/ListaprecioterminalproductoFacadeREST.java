@@ -59,7 +59,7 @@ public class ListaprecioterminalproductoFacadeREST extends AbstractFacade<Listap
         }
         java.util.List<String> codigolistaprecio = map.get("codigolistaprecio");
         if (codigolistaprecio != null && !codigolistaprecio.isEmpty()) {
-            key.setCodigolistaprecio(codigolistaprecio.get(0));
+            key.setCodigolistaprecio(new java.lang.Long(codigolistaprecio.get(0)));
         }
         java.util.List<String> codigoterminal = map.get("codigoterminal");
         if (codigoterminal != null && !codigoterminal.isEmpty()) {
@@ -130,7 +130,7 @@ public class ListaprecioterminalproductoFacadeREST extends AbstractFacade<Listap
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigocomercializadora") String codigocomercializadora, 
-            @QueryParam("codigolistaprecio") String codigolistaprecio,
+            @QueryParam("codigolistaprecio") long codigolistaprecio,
             @QueryParam("codigoterminal") String codigoterminal,
             @QueryParam("codigoproducto") String codigoproducto,
             @QueryParam("codigomedida") String codigomedida) {
@@ -198,7 +198,7 @@ public class ListaprecioterminalproductoFacadeREST extends AbstractFacade<Listap
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigocomercializadora") String codigocomercializadora, 
-            @QueryParam("codigolistaprecio") String codigolistaprecio,
+            @QueryParam("codigolistaprecio") long codigolistaprecio,
             @QueryParam("codigoterminal") String codigoterminal,
             @QueryParam("codigoproducto") String codigoproducto,
             @QueryParam("codigomedida") String codigomedida) {
@@ -331,7 +331,7 @@ public class ListaprecioterminalproductoFacadeREST extends AbstractFacade<Listap
     //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response findPorCodLista(@QueryParam("codigolistaprecio") String codigolistaprecio) {
+    public Response findPorCodLista(@QueryParam("codigolistaprecio") long codigolistaprecio) {
         try {
             
             ListaprecioterminalproductoPK entity = new ListaprecioterminalproductoPK();
@@ -394,7 +394,7 @@ public class ListaprecioterminalproductoFacadeREST extends AbstractFacade<Listap
                 Listaprecioterminalproducto obj = new Listaprecioterminalproducto();
                 ListaprecioterminalproductoPK objPk = new ListaprecioterminalproductoPK();
                 objPk.setCodigocomercializadora(String.valueOf(o[0]));
-                objPk.setCodigolistaprecio(String.valueOf(o[1]));
+                objPk.setCodigolistaprecio (new Long(String.valueOf(o[1])));
                 objPk.setCodigoproducto(String.valueOf(o[2]));
                 objPk.setCodigomedida(String.valueOf(o[3]));
                 objPk.setCodigoterminal(String.valueOf(o[4]));

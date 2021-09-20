@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Numeracion.findByTipodocumento", query = "SELECT n FROM Numeracion n WHERE n.tipodocumento = :tipodocumento"),
     @NamedQuery(name = "Numeracion.findByActivo", query = "SELECT n FROM Numeracion n WHERE n.activo = :activo"),
     @NamedQuery(name = "Numeracion.findByUltimonumero", query = "SELECT n FROM Numeracion n WHERE n.ultimonumero = :ultimonumero"),
+    @NamedQuery(name = "Numeracion.findByComercializadora", query = "SELECT n FROM Numeracion n WHERE n.codigocomercializadora = :codigocomercializadora"),
     @NamedQuery(name = "Numeracion.findByVersion", query = "SELECT n FROM Numeracion n WHERE n.version = :version")})
 public class Numeracion implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -58,10 +59,18 @@ public class Numeracion implements Serializable {
     private int ultimonumero;
     @Version
     private Integer version;
-    @JoinColumn(name = "codigocomercializadora", referencedColumnName = "codigo")
-    @ManyToOne(optional = false)
-    private Comercializadora codigocomercializadora;
-     @Size(max = 100)
+    
+//    @JoinColumn(name = "codigocomercializadora", referencedColumnName = "codigo")
+//    @ManyToOne(optional = false)
+//    private Comercializadora codigocomercializadora;
+// 
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 4)
+    @Column(name = "codigocomercializadora")
+    private String codigocomercializadora;
+    
+    @Size(max = 100)
     @Column(name = "usuarioactual")
     private String usuarioactual;
 
@@ -119,14 +128,22 @@ public class Numeracion implements Serializable {
         this.version = version;
     }
 
-    public Comercializadora getCodigocomercializadora() {
+//    public Comercializadora getCodigocomercializadora() {
+//        return codigocomercializadora;
+//    }
+//
+//    public void setCodigocomercializadora(Comercializadora codigocomercializadora) {
+//        this.codigocomercializadora = codigocomercializadora;
+//    }
+
+     public String getCodigocomercializadora() {
         return codigocomercializadora;
     }
 
-    public void setCodigocomercializadora(Comercializadora codigocomercializadora) {
+    public void setCodigocomercializadora(String codigocomercializadora) {
         this.codigocomercializadora = codigocomercializadora;
     }
-
+    
     @Override
     public int hashCode() {
         int hash = 0;

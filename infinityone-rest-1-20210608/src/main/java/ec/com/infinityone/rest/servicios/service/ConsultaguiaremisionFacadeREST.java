@@ -265,7 +265,7 @@ public class ConsultaguiaremisionFacadeREST extends AbstractFacade<Consultaguiar
         return em;
     }
 
-    @GET
+    @POST
     //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"}) 
@@ -279,25 +279,28 @@ public class ConsultaguiaremisionFacadeREST extends AbstractFacade<Consultaguiar
             paramWS.setClave(parametros.getClave());
             paramWS.setCbtfecemi(parametros.getCbtfecemi());
             paramWS.setCbtcoddep(new Byte(parametros.getCbtcoddep()));
+            
             respuesta = execute(paramWS);
-
             for (SDTGuiasComercializadora tmp : respuesta.getGuias().getSDTGuiasComercializadora()) {
                 Consultaguiaremision entity = new Consultaguiaremision();
                 ConsultaguiaremisionPK entityPk = new ConsultaguiaremisionPK();
-                entityPk.setCodigocomercializadora(parametros.getCodigoComercializadora());
+//            System.out.println("FT:: COMER desde PARAMETROS: " +parametros.getCbtcodcom()) );
+                
+                entityPk.setCodigocomercializadora(""+String.format("%4s", parametros.getCbtcodcom()).replace(' ','0'));
+//                System.out.println("FT:: COMER DESDE ENTITYPK: " +entityPk.getCodigocomercializadora());
                 entityPk.setFecharecepcion(new Date());
                 entityPk.setFecha("" + tmp.getCBTFECEMI());
                 entity.setConsultaguiaremisionPK(entityPk);
                 entity.setActivo(true);
-                entityPk.setNumero("" + tmp.getCBTNUMCBT());
+                entityPk.setNumero("" + String.format("%8s", tmp.getCBTNUMCBT()).replace(' ','0'));
                 entity.setAutotanque(tmp.getAUTPLAAUT());
-                entity.setCodigoareamercadeo("" + tmp.getCBTARMERC());
-                entity.setCodigomedida("" + tmp.getCBTUNIMED());
-                entity.setCodigoproducto("" + tmp.getCBTCODPRO());
-                entity.setCodigoterminal("" + paramWS.getCbtcoddep());
+                entity.setCodigoareamercadeo("" + String.format("%2s", tmp.getCBTARMERC()).replace(' ','0'));
+                entity.setCodigomedida("" + String.format("%2s", tmp.getCBTUNIMED()).replace(' ','0'));
+                entity.setCodigoproducto("" + String.format("%2s", tmp.getCBTCODPRO()).replace(' ','0'));
+                entity.setCodigoterminal("" + String.format("%2s", paramWS.getCbtcoddep()).replace(' ','0'));
                 entity.setEstado("ACT");
                 entity.setMedida("" + tmp.getUMENOMABR());
-                entity.setNumerooe("" + tmp.getCBTNUMORE());
+                entity.setNumerooe("" + String.format("%8s", tmp.getCBTNUMORE()).replace(' ','0'));
                 entity.setProducto("" + tmp.getCPRNOMPRO());
                 entity.setUsuarioactual("EPPETROECUADOR");
                 entity.setVolumenentregado(new BigDecimal(tmp.getCBTVOLENT()));
@@ -307,16 +310,16 @@ public class ConsultaguiaremisionFacadeREST extends AbstractFacade<Consultaguiar
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
             succesMessage.setDeveloperMessage("ejecución correcta");
-            List<Consultaguiaremision> lstConsulta = findAll();
-            if (lstConsulta != null) {
-
-                lstConsulta.stream().map((tmp) -> {
-                    tmp.setActivo(false);
-                    return tmp;
-                }).forEach((tmp) -> {
-                    super.edit(tmp);
-                });
-            }
+//            List<Consultaguiaremision> lstConsulta = findAll();
+//            if (lstConsulta != null) {
+//
+//                lstConsulta.stream().map((tmp) -> {
+//                    tmp.setActivo(false);
+//                    return tmp;
+//                }).forEach((tmp) -> {
+//                    super.edit(tmp);
+//                });
+//            }
 
             lstGuardar.stream().forEach((tmp) -> {
                 super.create(tmp);

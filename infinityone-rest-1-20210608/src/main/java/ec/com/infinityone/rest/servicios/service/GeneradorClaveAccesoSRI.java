@@ -55,7 +55,7 @@ public static String crearClaveAcceso(Date fecha, String establecimiento, String
         System.out.println("PuntoEmision:" + puntoEmision);
         sb.append(generarSecuencial(secuencial));
         System.out.println("Secuecnial:" + generarSecuencial(secuencial));
-        sb.append("123456789");
+        sb.append("000009991");
         claveAcceso = sb.toString();
         return claveAcceso + obtenerDigitoVerificadorModuloOnce(claveAcceso);
     }

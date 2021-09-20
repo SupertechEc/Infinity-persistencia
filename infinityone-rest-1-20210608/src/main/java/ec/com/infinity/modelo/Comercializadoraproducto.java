@@ -82,8 +82,8 @@ public class Comercializadoraproducto implements Serializable {
     private Producto producto;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "comercializadoraproducto")
     private List<Precio> precioList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "comercializadoraproducto")
-    private List<Listaprecioterminalproducto> listaprecioterminalproductoList;
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "comercializadoraproducto")
+//    private List<Listaprecioterminalproducto> listaprecioterminalproductoList;
 
     public Comercializadoraproducto() {
     }
@@ -187,14 +187,14 @@ public class Comercializadoraproducto implements Serializable {
         this.precioList = precioList;
     }
 
-    @XmlTransient
-    public List<Listaprecioterminalproducto> getListaprecioterminalproductoList() {
-        return listaprecioterminalproductoList;
-    }
-
-    public void setListaprecioterminalproductoList(List<Listaprecioterminalproducto> listaprecioterminalproductoList) {
-        this.listaprecioterminalproductoList = listaprecioterminalproductoList;
-    }
+//    @XmlTransient
+//    public List<Listaprecioterminalproducto> getListaprecioterminalproductoList() {
+//        return listaprecioterminalproductoList;
+//    }
+//
+//    public void setListaprecioterminalproductoList(List<Listaprecioterminalproducto> listaprecioterminalproductoList) {
+//        this.listaprecioterminalproductoList = listaprecioterminalproductoList;
+//    }
 
     @Override
     public int hashCode() {

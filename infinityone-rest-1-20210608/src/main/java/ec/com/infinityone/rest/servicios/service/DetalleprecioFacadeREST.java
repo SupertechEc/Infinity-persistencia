@@ -70,7 +70,7 @@ public class DetalleprecioFacadeREST extends AbstractFacade<Detalleprecio> {
         }
         java.util.List<String> codigolistaprecio = map.get("codigolistaprecio");
         if (codigolistaprecio != null && !codigolistaprecio.isEmpty()) {
-            key.setCodigolistaprecio(codigolistaprecio.get(0));
+            key.setCodigolistaprecio(new java.lang.Long(codigolistaprecio.get(0)));
         }
         java.util.List<String> fechainicio = map.get("fechainicio");
         if (fechainicio != null && !fechainicio.isEmpty()) {
@@ -148,7 +148,7 @@ public class DetalleprecioFacadeREST extends AbstractFacade<Detalleprecio> {
             @QueryParam("codigoterminal") String codigoterminal,
             @QueryParam("codigoproducto") String codigoproducto,
             @QueryParam("codigomedida") String codigomedida,
-            @QueryParam("codigolistaprecio") String codigolistaprecio,
+            @QueryParam("codigolistaprecio") long codigolistaprecio,
             @QueryParam("fechainicio") Date fechainicio,
             @QueryParam("secuencial") int secuencial,
             @QueryParam("codigo") long codigo,
@@ -224,7 +224,7 @@ public class DetalleprecioFacadeREST extends AbstractFacade<Detalleprecio> {
             @QueryParam("codigoterminal") String codigoterminal,
             @QueryParam("codigoproducto") String codigoproducto,
             @QueryParam("codigomedida") String codigomedida,
-            @QueryParam("codigolistaprecio") String codigolistaprecio,
+            @QueryParam("codigolistaprecio") long codigolistaprecio,
             @QueryParam("fechainicio") Date fechainicio,
             @QueryParam("secuencial") int secuencial,
             @QueryParam("codigo") long codigo,

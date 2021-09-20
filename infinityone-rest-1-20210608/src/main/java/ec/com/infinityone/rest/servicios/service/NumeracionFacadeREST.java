@@ -271,15 +271,16 @@ public class NumeracionFacadeREST extends AbstractFacade<Numeracion> {
         System.out.println("INSERTAR NUMERCION FT:: "+ sqlQuery.toString());
        try {
             Query qry = this.em.createNativeQuery(sqlQuery.toString());
-            qry.setParameter("pcodigocomercializadora", entity.getCodigocomercializadora().getCodigo());
+//          qry.setParameter("pcodigocomercializadora", entity.getCodigocomercializadora().getCodigo());
+            qry.setParameter("pcodigocomercializadora", entity.getCodigocomercializadora());
             qry.setParameter("ptipodocumento", entity.getTipodocumento().trim().toUpperCase());
             qry.setParameter("pactivo", entity.getActivo());
             qry.setParameter("pultimonumero", entity.getUltimonumero());
             qry.setParameter("pversion", entity.getVersion());
             qry.setParameter("pusuarioactual", entity.getUsuarioactual());
              
-             qry.executeUpdate();
-  
+            qry.executeUpdate();
+             
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
             succesMessage.setDeveloperMessage("Inserción correcta");
@@ -297,6 +298,41 @@ public class NumeracionFacadeREST extends AbstractFacade<Numeracion> {
                     .type(MediaType.APPLICATION_JSON).
                     build();
         }   
+    }
+    
+        @GET
+    @Path("/porComercializadora")
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findXComer(@QueryParam("codigocomercializadora") String codigocomercializadora) {
+        try {
+            
+            Numeracion entity = new Numeracion();
+                  
+            TypedQuery<Numeracion> consulta = em.createNamedQuery("Numeracion.findByComercializadora", Numeracion.class);
+            consulta.setParameter("codigocomercializadora", codigocomercializadora);
+            
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            List<Numeracion> lst = new ArrayList<>();
+            lst = consulta.getResultList();
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
     }
     
 }

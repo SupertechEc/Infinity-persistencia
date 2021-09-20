@@ -24,10 +24,8 @@ public class ListaprecioterminalproductoPK implements Serializable {
     @Column(name = "codigocomercializadora")
     private String codigocomercializadora;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
     @Column(name = "codigolistaprecio")
-    private String codigolistaprecio;
+    private long codigolistaprecio;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
@@ -47,7 +45,7 @@ public class ListaprecioterminalproductoPK implements Serializable {
     public ListaprecioterminalproductoPK() {
     }
 
-    public ListaprecioterminalproductoPK(String codigocomercializadora, String codigolistaprecio, String codigoterminal, String codigoproducto, String codigomedida) {
+    public ListaprecioterminalproductoPK(String codigocomercializadora, long codigolistaprecio, String codigoterminal, String codigoproducto, String codigomedida) {
         this.codigocomercializadora = codigocomercializadora;
         this.codigolistaprecio = codigolistaprecio;
         this.codigoterminal = codigoterminal;
@@ -63,11 +61,11 @@ public class ListaprecioterminalproductoPK implements Serializable {
         this.codigocomercializadora = codigocomercializadora;
     }
 
-    public String getCodigolistaprecio() {
+    public long getCodigolistaprecio() {
         return codigolistaprecio;
     }
 
-    public void setCodigolistaprecio(String codigolistaprecio) {
+    public void setCodigolistaprecio(long codigolistaprecio) {
         this.codigolistaprecio = codigolistaprecio;
     }
 
@@ -99,7 +97,7 @@ public class ListaprecioterminalproductoPK implements Serializable {
     public int hashCode() {
         int hash = 0;
         hash += (codigocomercializadora != null ? codigocomercializadora.hashCode() : 0);
-        hash += (codigolistaprecio != null ? codigolistaprecio.hashCode() : 0);
+        hash += (int)codigolistaprecio;
         hash += (codigoterminal != null ? codigoterminal.hashCode() : 0);
         hash += (codigoproducto != null ? codigoproducto.hashCode() : 0);
         hash += (codigomedida != null ? codigomedida.hashCode() : 0);
@@ -116,7 +114,7 @@ public class ListaprecioterminalproductoPK implements Serializable {
         if ((this.codigocomercializadora == null && other.codigocomercializadora != null) || (this.codigocomercializadora != null && !this.codigocomercializadora.equals(other.codigocomercializadora))) {
             return false;
         }
-        if ((this.codigolistaprecio == null && other.codigolistaprecio != null) || (this.codigolistaprecio != null && !this.codigolistaprecio.equals(other.codigolistaprecio))) {
+        if (this.codigolistaprecio != other.codigolistaprecio) {
             return false;
         }
         if ((this.codigoterminal == null && other.codigoterminal != null) || (this.codigoterminal != null && !this.codigoterminal.equals(other.codigoterminal))) {

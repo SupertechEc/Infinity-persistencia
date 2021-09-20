@@ -40,6 +40,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Notapedido.findForVenta", query = "SELECT n FROM Notapedido n WHERE n.notapedidoPK.codigoabastecedora = :codigoabastecedora and n.notapedidoPK.codigocomercializadora = :codigocomercializadora and n.codigoterminal.codigo = :codigoterminal and n.fechaventa = :fecha order by n.notapedidoPK.numero"),
     @NamedQuery(name = "Notapedido.findForDespacho", query = "SELECT n FROM Notapedido n WHERE n.notapedidoPK.codigoabastecedora = :codigoabastecedora and n.notapedidoPK.codigocomercializadora = :codigocomercializadora and n.codigoterminal.codigo = :codigoterminal and n.fechadespacho = :fecha order by n.notapedidoPK.numero"),
     @NamedQuery(name = "Notapedido.findByCodigocomercializadora", query = "SELECT n FROM Notapedido n WHERE n.notapedidoPK.codigocomercializadora = :codigocomercializadora"),
+    @NamedQuery(name = "Notapedido.findByComerterminal", query = "SELECT n FROM Notapedido n WHERE n.notapedidoPK.codigocomercializadora = :codigocomercializadora"
+            + " and n.codigoterminal.codigo = :codigoterminal"),
     @NamedQuery(name = "Notapedido.findByNumero", query = "SELECT n FROM Notapedido n WHERE n.notapedidoPK.numero = :numero"),
     @NamedQuery(name = "Notapedido.findByFechaventa", query = "SELECT n FROM Notapedido n WHERE n.fechaventa = :fechaventa"),
     @NamedQuery(name = "Notapedido.findByFechadespacho", query = "SELECT n FROM Notapedido n WHERE n.fechadespacho = :fechadespacho"),

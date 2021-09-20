@@ -20,6 +20,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -62,7 +63,7 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
         }
         java.util.List<String> codigo = map.get("codigo");
         if (codigo != null && !codigo.isEmpty()) {
-            key.setCodigo(codigo.get(0));
+            key.setCodigo(new java.lang.Long(codigo.get(0)));
         }
         return key;
     }
@@ -121,7 +122,7 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response remove(@QueryParam("codigocomercializadora") String codigocomercializadora, 
-            @QueryParam("codigo") String codigo) {
+            @QueryParam("codigo") long codigo) {
         try {
             
             ListaprecioPK entity = new ListaprecioPK();
@@ -182,7 +183,7 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response find(@QueryParam("codigocomercializadora") String codigocomercializadora, 
-            @QueryParam("codigo") String codigo) {
+            @QueryParam("codigo") long codigo) {
         try {
             
             ListaprecioPK entity = new ListaprecioPK();
@@ -298,6 +299,58 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
     @Override
     protected EntityManager getEntityManager() {
         return em;
+    }
+    
+        @POST
+    @Path("/agregar")  
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response crearAutonumerado(Listaprecio entity) {
+        
+        StringBuilder sqlQuery = new StringBuilder();
+               
+        String auxCC = entity.getListaprecioPK().getCodigocomercializadora().trim();
+        //entity.getRubroterceroPK().getCodigo()
+        String auxNom = entity.getNombre().trim();
+        String auxTipo = entity.getTipo().trim();
+        boolean auxAc = entity.getActivo();
+        String auxUsu = entity.getUsuarioactual().trim();
+        
+       sqlQuery.append("insert into public.listaprecio "
+               + "(codigocomercializadora, nombre, tipo, activo,  usuarioactual)"
+               + " values (:pauxCC, :pauxNom, :pauxTipo, :pauxAc, :pauxUsu)");
+               //+ "values(:, 'FLETE', true, '11111', 'VXG', 'ftt')");
+
+        System.out.println("INSERTAR LISTA DE PRECIO FT:: "+ sqlQuery.toString());
+       try {
+            Query qry = this.em.createNativeQuery(sqlQuery.toString());
+            qry.setParameter("pauxCC", auxCC);
+            qry.setParameter("pauxNom", auxNom);
+            qry.setParameter("pauxTipo", auxTipo);
+            qry.setParameter("pauxAc", auxAc);
+            qry.setParameter("pauxUsu", auxUsu);
+             
+             qry.executeUpdate();
+
+            
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("Inserción correcta");
+            
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }   
     }
 
 }

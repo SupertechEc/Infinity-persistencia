@@ -24,15 +24,13 @@ public class ListaprecioPK implements Serializable {
     @Column(name = "codigocomercializadora")
     private String codigocomercializadora;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
     @Column(name = "codigo")
-    private String codigo;
+    private long codigo;
 
     public ListaprecioPK() {
     }
 
-    public ListaprecioPK(String codigocomercializadora, String codigo) {
+    public ListaprecioPK(String codigocomercializadora, long codigo) {
         this.codigocomercializadora = codigocomercializadora;
         this.codigo = codigo;
     }
@@ -45,11 +43,11 @@ public class ListaprecioPK implements Serializable {
         this.codigocomercializadora = codigocomercializadora;
     }
 
-    public String getCodigo() {
+    public long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(String codigo) {
+    public void setCodigo(long codigo) {
         this.codigo = codigo;
     }
 
@@ -57,7 +55,7 @@ public class ListaprecioPK implements Serializable {
     public int hashCode() {
         int hash = 0;
         hash += (codigocomercializadora != null ? codigocomercializadora.hashCode() : 0);
-        hash += (codigo != null ? codigo.hashCode() : 0);
+        hash += (int)codigo;
         return hash;
     }
 
@@ -71,7 +69,7 @@ public class ListaprecioPK implements Serializable {
         if ((this.codigocomercializadora == null && other.codigocomercializadora != null) || (this.codigocomercializadora != null && !this.codigocomercializadora.equals(other.codigocomercializadora))) {
             return false;
         }
-        if ((this.codigo == null && other.codigo != null) || (this.codigo != null && !this.codigo.equals(other.codigo))) {
+        if (this.codigo != other.codigo) {
             return false;
         }
         return true;

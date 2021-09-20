@@ -124,8 +124,9 @@ public class Cliente implements Serializable {
     @Size(max = 100)
     @Column(name = "nombrerepresentantelegal")
     private String nombrerepresentantelegal;
+     @Size(min = 1, max = 6)
     @Column(name = "escontribuyenteespacial")
-    private Boolean escontribuyenteespacial;
+    private String escontribuyenteespacial;
     @Size(max = 12)
     @Column(name = "telefono1")
     private String telefono1;
@@ -155,10 +156,8 @@ public class Cliente implements Serializable {
     @Column(name = "controlagarantia")
     private Boolean controlagarantia;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
     @Column(name = "codigolistaprecio")
-    private String codigolistaprecio;
+    private long codigolistaprecio;
     @Size(max = 10)
     @Column(name = "codigolistaflete")
     private String codigolistaflete;
@@ -222,7 +221,7 @@ public class Cliente implements Serializable {
         this.codigo = codigo;
     }
 
-    public Cliente(String codigo, String nombre, boolean estado, String codigoarch, String codigostc, String codigocomercializadora, String ruc, String direccion, String codigolistaprecio, String usuarioactual) {
+    public Cliente(String codigo, String nombre, boolean estado, String codigoarch, String codigostc, String codigocomercializadora, String ruc, String direccion, long codigolistaprecio, String usuarioactual) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.estado = estado;
@@ -331,11 +330,11 @@ public class Cliente implements Serializable {
         this.nombrerepresentantelegal = nombrerepresentantelegal;
     }
 
-    public Boolean getEscontribuyenteespacial() {
+    public String getEscontribuyenteespacial() {
         return escontribuyenteespacial;
     }
 
-    public void setEscontribuyenteespacial(Boolean escontribuyenteespacial) {
+    public void setEscontribuyenteespacial(String escontribuyenteespacial) {
         this.escontribuyenteespacial = escontribuyenteespacial;
     }
 
@@ -419,11 +418,11 @@ public class Cliente implements Serializable {
         this.controlagarantia = controlagarantia;
     }
 
-    public String getCodigolistaprecio() {
+    public long getCodigolistaprecio() {
         return codigolistaprecio;
     }
 
-    public void setCodigolistaprecio(String codigolistaprecio) {
+    public void setCodigolistaprecio(long codigolistaprecio) {
         this.codigolistaprecio = codigolistaprecio;
     }
 

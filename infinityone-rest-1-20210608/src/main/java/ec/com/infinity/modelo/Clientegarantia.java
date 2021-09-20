@@ -31,6 +31,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Clientegarantia.findAll", query = "SELECT c FROM Clientegarantia c"),
     @NamedQuery(name = "Clientegarantia.findByCodigocomercializadora", query = "SELECT c FROM Clientegarantia c WHERE c.clientegarantiaPK.codigocomercializadora = :codigocomercializadora"),
+    @NamedQuery(name = "Clientegarantia.findByComerCli", query = "SELECT c FROM Clientegarantia c WHERE c.clientegarantiaPK.codigocomercializadora = :codigocomercializadora"
+            + " and c.clientegarantiaPK.codigocliente = :codigocliente"),
     @NamedQuery(name = "Clientegarantia.findByCodigocliente", query = "SELECT c FROM Clientegarantia c WHERE c.clientegarantiaPK.codigocliente = :codigocliente"),
     @NamedQuery(name = "Clientegarantia.findByCodigobanco", query = "SELECT c FROM Clientegarantia c WHERE c.clientegarantiaPK.codigobanco = :codigobanco"),
     @NamedQuery(name = "Clientegarantia.findByNumero", query = "SELECT c FROM Clientegarantia c WHERE c.clientegarantiaPK.numero = :numero"),

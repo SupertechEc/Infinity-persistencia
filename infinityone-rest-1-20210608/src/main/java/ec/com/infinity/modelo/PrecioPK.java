@@ -42,10 +42,8 @@ public class PrecioPK implements Serializable {
     @Column(name = "codigomedida")
     private String codigomedida;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
     @Column(name = "codigolistaprecio")
-    private String codigolistaprecio;
+    private long codigolistaprecio;
     @Basic(optional = false)
     @NotNull
     @Column(name = "fechainicio")
@@ -65,7 +63,7 @@ public class PrecioPK implements Serializable {
     public PrecioPK() {
     }
 
-    public PrecioPK(String codigocomercializadora, String codigoterminal, String codigoproducto, String codigomedida, String codigolistaprecio, Date fechainicio, int secuencial, long codigoPrecio) {
+    public PrecioPK(String codigocomercializadora, String codigoterminal, String codigoproducto, String codigomedida, long codigolistaprecio, Date fechainicio, int secuencial, long codigoPrecio) {
         this.codigocomercializadora = codigocomercializadora;
         this.codigoterminal = codigoterminal;
         this.codigoproducto = codigoproducto;
@@ -108,11 +106,11 @@ public class PrecioPK implements Serializable {
         this.codigomedida = codigomedida;
     }
 
-    public String getCodigolistaprecio() {
+    public long getCodigolistaprecio() {
         return codigolistaprecio;
     }
 
-    public void setCodigolistaprecio(String codigolistaprecio) {
+    public void setCodigolistaprecio(long codigolistaprecio) {
         this.codigolistaprecio = codigolistaprecio;
     }
 
@@ -147,7 +145,7 @@ public class PrecioPK implements Serializable {
         hash += (codigoterminal != null ? codigoterminal.hashCode() : 0);
         hash += (codigoproducto != null ? codigoproducto.hashCode() : 0);
         hash += (codigomedida != null ? codigomedida.hashCode() : 0);
-        hash += (codigolistaprecio != null ? codigolistaprecio.hashCode() : 0);
+        hash += (int)codigolistaprecio;
         hash += (fechainicio != null ? fechainicio.hashCode() : 0);
         hash += (int) secuencial;
         hash += (int)codigoPrecio; 
@@ -173,7 +171,7 @@ public class PrecioPK implements Serializable {
         if ((this.codigomedida == null && other.codigomedida != null) || (this.codigomedida != null && !this.codigomedida.equals(other.codigomedida))) {
             return false;
         }
-        if ((this.codigolistaprecio == null && other.codigolistaprecio != null) || (this.codigolistaprecio != null && !this.codigolistaprecio.equals(other.codigolistaprecio))) {
+        if (this.codigolistaprecio == other.codigolistaprecio) {
             return false;
         }
         if ((this.fechainicio == null && other.fechainicio != null) || (this.fechainicio != null && !this.fechainicio.equals(other.fechainicio))) {

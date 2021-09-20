@@ -26,22 +26,31 @@ public class ReenvioPedido {
 
     @WebMethod
     public String reenvio(String cadena) {
+        System.out.println("INCIA reenvio: "+cadena);
         Procedimientos proces = new Procedimientos();
 
         NotapedidoPK busqueda = proces.recorrer(cadena);
+        System.out.println("TERMINA busqueda: "+busqueda.getCodigocomercializadora()+" num: "+busqueda.getNumero());
         @SuppressWarnings("UnusedAssignment")
         Notapedido agregar = null;
         agregar = servicio.findOtro(busqueda);
+        
         if (agregar == null) {
+            System.out.println("TERMINA findOtro NO ENCONTRÓ NP:" );
+            System.out.println("RETORNO CON NO ENCUENTRA armaNoEncuentra+CADENA:"+ cadena );
             return proces.armaNoEncuentra(cadena);
         } else {
+            System.out.println("TERMINA findOtro SI ENCONTRÓ NP LA VA A RE-ENVIAR:" );
             Notapedido respuesta = agregar;
             GeneracionOEAbasPrvService service = new GeneracionOEAbasPrvService();
             GeneracionOEAbasPrv port = service.getGeneracionOEAbasPrv();
             String arespuesta = port.generarOrdenEntrega(respuesta.getTramaenviadagoe());
-            respuesta.setRespuestageneracionoeepp(arespuesta.substring(0, 1));//2 primeros caracteres
+                        System.out.println("TERMINA  RE-ENVIO NP:" +arespuesta );
+            respuesta.setRespuestageneracionoeepp(arespuesta.substring(0, 2));//2 primeros caracteres
             respuesta.setTramarecibidagoe(arespuesta);
             servicio.edit(respuesta);
+                        System.out.println("TERMINA ACTUALIZACION DE NP EN BDD CON RESPUESTA DE EPP:" );
+                                    System.out.println("RETORNO CON armaEncuentra+CADENA:"+ cadena );
             return proces.armaEncuentra(cadena);
         }
     }

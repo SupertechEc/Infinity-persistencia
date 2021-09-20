@@ -103,6 +103,10 @@ public class Factura implements Serializable {
     private BigDecimal valortotal;
     @Basic(optional = false)
     @NotNull
+    @Column(name = "valorconrubro")
+    private BigDecimal valorconrubro;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "ivatotal")
     private BigDecimal ivatotal;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
@@ -693,5 +697,14 @@ public class Factura implements Serializable {
     public void setTipoplazocredito(String tipoplazocredito) {
         this.tipoplazocredito = tipoplazocredito;
     }
+
+    public BigDecimal getValorconrubro() {
+        return valorconrubro;
+    }
+
+    public void setValorconrubro(BigDecimal valorconrubro) {
+        this.valorconrubro = valorconrubro;
+    }
+    
     
 }

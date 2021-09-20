@@ -15,6 +15,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -273,6 +275,100 @@ public class ClientegarantiaFacadeREST extends AbstractFacade<Clientegarantia> {
     @Override
     protected EntityManager getEntityManager() {
         return em;
+    }
+    @GET
+    @Path("/MaxSecuencial")
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response buscarMaxSecuencial(@QueryParam("codigocomercializadora") String codigocomercializadora, 
+            @QueryParam("codigocliente") String codigocliente,
+            @QueryParam("codigobanco") String codigobanco,
+            @QueryParam("numero") String numero){
+        int maxCuota = 0;
+        
+        Object objetosList;
+        StringBuilder sqlQuery = new StringBuilder();
+         
+       sqlQuery.append("select max(secuencial) from public.clientegarantia where "
+               + " codigocomercializadora = :pcodigocomercializadora and codigocliente = :pcodigocliente  "
+               + " and codigobanco = :pcodigobanco and numero = :pnumero");
+
+        System.out.println("FT:: BUSCAR EL MAX DE SECUENCIAL DE UNA GARANTIA"+ sqlQuery.toString());
+       EjecucionMensaje succesMessage = new EjecucionMensaje();
+        try {
+           
+            Query qry = this.em.createNativeQuery(sqlQuery.toString());
+            qry.setParameter("pcodigocomercializadora", codigocomercializadora);
+           qry.setParameter("pcodigocliente", codigocliente);
+           qry.setParameter("pcodigobanco", codigobanco);
+           qry.setParameter("pnumero", numero);
+             
+             objetosList = qry.getSingleResult();
+           try{
+            maxCuota = (new Integer(String.valueOf(objetosList))).intValue();
+            maxCuota ++;
+           }catch(Throwable t){
+               maxCuota=1;
+           } 
+            
+            List<String> lst = new ArrayList<>();
+            lst.add(String.valueOf(maxCuota));
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            
+            
+        } catch (WebApplicationException ex) {
+            maxCuota =1;
+            Response exResponse = ex.getResponse();
+            List<String> lst = new ArrayList<>();
+            lst.add(String.valueOf(maxCuota));
+            succesMessage.setRetorno(lst);
+            return Response.status(404)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+//            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+//            return Response.status(Response.Status.CONFLICT)
+//                    .entity(errorMessage)
+//                    .type(MediaType.APPLICATION_JSON).
+//                    build();
+        }   
+    }
+    
+    @GET
+    @Path("/Comercli")
+    //@Secured 
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findXComer(@QueryParam("codigocomercializadora") String codigocomercializadora,@QueryParam("codigocliente") String codigocliente) {
+        try {                           
+            TypedQuery<Clientegarantia> consulta = em.createNamedQuery("Clientegarantia.findByComerCli", Clientegarantia.class);
+            consulta.setParameter("codigocomercializadora", codigocomercializadora);
+            consulta.setParameter("codigocliente", codigocliente);
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            List<Clientegarantia> lst = new ArrayList<>();
+            lst = consulta.getResultList();
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
     }
 
 }

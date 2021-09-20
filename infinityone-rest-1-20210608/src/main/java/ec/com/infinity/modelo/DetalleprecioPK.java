@@ -44,9 +44,8 @@ public class DetalleprecioPK implements Serializable {
     private String codigomedida;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 10)
     @Column(name = "codigolistaprecio")
-    private String codigolistaprecio;
+    private long codigolistaprecio;
     @Basic(optional = false)
     @NotNull
     @Column(name = "fechainicio")
@@ -70,7 +69,7 @@ public class DetalleprecioPK implements Serializable {
     public DetalleprecioPK() {
     }
 
-    public DetalleprecioPK(String codigocomercializadora, String codigoterminal, String codigoproducto, String codigomedida, String codigolistaprecio, Date fechainicio, int secuencial, long codigo, String codigogravamen) {
+    public DetalleprecioPK(String codigocomercializadora, String codigoterminal, String codigoproducto, String codigomedida, long codigolistaprecio, Date fechainicio, int secuencial, long codigo, String codigogravamen) {
         this.codigocomercializadora = codigocomercializadora;
         this.codigoterminal = codigoterminal;
         this.codigoproducto = codigoproducto;
@@ -114,11 +113,11 @@ public class DetalleprecioPK implements Serializable {
         this.codigomedida = codigomedida;
     }
 
-    public String getCodigolistaprecio() {
+    public long getCodigolistaprecio() {
         return codigolistaprecio;
     }
 
-    public void setCodigolistaprecio(String codigolistaprecio) {
+    public void setCodigolistaprecio(long codigolistaprecio) {
         this.codigolistaprecio = codigolistaprecio;
     }
 
@@ -161,7 +160,7 @@ public class DetalleprecioPK implements Serializable {
         hash += (codigoterminal != null ? codigoterminal.hashCode() : 0);
         hash += (codigoproducto != null ? codigoproducto.hashCode() : 0);
         hash += (codigomedida != null ? codigomedida.hashCode() : 0);
-        hash += (codigolistaprecio != null ? codigolistaprecio.hashCode() : 0);
+        hash += (int) codigolistaprecio;
         hash += (fechainicio != null ? fechainicio.hashCode() : 0);
         hash += (int) secuencial;
         hash += (long) codigo;
@@ -188,7 +187,7 @@ public class DetalleprecioPK implements Serializable {
         if ((this.codigomedida == null && other.codigomedida != null) || (this.codigomedida != null && !this.codigomedida.equals(other.codigomedida))) {
             return false;
         }
-        if ((this.codigolistaprecio == null && other.codigolistaprecio != null) || (this.codigolistaprecio != null && !this.codigolistaprecio.equals(other.codigolistaprecio))) {
+        if (this.codigolistaprecio != other.codigolistaprecio) {
             return false;
         }
         if ((this.fechainicio == null && other.fechainicio != null) || (this.fechainicio != null && !this.fechainicio.equals(other.fechainicio))) {

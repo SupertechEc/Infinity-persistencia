@@ -107,7 +107,7 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
             @QueryParam("codigoterminal") String codigoterminal,
             @QueryParam("codigoproducto") String codigoproducto,
             @QueryParam("codigomedida") String codigomedida,
-            @QueryParam("codigolistaprecio") String codigolistaprecio,
+            @QueryParam("codigolistaprecio") long codigolistaprecio,
             @QueryParam("fechainicio") Date fechainicio,
             @QueryParam("secuencial") int secuencial,
             @QueryParam("codigoPrecio") long codigoPrecio) {
@@ -181,7 +181,7 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
             @QueryParam("codigoterminal") String codigoterminal,
             @QueryParam("codigoproducto") String codigoproducto,
             @QueryParam("codigomedida") String codigomedida,
-            @QueryParam("codigolistaprecio") String codigolistaprecio,
+            @QueryParam("codigolistaprecio") long codigolistaprecio,
             @QueryParam("fechainicio") Date fechainicio,
             @QueryParam("secuencial") int secuencial,
             @QueryParam("codigoPrecio") long codigoPrecio) {
@@ -229,7 +229,7 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
             @QueryParam("codigoproducto") String codigoproducto,
             @QueryParam("codigomedida") String codigomedida,
             @QueryParam("fechainicio") Date fechainicio,
-            @QueryParam("codigolistaprecio") String codigolistaprecio) {
+            @QueryParam("codigolistaprecio") long codigolistaprecio) {
         try {
             
             PrecioPK  entity = new PrecioPK();
@@ -375,7 +375,7 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
         String auxTer = entity.getPrecioPK().getCodigoterminal().trim();
         String auxProd = entity.getPrecioPK().getCodigoproducto().trim();
         String auxMed = entity.getPrecioPK().getCodigomedida().trim();
-        String auxLisPre = entity.getPrecioPK().getCodigolistaprecio().trim();
+        long auxLisPre = entity.getPrecioPK().getCodigolistaprecio();
         Date auxFeIni = entity.getPrecioPK().getFechainicio();
         int  auxSec = entity.getPrecioPK().getSecuencial();
         long auxCod = -1;
@@ -400,7 +400,7 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
                + " fechainicio, secuencial, codigo, fechafin, activo, observacion, precioproducto, usuarioactual)"
                + " values (:pcodigocomercializadora, :pcodigoterminal, :pcodigoproducto, :pcodigomedida, :pcodigolistaprecio, "
                + " :pfechainicio, :psecuencial,  :pcodigo, NULL, :pactivo, :pobservacion, :pprecioproducto, :pusuarioactual)"); 
-       System.out.println("INSERTAR RUBRO TERCERO FT:: "+ sqlQuery.toString());
+       System.out.println("INSERTAR PRECIO FT:: "+ sqlQuery.toString());
        
             Query qry = this.em.createNativeQuery(sqlQuery.toString());
             qry.setParameter("pcodigocomercializadora", auxCC);
@@ -498,7 +498,7 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
                + " fechainicio, secuencial, codigo, codigogravamen, valor, usuarioactual)"
                + " values (:pcodigocomercializadora, :pcodigoterminal, :pcodigoproducto, :pcodigomedida, :pcodigolistaprecio, "
                + " :pfechainicio, :psecuencial,  :pcodigo, :pcodigogravamen, :pvalor, :pusuarioactual)"); 
-       System.out.println("INSERTAR RUBRO TERCERO FT:: "+ sqlQuery.toString());
+       System.out.println("INSERTAR DETALLEPRECIO FT:: "+ sqlQuery.toString());
          for (int indice = 0; indice < listaDetPrecio.size(); indice++) {
             Query qry = this.em.createNativeQuery(sqlQuery.toString());
             qry.setParameter("pcodigocomercializadora", listaDetPrecio.get(indice).getDetalleprecioPK().getCodigocomercializadora());
