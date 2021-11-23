@@ -5,17 +5,15 @@
  */
 package ec.com.infinityone.rest.servicios.service;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import ec.com.infinity.modelo.Clientegarantia;
-import ec.com.infinity.modelo.ClientegarantiaPK;
-import ec.com.infinity.modelo.Clientelistaprecio;
-import ec.com.infinity.modelo.Listaprecio;
-import ec.com.infinity.modelo.ListaprecioPK;
+import ec.com.infinity.modelo.Temporalparacobrar;
+import ec.com.infinity.modelo.TemporalparacobrarPK;
+import ec.com.infinity.modelo.TotalParaCobrar;
 import ec.com.infinity.rest.seguridad.EjecucionMensaje;
 import ec.com.infinity.rest.seguridad.ErrorMessage;
 import ec.com.infinity.rest.seguridad.Secured;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -30,60 +28,38 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.QueryParam;
 
 /**
  *
  * @author Paul
  */
 @Stateless
-@Path("ec.com.infinity.modelo.listaprecio")
-public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
+@Path("ec.com.infinity.modelo.temporalparacobrar")
+public class TemporalparacobrarFacadeREST extends AbstractFacade<Temporalparacobrar> {
 
     @PersistenceContext(unitName = "my_persistence_unit")
     private EntityManager em;
- 
-    private ListaprecioPK getPrimaryKey(PathSegment pathSegment) {
-        /*
-         * pathSemgent represents a URI path segment and any associated matrix parameters.
-         * URI path part is supposed to be in form of 'somePath;codigocomercializadora=codigocomercializadoraValue;codigo=codigoValue'.
-         * Here 'somePath' is a result of getPath() method invocation and
-         * it is ignored in the following code.
-         * Matrix parameters are used as field names to build a primary key instance.
-         */
-        ec.com.infinity.modelo.ListaprecioPK key = new ec.com.infinity.modelo.ListaprecioPK();
-        javax.ws.rs.core.MultivaluedMap<String, String> map = pathSegment.getMatrixParameters();
-        java.util.List<String> codigocomercializadora = map.get("codigocomercializadora");
-        if (codigocomercializadora != null && !codigocomercializadora.isEmpty()) {
-            key.setCodigocomercializadora(codigocomercializadora.get(0));
-        }
-        java.util.List<String> codigo = map.get("codigo");
-        if (codigo != null && !codigo.isEmpty()) {
-            key.setCodigo(new java.lang.Long(codigo.get(0)));
-        }
-        return key;
-    }
 
-    public ListaprecioFacadeREST() {
-        super(Listaprecio.class);
+    public TemporalparacobrarFacadeREST() {
+        super(Temporalparacobrar.class);
     }
 
     @Override
-    public Listaprecio create(Listaprecio entity) {
+    public Temporalparacobrar create(Temporalparacobrar entity) {
         return super.create(entity);
     }
 
     @Override
-    public List<Listaprecio> findAll() {
+    public List<Temporalparacobrar> findAll() {
         return super.findAll();
     }
 
     @Override
-    public Listaprecio edit(Listaprecio entity) {
+    public Temporalparacobrar edit(Temporalparacobrar entity) {
         super.edit(entity);
         return entity;
     }
@@ -92,7 +68,7 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
     //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response create1(Listaprecio entity) {
+    public Response create1(Temporalparacobrar entity) {
         try {
             this.create(entity);
 
@@ -121,17 +97,13 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
     //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response remove(@QueryParam("codigocomercializadora") String codigocomercializadora, 
-            @QueryParam("codigo") long codigo) {
+    public Response remove(Temporalparacobrar entity) {
         try {
-            
-            ListaprecioPK entity = new ListaprecioPK();
-            entity.setCodigocomercializadora(codigocomercializadora);
-            entity.setCodigo(codigo);
-            super.remove(entity);
+
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
             succesMessage.setDeveloperMessage("ejecución correcta");
+            super.remove(entity);
             return Response.status(200)
                     .entity(succesMessage)
                     .type(MediaType.APPLICATION_JSON).
@@ -154,7 +126,7 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
     //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response edit1(Listaprecio entity) {
+    public Response edit1(Temporalparacobrar entity) {
         try {
             this.edit(entity);
             EjecucionMensaje succesMessage = new EjecucionMensaje();
@@ -182,18 +154,22 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
     //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response find(@QueryParam("codigocomercializadora") String codigocomercializadora, 
-            @QueryParam("codigo") long codigo) {
-        try {
-            
-            ListaprecioPK entity = new ListaprecioPK();
+    public Response find(@QueryParam("fechahoraproceso") String fechahoraproceso, 
+            @QueryParam("usuarioactual") String usuarioactual,
+            @QueryParam("codigocomercializadora") String codigocomercializadora,
+            @QueryParam("numerofactura") String numerofactura
+            ) {
+            TemporalparacobrarPK entity = new TemporalparacobrarPK();
+            entity.setFechahoraproceso(fechahoraproceso);
+            entity.setUsuarioactual(usuarioactual);
             entity.setCodigocomercializadora(codigocomercializadora);
-            entity.setCodigo(codigo);
-            
+            entity.setNumerofactura(numerofactura);
+        try {
+
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
             succesMessage.setDeveloperMessage("ejecución correcta");
-            List<Listaprecio> lst = new ArrayList<>();
+            List<Temporalparacobrar> lst = new ArrayList<>();
             lst.add(super.find(entity));
             succesMessage.setRetorno(lst);
             return Response.status(200)
@@ -211,46 +187,8 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
                     build();
         }
     }
-    
-    
-    @GET
-    @Path("/porComercializadora")
-    //@Secured
-    @Consumes({"application/json"})
-    @Produces({"application/json"})
-    public Response findXComer(@QueryParam("codigocomercializadora") String codigocomercializadora) {
-        try {
-            
-            ListaprecioPK entity = new ListaprecioPK();
-            entity.setCodigocomercializadora(codigocomercializadora);
- 
-                  
-            TypedQuery<Listaprecio> consultaListaPrecioPorComer = em.createNamedQuery("Listaprecio.findByCodigocomercializadora", Listaprecio.class);
-            consultaListaPrecioPorComer.setParameter("codigocomercializadora", codigocomercializadora);
-            
-            EjecucionMensaje succesMessage = new EjecucionMensaje();
-            succesMessage.setStatusCode(200);
-            succesMessage.setDeveloperMessage("ejecución correcta");
-            List<Listaprecio> lst = new ArrayList<>();
-            lst = consultaListaPrecioPorComer.getResultList();
-            succesMessage.setRetorno(lst);
-            return Response.status(200)
-                    .entity(succesMessage)
-                    .type(MediaType.APPLICATION_JSON).
-                    build();
-            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
-        } catch (WebApplicationException ex) {
-            Response exResponse = ex.getResponse();
-            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
-            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
-            return Response.status(Response.Status.CONFLICT)
-                    .entity(errorMessage)
-                    .type(MediaType.APPLICATION_JSON).
-                    build();
-        }
-    }
 
-    @ GET
+    @GET
     //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
@@ -259,7 +197,7 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
             succesMessage.setDeveloperMessage("ejecución correcta");
-            List<Listaprecio> lst = this.findAll();
+            List<Temporalparacobrar> lst = this.findAll();
             succesMessage.setRetorno(lst);
             return Response.status(200)
                     .entity(succesMessage)
@@ -301,43 +239,94 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
         return em;
     }
     
-        @POST
-    @Path("/agregar")  
+    @POST
+    @Path("/deleteporUsuarioProceso")
     //@Secured
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response crearAutonumerado(Listaprecio entity) {
-        
-        StringBuilder sqlQuery = new StringBuilder();
-               
-        String auxCC = entity.getListaprecioPK().getCodigocomercializadora().trim();
-        //entity.getRubroterceroPK().getCodigo()
-        String auxNom = entity.getNombre().trim();
-        String auxTipo = entity.getTipo().trim();
-        boolean auxAc = entity.getActivo();
-        String auxUsu = entity.getUsuarioactual().trim();
-        
-       sqlQuery.append("insert into public.listaprecio "
-               + "(codigocomercializadora, nombre, tipo, activo,  usuarioactual)"
-               + " values (:pauxCC, :pauxNom, :pauxTipo, :pauxAc, :pauxUsu)");
-               //+ "values(:, 'FLETE', true, '11111', 'VXG', 'ftt')");
+    public Response deletePorUsuarioFechahora(@QueryParam("fechahoraproceso") String fechahoraproceso, 
+            @QueryParam("usuarioactual") String usuarioactual,
+            @QueryParam("codigocomercializadora") String codigocomercializadora) {
+        int resQuery = 0;
+        try {
 
-        System.out.println("INSERTAR LISTA DE PRECIO FT:: "+ sqlQuery.toString());
-       try {
+            StringBuilder sqlQuery = new StringBuilder();
+            sqlQuery.append("DELETE FROM Temporalparacobrar t WHERE t.fechahoraproceso = :fechahoraproceso "
+                    + "and t.usuarioactual = :usuarioactual "
+                    + "and t.codigocomercializadora = :codigocomercializadora");
+
+            System.out.println("deletePorUsuarioFechahora-query FT:: " + sqlQuery.toString());
+
             Query qry = this.em.createNativeQuery(sqlQuery.toString());
-            qry.setParameter("pauxCC", auxCC);
-            qry.setParameter("pauxNom", auxNom);
-            qry.setParameter("pauxTipo", auxTipo);
-            qry.setParameter("pauxAc", auxAc);
-            qry.setParameter("pauxUsu", auxUsu);
-             
-             qry.executeUpdate();
+            qry.setParameter("fechahoraproceso", fechahoraproceso);
+            qry.setParameter("usuarioactual", usuarioactual);
+            qry.setParameter("codigocomercializadora", codigocomercializadora);
 
-            
+            resQuery = qry.executeUpdate();
+                         
             EjecucionMensaje succesMessage = new EjecucionMensaje();
             succesMessage.setStatusCode(200);
-            succesMessage.setDeveloperMessage("Inserción correcta");
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            List<Integer> lst = new ArrayList<>();
+            lst.add(resQuery);
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+    
+    @GET
+    @Path("/Totalparacobrar")  
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findTotalParaCobrar(@QueryParam("fechahoraproceso") String fechahoraproceso, 
+            @QueryParam("usuarioactual") String usuarioactual,
+            @QueryParam("codigocomercializadora") String codigocomercializadora) {
+        
+     List<Object[]> objetosList;
+        
+        StringBuilder sqlQuery = new StringBuilder();
+          List<TotalParaCobrar> lista = new ArrayList<>();
+        sqlQuery.append("select codigobanco, fechavencimiento, count(*) as cantidadFacturas, sum(valortotal) as sumaTotal " +
+        "from temporalparacobrar where fechahoraproceso = :fechahoraproceso and " +
+        "usuarioactual = :usuarioactual AND codigocomercializadora = :codigocomercializadora " +
+        "group by usuarioactual, codigocomercializadora, codigobanco, fechavencimiento " +
+        "ORDER BY codigobanco, fechavencimiento");
+
+        System.out.println("TotalParaCobrar FT:: "+ sqlQuery.toString());
+       try {
+            Query qry = this.em.createNativeQuery(sqlQuery.toString());
+            qry.setParameter("fechahoraproceso", fechahoraproceso);
+            qry.setParameter("usuarioactual", usuarioactual);
+            qry.setParameter("codigocomercializadora", codigocomercializadora);
             
+            objetosList = qry.getResultList();
+
+            for (Object[] o : objetosList) {
+                TotalParaCobrar obj = new TotalParaCobrar();
+                obj.setBanco(String.valueOf(o[0]));
+                obj.setFechavencimiento(String.valueOf(o[1]));
+                obj.setFacturas(new Integer(String.valueOf(o[2])));
+                obj.setValortotal(new BigDecimal(String.valueOf(o[3])));
+                
+                lista.add(obj);
+            }
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecuciòn correcta");
+            succesMessage.setRetorno(lista);
             return Response.status(200)
                     .entity(succesMessage)
                     .type(MediaType.APPLICATION_JSON).
@@ -352,68 +341,4 @@ public class ListaprecioFacadeREST extends AbstractFacade<Listaprecio> {
                     build();
         }   
     }
-
-    @GET
-    @Path("/enPrecio")
-    //@Secured
-    @Consumes({"application/json"})
-    @Produces({"application/json"})
-    public Response findEnPrecio(@QueryParam("codigocomercializadora") String codigocomercializadora) {
-        try {
-            Listaprecio entity;
-            ListaprecioPK entityPk;
-            
-            List<Object[]> objetosList;
-            StringBuilder sqlQuery = new StringBuilder();
-            List<Listaprecio> lista = new ArrayList<>();
-            sqlQuery.append("select * from listaprecio where codigo in "
-                    + " ( SELECT distinct codigolistaprecio FROM public.precio "
-                    + " where codigocomercializadora = :codigocomercializadora "
-                    + " and activo = true"
-                    + " and fechafin is null)");
-
-            System.out.println("FT:: Buscar LISTA DE PRECIOS que ESTÉN en una PRECIO ACTIVO:. " + sqlQuery.toString());
-            Query qry = this.em.createNativeQuery(sqlQuery.toString());
-            qry.setParameter("codigocomercializadora", codigocomercializadora);
-            objetosList = qry.getResultList();
- 
-            
-            for (Object[] o : objetosList) {
-                entity = new Listaprecio();
-                entityPk = new ListaprecioPK();
-                 entityPk.setCodigocomercializadora(String.valueOf(o[0]));
-                 entityPk.setCodigo(new Long(String.valueOf(o[1])).longValue());
-                 entity.setListaprecioPK(entityPk);
-                 
-                 entity.setNombre(String.valueOf(o[2]));
-                 entity.setTipo(String.valueOf(o[3]));
-                 entity.setActivo(new Boolean(String.valueOf(o[4])).booleanValue());
-                 entity.setUsuarioactual(String.valueOf(o[5]));
-                 lista.add(entity);
-            }
-            EjecucionMensaje succesMessage = new EjecucionMensaje();
-            succesMessage.setStatusCode(200);
-            succesMessage.setDeveloperMessage("ejecución correcta");
-//            List<Comercializadoraproducto> lst = new ArrayList<>();
-//            lst = consulta.getResultList();
-            succesMessage.setRetorno(lista);
-            System.out.println("FT:: Buscar LISTA DE PRECIOS que ESTÉN en una PRECIO ACTIVO OK!!:. " + lista.size());
-            return Response.status(200)
-                    .entity(succesMessage)
-                    .type(MediaType.APPLICATION_JSON).
-                    build();
-            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
-        } catch (WebApplicationException ex) {
-            
-            System.out.println("FT:: ERROR EN Buscar LISTA DE PRECIOS que ESTÉN en una PRECIO ACTIVO:." + ex.getMessage());
-            Response exResponse = ex.getResponse();
-            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
-            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
-            return Response.status(Response.Status.CONFLICT)
-                    .entity(errorMessage)
-                    .type(MediaType.APPLICATION_JSON).
-                    build();
-        }
-    }
-    
 }

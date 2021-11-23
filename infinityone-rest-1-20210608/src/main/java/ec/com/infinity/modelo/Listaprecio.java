@@ -59,10 +59,10 @@ public class Listaprecio implements Serializable {
     private String usuarioactual;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "listaprecio")
     private List<Precio> precioList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "listaprecio")
-    private List<Clientelistaprecio> clientelistaprecioList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "listaprecio")
-    private List<Listaprecioterminalproducto> listaprecioterminalproductoList;
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "listaprecio")
+//    private List<Clientelistaprecio> clientelistaprecioList;
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "listaprecio")
+//    private List<Listaprecioterminalproducto> listaprecioterminalproductoList;
 
     public Listaprecio() {
     }
@@ -131,23 +131,23 @@ public class Listaprecio implements Serializable {
         this.precioList = precioList;
     }
 
-    @XmlTransient
-    public List<Clientelistaprecio> getClientelistaprecioList() {
-        return clientelistaprecioList;
-    }
-
-    public void setClientelistaprecioList(List<Clientelistaprecio> clientelistaprecioList) {
-        this.clientelistaprecioList = clientelistaprecioList;
-    }
-
-    @XmlTransient
-    public List<Listaprecioterminalproducto> getListaprecioterminalproductoList() {
-        return listaprecioterminalproductoList;
-    }
-
-    public void setListaprecioterminalproductoList(List<Listaprecioterminalproducto> listaprecioterminalproductoList) {
-        this.listaprecioterminalproductoList = listaprecioterminalproductoList;
-    }
+//    @XmlTransient
+//    public List<Clientelistaprecio> getClientelistaprecioList() {
+//        return clientelistaprecioList;
+//    }
+//
+//    public void setClientelistaprecioList(List<Clientelistaprecio> clientelistaprecioList) {
+//        this.clientelistaprecioList = clientelistaprecioList;
+//    }
+//
+//    @XmlTransient
+//    public List<Listaprecioterminalproducto> getListaprecioterminalproductoList() {
+//        return listaprecioterminalproductoList;
+//    }
+//
+//    public void setListaprecioterminalproductoList(List<Listaprecioterminalproducto> listaprecioterminalproductoList) {
+//        this.listaprecioterminalproductoList = listaprecioterminalproductoList;
+//    }
 
     @Override
     public int hashCode() {

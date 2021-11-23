@@ -20,6 +20,7 @@ import ec.com.infinityone.envio.GeneracionOEAbasPrv;
 import ec.com.infinityone.envio.GeneracionOEAbasPrvService;
 import ec.com.infinityone.rest.resources.GeneradorTramasOE;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -480,7 +481,9 @@ public class NotapedidoFacadeREST extends AbstractFacade<Notapedido> {
                 lst.add(agregar);
                 Notapedido modificar = lst.get(0);
                 modificar.setTramaenviadagoe(entity.getCadena());
-                GeneracionOEAbasPrvService service = new GeneracionOEAbasPrvService();
+                //GeneracionOEAbasPrvService service = new GeneracionOEAbasPrvService();
+                URL nuevaUrl = new URL("http://190.152.15.66/SCI_WS_GOEA_SrvPrv/services/GeneracionOEAbasPrv?wsdl");
+                GeneracionOEAbasPrvService service = new GeneracionOEAbasPrvService(nuevaUrl);
                 GeneracionOEAbasPrv port = service.getGeneracionOEAbasPrv();
                 String arespuesta = port.generarOrdenEntrega(entity.getCadena());
                 modificar.setRespuestageneracionoeepp(arespuesta.substring(0, 2));//2 primeros caracteres

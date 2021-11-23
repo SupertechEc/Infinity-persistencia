@@ -12,11 +12,13 @@ import ec.com.infinity.modelo.ListaprecioPK;
 import ec.com.infinity.rest.seguridad.EjecucionMensaje;
 import ec.com.infinity.rest.seguridad.ErrorMessage;
 import ec.com.infinity.rest.seguridad.Secured;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -297,5 +299,140 @@ public class ComercializadoraproductoFacadeREST extends AbstractFacade<Comercial
     protected EntityManager getEntityManager() {
         return em;
     }
+    @GET
+    @Path("/sinListaP")
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findSinListaPrecio(@QueryParam("codigocomercializadora") String codigocomercializadora, @QueryParam("codigolistaprecio") Long codigolistaprecio) {
+        try {
+            Comercializadoraproducto entity;
+            ComercializadoraproductoPK entityPk;
+            
+            List<Object[]> objetosList;
+            StringBuilder sqlQuery = new StringBuilder();
+            List<Comercializadoraproducto> lista = new ArrayList<>();
+            sqlQuery.append("SELECT c.* FROM Comercializadoraproducto as c "
+                    + " where c.codigocomercializadora = :codigocomercializadora  and not exists (select l.codigoproducto "
+                    + " from listaprecioterminalproducto  as l where l.codigoproducto = c.codigoproducto "
+                    + " and l.codigocomercializadora = :codigocomercializadora "
+                    + " and l.codigolistaprecio = :codigolistaprecio)");
 
+            System.out.println("FT:: Buscar ProductosComer que NO estén en una listaPrecioTerminalProducto:. " + sqlQuery.toString());
+            Query qry = this.em.createNativeQuery(sqlQuery.toString());
+            qry.setParameter("codigocomercializadora", codigocomercializadora);
+            qry.setParameter("codigolistaprecio", codigolistaprecio);
+            objetosList = qry.getResultList();
+
+            
+            for (Object[] o : objetosList) {
+                entity = new Comercializadoraproducto();
+                entityPk = new ComercializadoraproductoPK();
+                
+                 entityPk.setCodigocomercializadora(String.valueOf(o[0]));
+                 entityPk.setCodigoproducto(String.valueOf(o[1]));
+                 entityPk.setCodigomedida(String.valueOf(o[2]));
+                 entity.setComercializadoraproductoPK(entityPk);
+                 entity.setActivo(new Boolean(String.valueOf(o[3])).booleanValue());
+                 entity.setMargencomercializacion(new BigDecimal(String.valueOf(o[4])));
+                 entity.setPrecioepp(new BigDecimal(String.valueOf(o[5])));
+                 entity.setPvpsugerido(new BigDecimal(String.valueOf(o[6])));
+                 entity.setSoloaplicaiva(new Boolean(String.valueOf(o[7])).booleanValue());
+                 entity.setUsuarioactual(String.valueOf(o[8]));
+                 entity.setProcesar(new Boolean(String.valueOf(o[9])).booleanValue());
+                 lista.add(entity);
+            }
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+//            List<Comercializadoraproducto> lst = new ArrayList<>();
+//            lst = consulta.getResultList();
+            succesMessage.setRetorno(lista);
+            System.out.println("FT:: Buscar ProductosComer que NO estén en una listaPrecioTerminalProducto OK!!:. " + lista.size());
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            
+            System.out.println("FT:: ERROR EN Buscar ProductosComer que NO estén en una listaPrecioTerminalProducto:." + ex.getMessage());
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+    
+    @GET
+    @Path("/enListaP")
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findEnListaPrecio(@QueryParam("codigocomercializadora") String codigocomercializadora, @QueryParam("codigolistaprecio") Long codigolistaprecio) {
+        try {
+            Comercializadoraproducto entity;
+            ComercializadoraproductoPK entityPk;
+            
+            List<Object[]> objetosList;
+            StringBuilder sqlQuery = new StringBuilder();
+            List<Comercializadoraproducto> lista = new ArrayList<>();
+            sqlQuery.append("SELECT c.* FROM Comercializadoraproducto as c "
+                    + " where c.codigocomercializadora = :codigocomercializadora  and exists (select l.codigoproducto "
+                    + " from listaprecioterminalproducto  as l where l.codigoproducto = c.codigoproducto "
+                    + " and l.codigocomercializadora = :codigocomercializadora "
+                    + " and l.codigolistaprecio = :codigolistaprecio)");
+
+            System.out.println("FT:: Buscar ProductosComer que ESTÉN en una listaPrecioTerminalProducto:. " + sqlQuery.toString());
+            Query qry = this.em.createNativeQuery(sqlQuery.toString());
+            qry.setParameter("codigocomercializadora", codigocomercializadora);
+            qry.setParameter("codigolistaprecio", codigolistaprecio);
+            objetosList = qry.getResultList();
+
+            
+            for (Object[] o : objetosList) {
+                entity = new Comercializadoraproducto();
+                entityPk = new ComercializadoraproductoPK();
+                
+                 entityPk.setCodigocomercializadora(String.valueOf(o[0]));
+                 entityPk.setCodigoproducto(String.valueOf(o[1]));
+                 entityPk.setCodigomedida(String.valueOf(o[2]));
+                 entity.setComercializadoraproductoPK(entityPk);
+                 entity.setActivo(new Boolean(String.valueOf(o[3])).booleanValue());
+                 entity.setMargencomercializacion(new BigDecimal(String.valueOf(o[4])));
+                 entity.setPrecioepp(new BigDecimal(String.valueOf(o[5])));
+                 entity.setPvpsugerido(new BigDecimal(String.valueOf(o[6])));
+                 entity.setSoloaplicaiva(new Boolean(String.valueOf(o[7])).booleanValue());
+                 entity.setUsuarioactual(String.valueOf(o[8]));
+                 entity.setProcesar(new Boolean(String.valueOf(o[9])).booleanValue());
+                 lista.add(entity);
+            }
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+//            List<Comercializadoraproducto> lst = new ArrayList<>();
+//            lst = consulta.getResultList();
+            succesMessage.setRetorno(lista);
+            System.out.println("FT:: Buscar ProductosComer que ESTÉN en una listaPrecioTerminalProducto OK!!:. " + lista.size());
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            
+            System.out.println("FT:: ERROR EN Buscar ProductosComer que ESTÉN en una listaPrecioTerminalProducto:." + ex.getMessage());
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+    
 }

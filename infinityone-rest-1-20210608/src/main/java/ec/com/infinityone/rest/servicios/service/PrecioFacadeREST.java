@@ -528,4 +528,40 @@ public class PrecioFacadeREST extends AbstractFacade<Precio> {
         }
         return respuesta;
     }
+    
+     @GET
+    @Path("/porComer")
+    //@Secured
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response findPorComer(@QueryParam("codigocomercializadora") String codigocomercializadora) {
+        try {
+            
+            PrecioPK  entity = new PrecioPK();
+            
+            TypedQuery<Precio> consulta = em.createNamedQuery("Precio.findByCodigocomercializadora", Precio.class);
+            consulta.setParameter("codigocomercializadora", codigocomercializadora);
+            EjecucionMensaje succesMessage = new EjecucionMensaje();
+            succesMessage.setStatusCode(200);
+            succesMessage.setDeveloperMessage("ejecución correcta");
+            List<Precio> lst = new ArrayList<>();
+            lst = consulta.getResultList();
+            succesMessage.setRetorno(lst);
+            return Response.status(200)
+                    .entity(succesMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+        } catch (WebApplicationException ex) {
+            Response exResponse = ex.getResponse();
+            ErrorMessage errorMessage = new ErrorMessage(exResponse.getStatus(), ex.getMessage());
+            //return JAXRSUtils.fromResponse(ex.getResponse()).entity(errorMessage).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(errorMessage)
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+    
+    
 }

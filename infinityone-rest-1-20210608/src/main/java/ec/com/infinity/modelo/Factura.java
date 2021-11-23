@@ -122,6 +122,10 @@ public class Factura implements Serializable {
     @Column(name = "oeenpetro")
     private boolean oeenpetro;
     @Basic(optional = false)
+    @NotNull()
+    @Column(name = "oeanuladaenpetro")
+    private boolean oeanuladaenpetro;
+    @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 8)
     @Column(name = "codigocliente")
@@ -402,6 +406,14 @@ public class Factura implements Serializable {
         this.oeenpetro = oeenpetro;
     }
 
+    public boolean getOeanuladaenpetro() {
+        return oeanuladaenpetro;
+    }
+
+    public void setOeanuladaenpetro(boolean oeanuladaenpetro) {
+        this.oeanuladaenpetro = oeanuladaenpetro;
+    }
+    
     public String getCodigocliente() {
         return codigocliente;
     }
@@ -705,6 +717,8 @@ public class Factura implements Serializable {
     public void setValorconrubro(BigDecimal valorconrubro) {
         this.valorconrubro = valorconrubro;
     }
+
+    
     
     
 }

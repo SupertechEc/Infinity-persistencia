@@ -81,7 +81,7 @@ public class Usuario implements Serializable {
     private Date vigenciahash;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 6)
+    @Size(min = 1, max = 64)
     @Column(name = "clave")
     private String clave;
     @Basic(optional = false)

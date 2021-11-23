@@ -306,17 +306,19 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
                     .type(MediaType.APPLICATION_JSON).
                     build();
         }catch(Throwable t){
+            List<String> lstError = new ArrayList<>();
             System.out.println("FT:: Throwable capturada:createF "+t.getMessage());
+            lstError.add(t.getMessage());
             t.printStackTrace(System.out);
             EjecucionMensaje succesMessage = new EjecucionMensaje();
-            succesMessage.setStatusCode(555);
+            succesMessage.setStatusCode(299);
             succesMessage.setDeveloperMessage("Error al crear la Factura: "+t.getMessage());
-            succesMessage.setRetorno(lst);
-            return Response.status(555)
+            succesMessage.setRetorno(lstError);
+            return Response.status(299)
                     .entity(succesMessage)
                     .type(MediaType.APPLICATION_JSON).
                     build();
-        }
+        } 
     }
     
     public EnvioPedidoREST buscarNP(String codigoabastecedora, String codigocomercializadora, String numeronotapedido, String numero)throws Throwable{
@@ -927,6 +929,7 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
             fac.setValorconrubro(fac.getValortotal());
             if (envNP.getNotapedido().getCodigocliente().getControlagarantia()){
                 try{
+                    System.out.println("FT:: VA A REALIZAR CONTROL DE GARANTÍAS");
                     validarGarantia(fac);
                 }catch(Throwable a){
                     throw a;//new Throwable("Error al validar la garantía de este cliente");
@@ -970,9 +973,9 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
             if (totalGarantizado == null ){
                   throw new Throwable("No se ha encontrado un valor garantizado para este cliente: " + fac.getCodigocliente().trim());
             }else{
-                saldo = totalGarantizado.getTotalgarantizado().subtract(totalGarantizado.getTotaldeuda());
+                saldo = totalGarantizado.getTotalgarantizado().subtract(totalGarantizado.getTotaldeuda().add((fac.getValorconrubro())));
                 if( saldo.compareTo(new BigDecimal(BigInteger.ZERO))== -1){
-                    throw new Throwable("El valor de esta compra SUPERARÁ el saldo garantizado de este cliente: "+ fac.getCodigocliente().trim()); 
+                    throw new Throwable("El valor de esta compra SUPERARÁ el saldo garantizado de este cliente: "+ fac.getCodigocliente().trim()+ "V. garantizado: "+totalGarantizado.getTotalgarantizado() + " V. deuda actual: "+ totalGarantizado.getTotaldeuda()+ "v. Factura+rubros solicitada: "+fac.getValorconrubro()); 
                 }
             }
         }catch(Throwable x){
@@ -1361,7 +1364,7 @@ public class FacturaFacadeREST extends AbstractFacade<Factura> {
             return maxCuota + 1;
             
         } catch (Throwable ex) {
-            System.out.println("FT:: ERROR-BUSCAR EL MAX DE CUOTAS TIPO FAC Throwable. "+ex.getMessage());
+            System.out.println("FT:: ERROR-BUSCAR EL MAX DE CUOTAS TIPO FAC     Throwable. "+ex.getMessage());
             return maxCuota;
         }   
     }
